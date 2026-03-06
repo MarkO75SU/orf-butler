@@ -1,4 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#0a0a0c"/>
-  <text x="16" y="22" font-family="sans-serif" font-size="16" fill="#38bdf8" text-anchor="middle">ORF</text>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#38bdf8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="6" fill="#0a0a0c"/>
+  <path d="M8 22 L16 8 L24 22 Z" fill="url(#grad)"/>
+  <circle cx="16" cy="18" r="2" fill="#0a0a0c"/>
 </svg>
