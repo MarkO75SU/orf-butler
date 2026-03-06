@@ -1,150 +1,197 @@
 import { t, setLanguage, getLang } from './i18n.js';
-import { getPromptOfDay, generateRSS } from './prompts.js';
-import { MODEL_MAPPING, getBestModels } from './mapping.js';
-import { TOOL_TEMPLATES, generateConfig } from './templates.js';
+import { TOOL_TEMPLATES } from './templates.js';
+import { generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
 import { fetchLiveFreeModels } from './api.js';
-import { isAuthenticated, login } from './auth.js';
+import { isAuthenticated, logout } from './auth.js';
 
-let selections = { tool: '', lang: '', tier: '', os: navigator.platform.toLowerCase().includes('win') ? 'win32' : 'darwin' };
+let state = {
+    selectedModel: null,
+    selectedTool: null,
+    selectedBundle: 'basic'
+};
 
-window.switchLang = (lang) => {
+const translations = {
+    de: {
+        step1Title: "Wähle dein Free-LLM Model",
+        step1Desc: "Wähle ein kostenloses Modell von OpenRouter",
+        step2Title: "Wähle dein Tool",
+        step2Desc: "Für welches Tool soll die Config erstellt werden?",
+        step3Title: "Wähle dein Bundle",
+        step3Desc: "Welches Paket möchtest du?",
+        step4Title: "Checkout & Download",
+        step4Desc: "Erstelle und lade deine Config herunter",
+        summaryModel: "Ausgewähltes Model:",
+        summaryTool: "Tool:",
+        summaryBundle: "Bundle:",
+        downloadBtn: "Config Herunterladen",
+        noModel: "Kein Model ausgewählt",
+        noTool: "Kein Tool ausgewählt"
+    },
+    en: {
+        step1Title: "Select your Free-LLM Model",
+        step1Desc: "Choose a free model from OpenRouter",
+        step2Title: "Select your Tool",
+        step2Desc: "Which tool should the config be created for?",
+        step3Title: "Select your Bundle",
+        step3Desc: "Which package do you want?",
+        step4Title: "Checkout & Download",
+        step4Desc: "Create and download your config",
+        summaryModel: "Selected Model:",
+        summaryTool: "Tool:",
+        summaryBundle: "Bundle:",
+        downloadBtn: "Download Config",
+        noModel: "No model selected",
+        noTool: "No tool selected"
+    }
+};
+
+window.setLang = (lang) => {
     setLanguage(lang);
-    document.querySelectorAll('.flag-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`lang-${lang}`).classList.add('active');
     updateUI();
 };
 
-window.updateUI = () => {
-    document.getElementById('ui-title').innerText = t('title');
-    document.getElementById('ui-subtitle').innerText = t('subtitle');
-    document.getElementById('ui-mission-title').innerText = t('mission_title');
-    document.getElementById('ui-mission-text').innerHTML = t('mission_text');
-    document.getElementById('tool-search').placeholder = t('search_placeholder');
-    document.getElementById('ui-recommendations').innerText = t('recommendations');
-    document.getElementById('ui-roster-title').innerText = t('roster_title');
-    document.getElementById('ui-potd-title').innerText = t('potd_title');
-    document.getElementById('ui-rss-link').innerText = t('potd_rss');
-    document.getElementById('ui-step-stack').innerText = t('step_stack');
-    document.getElementById('ui-step-tier').innerText = t('step_tier');
-    document.getElementById('ui-step-finish').innerText = t('step_finish');
-    document.getElementById('download-btn').innerText = t('deploy_btn');
-    document.getElementById('ui-tier-basic').innerText = t('basic_tier');
-    document.getElementById('ui-tier-premium').innerText = t('premium_tier');
+window.logout = () => {
+    logout();
+    window.location.href = 'login.html';
+};
+
+function updateUI() {
+    const lang = getLang();
+    const texts = translations[lang] || translations.de;
     
-    const potd = getPromptOfDay();
-    document.getElementById('potd-title').innerText = potd.title;
-    document.getElementById('potd-text').innerText = potd.prompt;
-
-    renderRoster();
-    filterTools();
-    renderTopPicks();
-};
-
-window.nextStep = (step, data) => {
-    selections = { ...selections, ...data };
-    document.querySelectorAll('[id^="step-"]').forEach(el => el.className = 'step-hidden');
-    document.getElementById(`step-${step}`).className = 'step-active';
-};
-
-window.finishWizard = (tier) => {
-    selections.tier = tier;
-    nextStep('finish', {});
-    const tool = TOOL_TEMPLATES[selections.tool];
-    const models = getBestModels(selections.lang, 'coding');
-    const configContent = generateConfig(selections.tool, models, selections.tier);
-    const path = OS_PATHS[selections.os][selections.tool];
-    const toolWithId = { ...tool, id: selections.tool };
-    const installMD = generateInstallMD(toolWithId, selections.os, selections.tier, path);
-
-    document.getElementById('download-btn').onclick = () => {
-        downloadFile(tool.config_file, configContent);
-        downloadFile('INSTALL.md', installMD);
-    };
-};
-
-const renderRoster = async () => {
-    const rosterContainer = document.getElementById('model-roster');
-    if (!rosterContainer) return;
-    rosterContainer.innerHTML = "";
-
-    const freeModels = await fetchLiveFreeModels();
+    document.getElementById('step1-title').textContent = texts.step1Title;
+    document.getElementById('step1-desc').textContent = texts.step1Desc;
+    document.getElementById('step2-title').textContent = texts.step2Title;
+    document.getElementById('step2-desc').textContent = texts.step2Desc;
+    document.getElementById('step3-title').textContent = texts.step3Title;
+    document.getElementById('step3-desc').textContent = texts.step3Desc;
+    document.getElementById('step4-title').textContent = texts.step4Title;
+    document.getElementById('step4-desc').textContent = texts.step4Desc;
+    document.getElementById('summary-model-label').textContent = texts.summaryModel;
+    document.getElementById('summary-tool-label').textContent = texts.summaryTool;
+    document.getElementById('summary-bundle-label').textContent = texts.summaryBundle;
+    document.getElementById('download-btn').textContent = texts.downloadBtn;
     
-    if (!freeModels || freeModels.length === 0) {
-        rosterContainer.innerHTML = `
-            <div class="text-[10px] text-yellow-500 p-4 border border-yellow-900 bg-yellow-900/20 rounded">
-                ${getLang() === 'de' ? 'Keine Live-Daten verfügbar. API-Anfrage fehlgeschlagen.' : 'No live data available. API request failed.'}
-            </div>
-        `;
-        return;
+    updateSummary();
+}
+
+function updateSummary() {
+    const lang = getLang();
+    const texts = translations[lang] || translations.de;
+    
+    document.getElementById('summary-model').textContent = state.selectedModel || texts.noModel;
+    document.getElementById('summary-tool').textContent = state.selectedTool ? TOOL_TEMPLATES[state.selectedTool]?.name || state.selectedTool : texts.noTool;
+    document.getElementById('summary-bundle').textContent = state.selectedBundle === 'basic' ? 'Standard Bundle (5€)' : 'Premium Bundle (20€)';
+    
+    const btn = document.getElementById('download-btn');
+    btn.disabled = !state.selectedModel || !state.selectedTool;
+}
+
+async function loadModels() {
+    const grid = document.getElementById('models-grid');
+    const errorEl = document.getElementById('model-error');
+    
+    try {
+        const models = await fetchLiveFreeModels();
+        
+        if (!models || models.length === 0) {
+            errorEl.classList.remove('hidden');
+            return;
+        }
+        
+        const sorted = models.sort((a, b) => (b.context_length || 0) - (a.context_length || 0));
+        
+        sorted.slice(0, 20).forEach(m => {
+            const div = document.createElement('button');
+            div.className = `model-card text-left transition ${state.selectedModel === m.id ? 'selected' : ''}`;
+            div.onclick = () => selectModel(m.id);
+            
+            const provider = m.id.split('/')[0];
+            const context = m.context_length ? `${(m.context_length / 1000).toFixed(0)}k` : '?';
+            
+            div.innerHTML = `
+                <div class="flex justify-between items-start mb-1">
+                    <span class="text-[9px] font-black text-sky-500 uppercase">${provider}</span>
+                    <span class="text-[7px] text-slate-500 font-mono">${context}</span>
+                </div>
+                <div class="text-[8px] text-slate-400 truncate">${m.id}</div>
+            `;
+            grid.appendChild(div);
+        });
+    } catch (e) {
+        errorEl.classList.remove('hidden');
     }
+}
 
-    const sortedModels = freeModels.sort((a, b) => (b.context || 0) - (a.context || 0));
+function loadTools() {
+    const grid = document.getElementById('tools-grid');
     
-    sortedModels.slice(0, 20).forEach(model => {
-        const div = document.createElement('div');
-        div.className = "model-card flex flex-col";
-        const provider = model.id.split('/')[0];
-        const role = provider.length > 10 ? 'Unknown' : provider.charAt(0).toUpperCase() + provider.slice(1);
+    Object.entries(TOOL_TEMPLATES).forEach(([id, tool]) => {
+        const div = document.createElement('button');
+        div.className = `tool-card text-left transition ${state.selectedTool === id ? 'selected' : ''}`;
+        div.onclick = () => selectTool(id);
         
         div.innerHTML = `
-            <div class="flex justify-between items-start mb-2">
-                <span class="text-[9px] font-black text-sky-500 uppercase tracking-widest">${role}</span>
-                <span class="text-[7px] text-slate-600 font-mono">${(model.context / 1000).toFixed(0)}k</span>
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-white uppercase">${tool.name}</span>
+                <span class="status-badge status-${tool.status}">${tool.status}</span>
             </div>
-            <div class="text-[8px] text-slate-400 uppercase tracking-tighter mb-1">${model.id}</div>
-            <button onclick="copyModelName('${model.id}')" class="mt-1 text-[7px] text-slate-500 hover:text-sky-400 uppercase tracking-widest text-left flex items-center gap-1">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                <span>${getLang() === 'de' ? 'Kopieren' : 'Copy'}</span>
-            </button>
+            <p class="text-[10px] text-slate-500 mt-1">${tool.desc || ''}</p>
         `;
-        rosterContainer.appendChild(div);
+        grid.appendChild(div);
     });
+}
+
+window.selectModel = (id) => {
+    state.selectedModel = id;
+    
+    document.querySelectorAll('#models-grid .model-card').forEach(el => {
+        el.classList.remove('selected');
+    });
+    
+    const cards = document.querySelectorAll('#models-grid .model-card');
+    const models = document.querySelectorAll('#models-grid .model-card > div:last-child');
+    for (let i = 0; i < models.length; i++) {
+        if (models[i].textContent === id) {
+            cards[i].classList.add('selected');
+            break;
+        }
+    }
+    
+    updateSummary();
 };
 
-window.copyModelName = (name) => {
-    navigator.clipboard.writeText(name).then(() => {
-        alert(getLang() === 'de' ? 'Modelname kopiert!' : 'Model name copied!');
+window.selectTool = (id) => {
+    state.selectedTool = id;
+    
+    document.querySelectorAll('#tools-grid .tool-card').forEach(el => {
+        el.classList.remove('selected');
     });
-};
-
-const renderTopPicks = () => {
-    const picksContainer = document.getElementById('top-picks');
-    if (!picksContainer) return;
-    const picks = ['opencode', 'continue', 'antigravity', 'zed', 'aider', 'amazon_q'];
-    picksContainer.innerHTML = "";
-    const sortedPicks = picks.map(id => ({id, ...TOOL_TEMPLATES[id]})).sort((a, b) => a.name.localeCompare(b.name));
-    sortedPicks.forEach(tool => {
-        const btn = document.createElement('button');
-        btn.className = "bg-[#16161a] p-3 border border-slate-800 hover:border-sky-600 transition text-left flex justify-between items-center";
-        btn.onclick = () => nextStep(2, {tool: tool.id});
-        btn.innerHTML = `<span class="text-[9px] font-bold text-white uppercase tracking-widest">${tool.name}</span><span class="status-badge status-${tool.status}">${tool.status}</span>`;
-        picksContainer.appendChild(btn);
-    });
-};
-
-window.filterTools = () => {
-    const searchInput = document.getElementById('tool-search');
-    const grid = document.getElementById('tool-grid');
-    if (!searchInput || !grid) return;
-    const query = searchInput.value.toLowerCase();
-    grid.innerHTML = "";
     
-    const topPicks = ['opencode', 'continue', 'antigravity', 'zed', 'aider', 'amazon_q'];
-    
-    const sortedTools = Object.entries(TOOL_TEMPLATES).sort((a, b) => a[1].name.localeCompare(b[1].name));
-    
-    sortedTools.forEach(([id, tool]) => {
-        if (topPicks.includes(id)) return;
-        
-        if (tool.name.toLowerCase().includes(query)) {
-            const btn = document.createElement('button');
-            btn.className = "bg-[#1a1a1e] p-3 rounded border border-slate-800 hover:border-sky-600 transition text-left flex justify-between items-center";
-            btn.onclick = () => nextStep(2, {tool: id});
-            btn.innerHTML = `<span class="text-[9px] font-bold uppercase tracking-widest">${tool.name}</span><span class="status-badge status-${tool.status}">${tool.status}</span>`;
-            grid.appendChild(btn);
+    const buttons = document.querySelectorAll('#tools-grid .tool-card');
+    Object.keys(TOOL_TEMPLATES).forEach((toolId, index) => {
+        if (toolId === id) {
+            buttons[index].classList.add('selected');
         }
     });
+    
+    updateSummary();
+};
+
+window.selectBundle = (bundle) => {
+    state.selectedBundle = bundle;
+    
+    document.getElementById('bundle-basic').classList.remove('border-sky-500', 'border-sky-600');
+    document.getElementById('bundle-premium').classList.remove('border-sky-500', 'border-sky-600');
+    document.getElementById('bundle-basic').classList.add('border-slate-800');
+    document.getElementById('bundle-premium').classList.add('border-slate-800');
+    
+    const selected = document.getElementById(`bundle-${bundle}`);
+    selected.classList.remove('border-slate-800');
+    selected.classList.add('border-sky-500');
+    
+    updateSummary();
 };
 
 function downloadFile(filename, content) {
@@ -157,43 +204,32 @@ function downloadFile(filename, content) {
     window.URL.revokeObjectURL(url);
 }
 
-window.downloadRSS = () => {
-    const content = generateRSS();
-    const blob = new Blob([content], { type: 'application/rss+xml' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'orf-butler-prompts.xml';
-    a.click();
-    window.URL.revokeObjectURL(url);
+window.generateAndDownload = () => {
+    if (!state.selectedModel || !state.selectedTool) return;
+    
+    const os = navigator.platform.toLowerCase().includes('win') ? 'win32' : 'darwin';
+    const tool = TOOL_TEMPLATES[state.selectedTool];
+    const models = [[state.selectedModel, { role: 'Selected', context: '?' }]];
+    
+    const configContent = generateConfig(state.selectedTool, models, state.selectedBundle);
+    const path = OS_PATHS[os][state.selectedTool];
+    const installMD = generateInstallMD({ id: state.selectedTool, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path);
+    
+    downloadFile(tool.config_file, configContent);
+    downloadFile('INSTALL.md', installMD);
 };
 
-// Initial Start
-document.addEventListener('DOMContentLoaded', async () => {
-    const modal = document.getElementById('login-modal');
-    const form = document.getElementById('login-form');
-    
+document.addEventListener('DOMContentLoaded', () => {
     if (!isAuthenticated()) {
-        modal.classList.remove('hidden');
+        window.location.href = 'login.html';
+        return;
     }
     
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const user = document.getElementById('login-username').value;
-            const pass = document.getElementById('login-password').value;
-            const remember = document.getElementById('login-remember').checked;
-            
-            const success = await login(user, pass, remember);
-            
-            if (success) {
-                modal.classList.add('hidden');
-                updateUI();
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
-            }
-        });
-    }
+    setLanguage('de');
+    loadModels();
+    loadTools();
+    updateSummary();
     
-    updateUI();
+    document.getElementById('bundle-basic').classList.add('border-sky-500');
+    document.getElementById('bundle-premium').classList.remove('border-sky-500');
 });
