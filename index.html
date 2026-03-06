@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openrouter Free Butler | Professional Config Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .step-active { display: block; animation: fadeIn 0.1s ease-in; }
+        .step-hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .icon-stroke { stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+        .status-badge { font-size: 7px; font-weight: 800; padding: 1px 4px; border-radius: 2px; text-transform: uppercase; }
+        .status-stable { background: #064e3b; color: #34d399; }
+        .status-partial { background: #451a03; color: #fbbf24; }
+        .model-card { background: #16161a; border: 1px solid #27272a; padding: 12px; border-radius: 4px; }
+        .flag-btn { cursor: pointer; opacity: 0.5; transition: opacity 0.2s; }
+        .flag-btn.active { opacity: 1; border-bottom: 2px solid #0284c7; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #111114; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-[#0a0a0c] text-slate-300 min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-4xl w-full bg-[#111114] border border-slate-800 rounded-lg p-10 shadow-2xl relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-sky-600"></div>
+        
+        <header class="mb-10 flex justify-between items-start">
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-tight uppercase" id="ui-title">ORF-Butler</h1>
+                <p class="text-slate-500 text-[10px] uppercase tracking-[0.2em] mt-1" id="ui-subtitle">Universal AI Deployment Configurator</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="switchLang('de')" id="lang-de" class="flag-btn active">
+                    <svg class="w-6 h-4" viewBox="0 0 5 3"><rect width="5" height="3" fill="#000"/><rect width="5" height="2" y="1" fill="#D00"/><rect width="5" height="1" y="2" fill="#FFCE00"/></svg>
+                </button>
+                <button onclick="switchLang('en')" id="lang-en" class="flag-btn">
+                    <svg class="w-6 h-4" viewBox="0 0 60 30"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <section class="mb-12 border-l-2 border-sky-900 pl-6 py-2">
+            <h2 class="text-[10px] font-black text-sky-500 uppercase tracking-widest mb-2" id="ui-mission-title">Kern-Mission</h2>
+            <p class="text-xs leading-relaxed text-slate-400" id="ui-mission-text">Synthesizing assets...</p>
+        </section>
+
+        <section class="mb-12 bg-[#16161a] border border-slate-800 p-6 rounded relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-2">
+                <button onclick="downloadRSS()" class="text-[7px] font-black text-sky-500 uppercase tracking-widest hover:underline" id="ui-rss-link">RSS</button>
+            </div>
+            <h2 class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4" id="ui-potd-title">Prompt of the Day</h2>
+            <div id="potd-content">
+                <h3 class="text-sm font-bold text-white mb-2" id="potd-title">Loading...</h3>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed" id="potd-text">...</p>
+            </div>
+        </section>
+
+        <div id="step-1" class="step-active">
+            <div class="mb-8">
+                <input type="text" id="tool-search" oninput="filterTools()" placeholder="Suche..." class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white">
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-[8px] font-black text-slate-600 uppercase tracking-widest mb-4" id="ui-recommendations">Recommendations</p>
+                    <div class="grid grid-cols-1 gap-2" id="top-picks"></div>
+                    <div id="tool-grid" class="mt-2 grid grid-cols-1 gap-2 max-h-[150px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                </div>
+                <div>
+                    <p class="text-[8px] font-black text-slate-600 uppercase tracking-widest mb-4" id="ui-roster-title">Free-LLM Engine</p>
+                    <div class="space-y-2" id="model-roster"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-2" class="step-hidden text-center py-20">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6" id="ui-step-stack">Select Target Stack</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="nextStep(3, {lang: 'javascript'})" class="bg-[#1a1a1e] p-6 border border-slate-800 hover:border-sky-600 uppercase text-[10px] font-black tracking-widest">Web / TS</button>
+                <button onclick="nextStep(3, {lang: 'python'})" class="bg-[#1a1a1e] p-6 border border-slate-800 hover:border-sky-600 uppercase text-[10px] font-black tracking-widest">Logic / Python</button>
+            </div>
+        </div>
+
+        <div id="step-3" class="step-hidden text-center py-20">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6" id="ui-step-tier">Select Service Level</h2>
+            <div class="space-y-4">
+                <button onclick="finishWizard('basic')" class="w-full bg-[#1a1a1e] p-6 border border-slate-800 hover:border-sky-600 flex justify-between items-center">
+                    <span class="text-[10px] font-black uppercase tracking-widest" id="ui-tier-basic">Basic</span>
+                    <span class="text-sm font-mono italic">5€</span>
+                </button>
+                <button onclick="finishWizard('premium')" class="w-full bg-[#1a1a1e] p-6 border-2 border-sky-900 hover:border-sky-600 flex justify-between items-center">
+                    <span class="text-[10px] font-black uppercase tracking-widest" id="ui-tier-premium">Premium</span>
+                    <span class="text-sm font-mono italic">20€</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="step-finish" class="step-hidden text-center py-20">
+            <h2 class="text-lg font-bold text-white mb-2 uppercase tracking-tighter" id="ui-step-finish">Synthesized</h2>
+            <button id="download-btn" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Deploy Assets</button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
+        <div class="max-w-md w-full bg-[#111114] border border-slate-800 rounded-lg p-8 shadow-2xl relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-sky-600"></div>
+            
+            <div class="text-center mb-8">
+                <h1 class="text-xl font-bold text-white tracking-tight uppercase">Openrouter Free Butler</h1>
+                <p class="text-slate-500 text-xs uppercase tracking-[0.2em] mt-1">Access Required</p>
+            </div>
+
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
+                    <input type="text" id="login-username" required 
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-3 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white"
+                        placeholder="USERNAME">
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
+                    <input type="text" id="login-password" required 
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-3 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white"
+                        placeholder="PASSWORD">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="login-remember" class="w-4 h-4 accent-sky-600">
+                    <label for="login-remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
+                </div>
+
+                <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-3 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">
+                    Login
+                </button>
+                
+                <p id="login-error" class="text-yellow-500 text-[10px] text-center">Zugangsdaten nicht konfiguriert</p>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>

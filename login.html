@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORF-Butler | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    </style>
+</head>
+<body class="bg-[#0a0a0c] text-slate-300 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-[#111114] border border-slate-800 rounded-lg p-8 shadow-2xl relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-sky-600"></div>
+        
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-white tracking-tight uppercase">Openrouter Free Butler</h1>
+            <p class="text-slate-500 text-xs uppercase tracking-[0.2em] mt-1">Access Required</p>
+        </div>
+
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
+                <input type="text" id="username" required 
+                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white"
+                    placeholder="USERNAME">
+            </div>
+            
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
+                <input type="text" id="password" required 
+                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white"
+                    placeholder="PASSWORD (WIRD ANGEZEIGT)">
+            </div>
+
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600">
+                <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
+            </div>
+
+            <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">
+                Login
+            </button>
+            
+            <p id="error-msg" class="text-red-500 text-[10px] text-center hidden">Zugang verweigert</p>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a href="index.html" class="text-[10px] text-slate-600 hover:text-slate-400 uppercase tracking-widest">← Zurück zur Startseite</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { checkAuth, login, isAuthenticated } from './src/js/auth.js';
+        
+        if (isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            
+            const success = await login(user, pass, remember);
+            
+            if (success) {
+                window.location.href = 'index.html';
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
