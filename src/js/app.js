@@ -129,8 +129,14 @@ window.filterTools = () => {
     if (!searchInput || !grid) return;
     const query = searchInput.value.toLowerCase();
     grid.innerHTML = "";
+    
+    const topPicks = ['opencode', 'continue', 'antigravity', 'zed', 'aider', 'amazon_q'];
+    
     const sortedTools = Object.entries(TOOL_TEMPLATES).sort((a, b) => a[1].name.localeCompare(b[1].name));
+    
     sortedTools.forEach(([id, tool]) => {
+        if (topPicks.includes(id)) return;
+        
         if (tool.name.toLowerCase().includes(query)) {
             const btn = document.createElement('button');
             btn.className = "bg-[#1a1a1e] p-3 rounded border border-slate-800 hover:border-sky-600 transition text-left flex justify-between items-center";

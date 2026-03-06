@@ -16,6 +16,7 @@ Dieses Dokument beschreibt die geplanten Erweiterungen und noch umzusetzenden Fe
 - [ ] **Service Worker Integration:** Aktivierung des Offline-Modus, damit die Installationsanleitungen auch ohne aktive Internetverbindung im lokalen Butler gelesen werden können.
 - [ ] **One-Click Copy:** Hinzufügen eines Buttons, um einzelne Instruktionsblöcke direkt in die Zwischenablage zu kopieren (zusätzlich zum Datei-Download).
 - [ ] **Dark/Light Mode Sync:** Automatische Anpassung an das Betriebssystem-Farbschema (aktuell fest auf Dark-Mode).
+- [ ] **Feedback-System:** Integration von Feedback mit drei Optionen: Auswahlfrage, Issue, Vorschlag
 
 ## Meilenstein 4: Kommerzialisierung
 - [ ] **Stripe/PayPal Integration:** Einbindung eines echten Payment-Gateways für die 5€ und 20€ Bundles.
