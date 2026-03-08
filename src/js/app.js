@@ -102,13 +102,13 @@ async function loadModels() {
         const langs = data.languages ? data.languages.slice(0, 4).join(', ') : '';
         
         div.innerHTML = `
-            <div class="flex justify-between items-start mb-1">
-                <span class="text-[10px] font-black text-sky-500 uppercase">${data.role}</span>
-                <span class="text-[8px] text-slate-500 font-mono">${data.context}</span>
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-sm font-bold text-sky-500 uppercase">${data.role}</span>
+                <span class="text-xs text-slate-500 font-mono">${data.context}</span>
             </div>
-            <div class="text-[9px] text-slate-400 truncate">${id}</div>
-            <div class="text-[8px] text-slate-600 mt-1 truncate">${data.desc}</div>
-            <div class="text-[8px] text-slate-500 mt-1 truncate">${langs}</div>
+            <div class="text-xs text-slate-400 truncate mb-1">${id}</div>
+            <div class="text-xs text-slate-600 truncate">${data.desc}</div>
+            <div class="text-xs text-slate-500 mt-1 truncate">${langs}</div>
         `;
         grid.appendChild(div);
     });
@@ -132,12 +132,12 @@ async function loadModels() {
             const context = m.context_length ? `${(m.context_length / 1000).toFixed(0)}k` : '?';
             
         div.innerHTML = `
-            <div class="flex justify-between items-start mb-1">
-                <span class="text-[10px] font-black text-sky-500 uppercase">${provider}</span>
-                <span class="text-[8px] text-slate-500 font-mono">${context}</span>
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-sm font-bold text-sky-500 uppercase">${provider}</span>
+                <span class="text-xs text-slate-500 font-mono">${context}</span>
             </div>
-            <div class="text-[9px] text-slate-400 truncate">${m.id}</div>
-            <div class="text-[8px] text-yellow-500 mt-1 truncate">Live Model</div>
+            <div class="text-xs text-slate-400 truncate mb-1">${m.id}</div>
+            <div class="text-xs text-yellow-500 truncate">Live Model</div>
         `;
             grid.appendChild(div);
         });
