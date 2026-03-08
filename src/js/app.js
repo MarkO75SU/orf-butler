@@ -4,6 +4,7 @@ import { generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
 import { fetchLiveFreeModels } from './api.js';
 import { isAuthenticated, logout } from './auth.js';
+import { MODEL_MAPPING } from './mapping.js';
 
 let state = {
     selectedModel: null,
@@ -92,17 +93,37 @@ async function loadModels() {
     const grid = document.getElementById('models-grid');
     const errorEl = document.getElementById('model-error');
     
-    try {
-        const models = await fetchLiveFreeModels();
+    // Load static mapping data first (with full details)
+    Object.entries(MODEL_MAPPING).forEach(([id, data]) => {
+        const div = document.createElement('button');
+        div.className = `model-card text-left transition ${state.selectedModel === id ? 'selected' : ''}`;
+        div.onclick = () => selectModel(id);
         
-        if (!models || models.length === 0) {
-            errorEl.classList.remove('hidden');
+        const langs = data.languages ? data.languages.slice(0, 4).join(', ') : '';
+        
+        div.innerHTML = `
+            <div class="flex justify-between items-start mb-1">
+                <span class="text-[9px] font-black text-sky-500 uppercase">${data.role}</span>
+                <span class="text-[7px] text-slate-500 font-mono">${data.context}</span>
+            </div>
+            <div class="text-[8px] text-slate-400 truncate">${id}</div>
+            <div class="text-[7px] text-slate-600 mt-1 truncate">${data.desc}</div>
+            <div class="text-[6px] text-slate-500 mt-1 truncate">${langs}</div>
+        `;
+        grid.appendChild(div);
+    });
+    
+    // Try to load live models and merge
+    try {
+        const liveModels = await fetchLiveFreeModels();
+        
+        if (!liveModels || liveModels.length === 0) {
             return;
         }
         
-        const sorted = models.sort((a, b) => (b.context_length || 0) - (a.context_length || 0));
-        
-        sorted.slice(0, 20).forEach(m => {
+        liveModels.forEach(m => {
+            if (MODEL_MAPPING[m.id]) return;
+            
             const div = document.createElement('button');
             div.className = `model-card text-left transition ${state.selectedModel === m.id ? 'selected' : ''}`;
             div.onclick = () => selectModel(m.id);
@@ -116,11 +137,12 @@ async function loadModels() {
                     <span class="text-[7px] text-slate-500 font-mono">${context}</span>
                 </div>
                 <div class="text-[8px] text-slate-400 truncate">${m.id}</div>
+                <div class="text-[7px] text-yellow-500 mt-1 truncate">Live Model</div>
             `;
             grid.appendChild(div);
         });
     } catch (e) {
-        errorEl.classList.remove('hidden');
+        // Static models already shown
     }
 }
 
