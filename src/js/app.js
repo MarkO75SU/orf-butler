@@ -103,10 +103,10 @@ async function loadModels() {
         
         div.innerHTML = `
             <div class="flex justify-between items-start mb-1">
-                <span class="text-[9px] font-black text-sky-500 uppercase">${data.role}</span>
+                <span class="text-[10px] font-black text-sky-500 uppercase">${data.role}</span>
                 <span class="text-[8px] text-slate-500 font-mono">${data.context}</span>
             </div>
-            <div class="text-[8px] text-slate-400 truncate">${id}</div>
+            <div class="text-[9px] text-slate-400 truncate">${id}</div>
             <div class="text-[8px] text-slate-600 mt-1 truncate">${data.desc}</div>
             <div class="text-[8px] text-slate-500 mt-1 truncate">${langs}</div>
         `;
@@ -133,10 +133,10 @@ async function loadModels() {
             
         div.innerHTML = `
             <div class="flex justify-between items-start mb-1">
-                <span class="text-[9px] font-black text-sky-500 uppercase">${provider}</span>
+                <span class="text-[10px] font-black text-sky-500 uppercase">${provider}</span>
                 <span class="text-[8px] text-slate-500 font-mono">${context}</span>
             </div>
-            <div class="text-[8px] text-slate-400 truncate">${m.id}</div>
+            <div class="text-[9px] text-slate-400 truncate">${m.id}</div>
             <div class="text-[8px] text-yellow-500 mt-1 truncate">Live Model</div>
         `;
             grid.appendChild(div);
