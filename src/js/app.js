@@ -104,11 +104,11 @@ async function loadModels() {
         div.innerHTML = `
             <div class="flex justify-between items-start mb-1">
                 <span class="text-[9px] font-black text-sky-500 uppercase">${data.role}</span>
-                <span class="text-[7px] text-slate-500 font-mono">${data.context}</span>
+                <span class="text-[8px] text-slate-500 font-mono">${data.context}</span>
             </div>
             <div class="text-[8px] text-slate-400 truncate">${id}</div>
-            <div class="text-[7px] text-slate-600 mt-1 truncate">${data.desc}</div>
-            <div class="text-[6px] text-slate-500 mt-1 truncate">${langs}</div>
+            <div class="text-[8px] text-slate-600 mt-1 truncate">${data.desc}</div>
+            <div class="text-[8px] text-slate-500 mt-1 truncate">${langs}</div>
         `;
         grid.appendChild(div);
     });
@@ -131,14 +131,14 @@ async function loadModels() {
             const provider = m.id.split('/')[0];
             const context = m.context_length ? `${(m.context_length / 1000).toFixed(0)}k` : '?';
             
-            div.innerHTML = `
-                <div class="flex justify-between items-start mb-1">
-                    <span class="text-[9px] font-black text-sky-500 uppercase">${provider}</span>
-                    <span class="text-[7px] text-slate-500 font-mono">${context}</span>
-                </div>
-                <div class="text-[8px] text-slate-400 truncate">${m.id}</div>
-                <div class="text-[7px] text-yellow-500 mt-1 truncate">Live Model</div>
-            `;
+        div.innerHTML = `
+            <div class="flex justify-between items-start mb-1">
+                <span class="text-[9px] font-black text-sky-500 uppercase">${provider}</span>
+                <span class="text-[8px] text-slate-500 font-mono">${context}</span>
+            </div>
+            <div class="text-[8px] text-slate-400 truncate">${m.id}</div>
+            <div class="text-[8px] text-yellow-500 mt-1 truncate">Live Model</div>
+        `;
             grid.appendChild(div);
         });
     } catch (e) {
