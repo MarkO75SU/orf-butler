@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>ORFB - OpenRouter Free Butler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="p-4 bg-white shadow-sm flex justify-between items-center">
+        <h1 class="font-bold text-xl">ORFB</h1>
+        <div class="space-x-4">
+            <a href="#wizard" class="hover:text-blue-600">Start Wizard</a>
+            <a href="login.html" class="text-gray-500">Login</a>
+        </div>
+    </nav>
+
+    <header class="max-w-6xl mx-auto py-12 px-4 text-center">
+        <h2 class="text-4xl font-extrabold mb-4">Kostenlose KI-Power für dein Setup</h2>
+        <p class="text-gray-600 mb-8">Konfiguriere Free-Modelle für Continue, Zed und Aider in Sekunden.</p>
+        
+        <div class="w-full h-24 bg-gray-200 border-dashed border-2 border-gray-400 flex items-center justify-center my-6">
+            <span class="text-gray-400 text-xs italic">Anzeige: Empfohlene Developer-Hardware (Affiliate)</span>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        
+        <section class="md:col-span-2 bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-2xl font-bold mb-4">Schritt 1: Free-LLM Auswahl</h3>
+            <div id="model-list" class="space-y-4">
+                <div class="border p-4 rounded hover:border-blue-500 cursor-pointer">
+                    <span class="font-mono font-bold">Mistral 7B Free</span>
+                    <p class="text-sm text-gray-500">Rolle: Code Generation | Context: 32k</p>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-4 bg-blue-50 rounded border border-blue-100">
+                <p class="text-sm"><strong>Tipp:</strong> Nutzt du ein MacBook? Entdecke optimierte Setups für Local AI. <a href="#" class="underline text-blue-600">Mehr erfahren (Affiliate)</a></p>
+            </div>
+        </section>
+
+        <aside class="space-y-6">
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-6 rounded-xl shadow-lg">
+                <h4 class="text-xl font-bold mb-2">Premium Bundle</h4>
+                <p class="text-sm mb-4">Experten-Prompts & direkter Support für dein Team.</p>
+                <button class="w-full bg-white text-blue-600 py-2 rounded font-bold">Jetzt für 20€ sichern</button>
+            </div>
+
+            <div class="w-full h-64 bg-gray-200 border-dashed border-2 border-gray-400 flex items-center justify-center">
+                <span class="text-gray-400 text-xs italic">Anzeige: Cloud-Hosting Partner</span>
+            </div>
+        </aside>
+
+    </main>
+
+    <footer class="mt-20 py-10 border-t text-center text-gray-400 text-sm">
+        <p>&copy; 2026 Openrouter Free Butler. MIT Lizenz.</p>
+    </footer>
+
+</body>
+</html>
