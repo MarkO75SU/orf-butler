@@ -2,7 +2,6 @@ import { t, setLanguage, getLang } from './i18n.js';
 import { TOOL_TEMPLATES } from './templates.js';
 import { generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
-import { fetchLiveFreeModels } from './api.js';
 import { isAuthenticated, logout } from './auth.js';
 import { MODEL_MAPPING } from './mapping.js';
 
@@ -98,39 +97,8 @@ function updateSummary() {
 
 async function loadModels() {
     const grid = document.getElementById('models-grid');
-    const errorEl = document.getElementById('model-error');
     
-    // Section header for live models
-    const liveHeader = document.createElement('div');
-    liveHeader.className = 'col-span-full text-xs font-bold text-sky-500 uppercase mt-4 mb-2';
-    liveHeader.textContent = '--- Live Models ---';
-    grid.appendChild(liveHeader);
-    
-    // Load live models first (sorted alphabetically)
-    try {
-        const liveModels = await fetchLiveFreeModels();
-        
-        if (liveModels && liveModels.length > 0) {
-            const sortedLive = liveModels
-                .filter(m => !MODEL_MAPPING[m.id])
-                .sort((a, b) => a.id.localeCompare(b.id));
-            
-            sortedLive.forEach(m => {
-                const div = createModelCard(m.id, null, m.context_length);
-                grid.appendChild(div);
-            });
-        }
-    } catch (e) {
-        // Continue with static models
-    }
-    
-    // Section header for curated models
-    const staticHeader = document.createElement('div');
-    staticHeader.className = 'col-span-full text-xs font-bold text-sky-500 uppercase mt-4 mb-2';
-    staticHeader.textContent = '--- Kuratierte Modelle ---';
-    grid.appendChild(staticHeader);
-    
-    // Load static models (sorted alphabetically)
+    // Load static models only (sorted alphabetically)
     const sortedStatic = Object.entries(MODEL_MAPPING).sort((a, b) => a[0].localeCompare(b[0]));
     
     sortedStatic.forEach(([id, data]) => {
