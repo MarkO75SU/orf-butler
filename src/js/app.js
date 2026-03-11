@@ -48,6 +48,7 @@ const translations = {
 
 window.setLang = (lang) => {
     setLanguage(lang);
+    loadModels();
     updateUI();
 };
 
@@ -112,8 +113,9 @@ function createModelCard(id, data, context) {
     div.className = `model-card text-left transition flex items-start gap-3 ${state.selectedModels.includes(id) ? 'selected' : ''}`;
     div.onclick = () => toggleModel(id);
     
-    const role = data ? data.role : id.split('/')[0];
-    const desc = data ? data.desc : 'Live Model';
+    const isGerman = getLang() === 'de';
+    const role = data ? (isGerman && data.role_de ? data.role_de : data.role) : id.split('/')[0];
+    const desc = data ? (isGerman && data.desc_de ? data.desc_de : data.desc_en) : 'Live Model';
     const langs = data && data.languages ? data.languages.slice(0, 4).join(', ') : '';
     const ctx = context ? (typeof context === 'number' ? `${(context / 1000).toFixed(0)}k` : context) : '?';
     
