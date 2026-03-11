@@ -1,24 +1,24 @@
 // src/js/mapping.js
-// Kostenlose Model-Mapping-Datenbank (nur :free Modelle)
+// Free Model Database (only :free models)
 
 export const MODEL_MAPPING = {
     // Qwen Free Models
     "qwen/qwen2.5-coder-32b:free": {
         role: "Code Generation",
         context: "32k",
-        desc: "Spezialisiert auf Code-Generierung.",
+        desc: "Specialized in code generation.",
         languages: ["javascript", "typescript", "python", "go", "rust", "java"]
     },
     "qwen/qwen2.5-coder-1.5b:free": {
         role: "Lightweight Code",
         context: "32k",
-        desc: "Schneller Code-Helfer für einfache Aufgaben.",
+        desc: "Fast code helper for simple tasks.",
         languages: ["python", "javascript", "typescript"]
     },
     "qwen/qwen2.5-7b-instruct:free": {
         role: "Logic / Backend",
         context: "32k",
-        desc: "Extrem schnell und Code-fokussiert.",
+        desc: "Extremely fast and code-focused.",
         languages: ["python", "go", "rust", "javascript"]
     },
     
@@ -26,13 +26,13 @@ export const MODEL_MAPPING = {
     "deepseek/deepseek-coder-33b:free": {
         role: "Code Expert",
         context: "64k",
-        desc: "DeepSeek's Code-Spezialist.",
+        desc: "DeepSeek's code specialist.",
         languages: ["python", "javascript", "typescript", "go", "rust"]
     },
     "deepseek/deepseek-chat:free": {
         role: "Reasoning",
         context: "64k",
-        desc: "Stark bei komplexen Logik-Problemen.",
+        desc: "Strong in complex logic problems.",
         languages: ["python", "javascript", "go", "rust"]
     },
     
@@ -40,27 +40,27 @@ export const MODEL_MAPPING = {
     "meta-llama/llama-3.2-1b-instruct:free": {
         role: "Lightweight",
         context: "128k",
-        desc: "Kompaktes und effizientes Modell.",
+        desc: "Compact and efficient model.",
         languages: ["python", "javascript", "typescript"]
     },
     "meta-llama/llama-3.2-3b-instruct:free": {
         role: "Balanced",
         context: "128k",
-        desc: "Ausgewogenes Modell für allgemeine Aufgaben.",
+        desc: "Balanced model for general tasks.",
         languages: ["python", "javascript", "typescript", "go"]
     },
     
-    // Google Gemini Free
+    // Google Gemma Free
     "google/gemma-2-2b-it:free": {
         role: "Fast Assistant",
         context: "8k",
-        desc: "Schnelles Modell für schnelle Antworten.",
+        desc: "Fast model for quick answers.",
         languages: ["python", "javascript", "typescript"]
     },
     "google/gemma-2-9b-it:free": {
         role: "Code Assistant",
         context: "8k",
-        desc: "Stark bei Code-Aufgaben.",
+        desc: "Strong in code tasks.",
         languages: ["python", "javascript", "typescript", "go"]
     },
     
@@ -68,7 +68,7 @@ export const MODEL_MAPPING = {
     "mistralai/mistral-nemo-minitron-8b-instruct:free": {
         role: "Balanced",
         context: "128k",
-        desc: "Mistral's kompaktes Modell.",
+        desc: "Mistral's compact model.",
         languages: ["python", "javascript", "typescript", "java"]
     },
     
@@ -76,7 +76,7 @@ export const MODEL_MAPPING = {
     "stabilityai/stable-code-3b:free": {
         role: "Code Generation",
         context: "16k",
-        desc: "Spezialisiert auf Code.",
+        desc: "Specialized in code.",
         languages: ["python", "javascript", "typescript", "go"]
     },
     
@@ -84,7 +84,7 @@ export const MODEL_MAPPING = {
     "nousresearch/hermes-3-llama-3.1-8b:free": {
         role: "Assistant",
         context: "128k",
-        desc: "Hochwertiger Assistent.",
+        desc: "High-quality assistant.",
         languages: ["python", "javascript", "typescript", "go"]
     },
     
@@ -92,7 +92,7 @@ export const MODEL_MAPPING = {
     "cohere/aya-expanse-8b:free": {
         role: "Multilingual",
         context: "4k",
-        desc: "Mehrsprachiges Modell.",
+        desc: "Multilingual model.",
         languages: ["python", "javascript", "typescript"]
     },
     
@@ -100,13 +100,13 @@ export const MODEL_MAPPING = {
     "microsoft/phi-3-mini-128k-instruct:free": {
         role: "Lightweight",
         context: "128k",
-        desc: "Kompaktes Modell für schnelle Aufgaben.",
+        desc: "Compact model for quick tasks.",
         languages: ["python", "javascript", "typescript"]
     },
     "microsoft/phi-3.5-mini-instruct:free": {
         role: "Code Light",
         context: "128k",
-        desc: "Schnelles Code-Modell.",
+        desc: "Fast code model.",
         languages: ["python", "javascript", "typescript", "go"]
     },
     
@@ -114,18 +114,7 @@ export const MODEL_MAPPING = {
     "thudm/glm-4-9b-chat:free": {
         role: "Chat Assistant",
         context: "128k",
-        desc: "Starkes Chat-Modell.",
+        desc: "Strong chat model.",
         languages: ["python", "javascript", "typescript", "java"]
     }
 };
-
-export function getBestModels(lang, category) {
-    const models = Object.entries(MODEL_MAPPING);
-    if (lang === 'python') {
-        return models.filter(([id, d]) => d.languages.includes('python'));
-    }
-    if (lang === 'javascript') {
-        return models.filter(([id, d]) => d.languages.includes('javascript'));
-    }
-    return models.slice(0, 10);
-}
