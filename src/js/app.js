@@ -239,11 +239,6 @@ window.selectModel = (id) => {
 window.selectTool = (id) => {
     toggleTool(id);
 };
-        }
-    });
-    
-    updateSummary();
-};
 
 window.selectBundle = (bundle) => {
     state.selectedBundle = bundle;
