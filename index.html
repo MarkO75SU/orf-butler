@@ -32,8 +32,6 @@
                 <p class="text-xs text-slate-500 uppercase tracking-wider">AI Config Generator</p>
             </div>
             <div class="flex gap-4">
-                <button onclick="setLang('de')" class="text-xs text-slate-500 hover:text-white">DE</button>
-                <button onclick="setLang('en')" class="text-xs text-slate-500 hover:text-white">EN</button>
                 <button onclick="logout()" class="text-xs text-red-500 hover:text-red-400">Logout</button>
             </div>
         </header>
@@ -42,22 +40,22 @@
         <section class="mb-8">
             <h2 class="text-sm font-bold text-white uppercase mb-4 flex items-center gap-2">
                 <span class="bg-sky-600 text-white text-xs px-2 py-1 rounded">1</span>
-                <span id="step1-title">Wähle dein Free-LLM Model</span>
+                <span id="step1-title">Select your Free-LLM Models</span>
             </h2>
-            <p class="text-xs text-slate-500 mb-4" id="step1-desc">Wähle ein kostenloses Modell von OpenRouter</p>
+            <p class="text-xs text-slate-500 mb-4" id="step1-desc">Select one or more models from OpenRouter</p>
             <div id="models-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 <!-- Models loaded via JS -->
             </div>
-            <p class="text-xs text-yellow-500 mt-2 hidden" id="model-error">Fehler beim Laden der Modelle</p>
+            <p class="text-xs text-yellow-500 mt-2 hidden" id="model-error">Error loading models</p>
         </section>
 
         <!-- STEP 2: Tool Selection -->
         <section class="mb-8">
             <h2 class="text-sm font-bold text-white uppercase mb-4 flex items-center gap-2">
                 <span class="bg-sky-600 text-white text-xs px-2 py-1 rounded">2</span>
-                <span id="step2-title">Wähle dein Tool</span>
+                <span id="step2-title">Select your Tools</span>
             </h2>
-            <p class="text-xs text-slate-500 mb-4" id="step2-desc">Für welches Tool soll die Config erstellt werden?</p>
+            <p class="text-xs text-slate-500 mb-4" id="step2-desc">Select one or more tools for the config</p>
             <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Tools loaded via JS -->
             </div>
@@ -67,23 +65,23 @@
         <section class="mb-8">
             <h2 class="text-sm font-bold text-white uppercase mb-4 flex items-center gap-2">
                 <span class="bg-sky-600 text-white text-xs px-2 py-1 rounded">3</span>
-                <span id="step3-title">Wähle dein Bundle</span>
+                <span id="step3-title">Select your Bundle</span>
             </h2>
-            <p class="text-xs text-slate-500 mb-4" id="step3-desc">Welches Paket möchtest du?</p>
+            <p class="text-xs text-slate-500 mb-4" id="step3-desc">Which package do you want?</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl">
                 <button onclick="selectBundle('basic')" id="bundle-basic" class="tool-card text-left hover:border-sky-500 transition">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm font-bold text-white uppercase">Standard Bundle</span>
                         <span class="text-lg font-mono text-sky-500">5€</span>
                     </div>
-                    <p class="text-xs text-slate-500">Basic Config + Installationsanleitung</p>
+                    <p class="text-xs text-slate-500">Basic Config + Installation Guide</p>
                 </button>
                 <button onclick="selectBundle('premium')" id="bundle-premium" class="tool-card text-left border-2 border-sky-900 hover:border-sky-500 transition">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm font-bold text-white uppercase">Premium Bundle</span>
                         <span class="text-lg font-mono text-sky-500">20€</span>
                     </div>
-                    <p class="text-xs text-slate-500">Erweiterte Config + Experten-Prompts + Support</p>
+                    <p class="text-xs text-slate-500">Extended Config + Expert Prompts + Support</p>
                 </button>
             </div>
         </section>

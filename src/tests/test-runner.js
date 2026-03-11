@@ -116,9 +116,9 @@ try {
     // 8. Install MD Tests
     runTestGroup("InstallMD Tests", () => {
         const md = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: "opencode.json" }, "win32", "basic", "C:\\test");
-        assert(md.includes("Schritt-für-Schritt"), "InstallMD: German title");
+        assert(md.includes("Step-by-Step"), "InstallMD: English title");
         assert(md.includes("winget install opencode"), "InstallMD: Install command");
-        assert(md.includes("DEIN_API_KEY_HIER"), "InstallMD: API placeholder");
+        assert(md.includes("DEIN_API_KEY_HERE"), "InstallMD: API placeholder");
         
         const mdMac = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: "opencode.json" }, "darwin", "basic", "~/.config");
         assert(mdMac.includes("brew install opencode"), "InstallMD: Mac command");

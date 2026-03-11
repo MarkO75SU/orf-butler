@@ -43,22 +43,22 @@ export const CLI_COMMANDS = {
 
 export const OS_PATHS = {
     "win32": {
-        "continue": "C:\\Benutzer\\[DeinName]\\.continue\\config.json",
-        "cursor": ".cursorrules (In deinem Projektordner)",
-        "zed": "C:\\Benutzer\\[DeinName]\\AppData\\Roaming\\Zed\\settings.json",
-        "aider": ".aider.conf.yml (In deinem Projektordner)",
-        "copilot": ".github\\copilot-instructions.md (In deinem Projektordner)",
-        "amazon_q": "Amazon Q Einstellungen im Browser",
-        "opencode": "C:\\Benutzer\\[DeinName]\\AppData\\Roaming\\opencode\\opencode.json",
-        "antigravity": "settings.yaml (In deinem Projektordner)"
+        "continue": "C:\\Users\\[YourName]\\.continue\\config.json",
+        "cursor": ".cursorrules (In your project folder)",
+        "zed": "C:\\Users\\[YourName]\\AppData\\Roaming\\Zed\\settings.json",
+        "aider": ".aider.conf.yml (In your project folder)",
+        "copilot": ".github\\copilot-instructions.md (In your project folder)",
+        "amazon_q": "Amazon Q Settings in Browser",
+        "opencode": "C:\\Users\\[YourName]\\AppData\\Roaming\\opencode\\opencode.json",
+        "antigravity": "settings.yaml (In your project folder)"
     },
     "darwin": {
-        "continue": "Benutzer/[DeinName]/.continue/config.json",
-        "cursor": ".cursorrules (In deinem Projektordner)",
+        "continue": "Users/[YourName]/.continue/config.json",
+        "cursor": ".cursorrules (In your project folder)",
         "zed": "~/.config/zed/settings.json",
         "aider": ".aider.conf.yml",
         "copilot": ".github/copilot-instructions.md",
-        "amazon_q": "Amazon Q Einstellungen",
+        "amazon_q": "Amazon Q Settings",
         "opencode": "~/.config/opencode/opencode.json",
         "antigravity": "settings.yaml"
     }
@@ -66,9 +66,9 @@ export const OS_PATHS = {
 
 export function generateInstallMD(tool, os, tier, path) {
     const isWin = os === "win32";
-    const mouseBtn = isWin ? "rechte Maustaste" : "Sekundärklick (Zwei Finger)";
-    const shell = isWin ? "PowerShell oder Eingabeaufforderung" : "Terminal";
-    
+    const mouseBtn = isWin ? "right mouse button" : "right-click (two fingers)";
+    const shell = isWin ? "PowerShell or Command Prompt" : "Terminal";
+
     let cliSection = "";
     
     if (tool.id === "opencode" || tool.id === "ollama" || tool.id === "aider") {
@@ -76,8 +76,8 @@ export function generateInstallMD(tool, os, tier, path) {
         if (cli) {
             cliSection = `
 
-## CLI Werkzeuge (Optional)
-Falls du ${cli.name} noch nicht installiert hast, führe folgenden Befehl in deinem ${shell} aus:
+## CLI Tools (Optional)
+If you haven't installed ${cli.name} yet, run the following command in your ${shell}:
 
 ### Installation:
 \`\`\`bash
@@ -93,37 +93,37 @@ ${cli.update[os]}
     }
     
     return `
-# Schritt-für-Schritt Anleitung für ${tool.name}
+# Step-by-Step Guide for ${tool.name}
 
-Diese Anleitung ist so geschrieben, dass du keine Computer-Kenntnisse benötigst. Folge einfach jedem Klick.
+This guide is written so that you don't need computer knowledge. Just follow each click.
 ${cliSection}
-## Schritt 1: Die Datei finden
-1. Du hast gerade eine Datei namens \`${tool.config_file}\` heruntergeladen.
-2. Suche diese Datei in deinem "Downloads"-Ordner (das ist der Ordner mit dem blauen Pfeil nach unten).
-3. Klicke mit der **${mouseBtn}** auf die Datei.
-4. Wähle aus dem Menü den Punkt **"Kopieren"** aus.
+## Step 1: Find the file
+1. You just downloaded a file named \`${tool.config_file}\`.
+2. Find this file in your "Downloads" folder.
+3. **${mouseBtn}** on the file.
+4. Select **"Copy"** from the menu.
 
-## Schritt 2: Den richtigen Ort finden
-1. Du musst die Datei nun an einen speziellen Ort auf deinem Computer bringen.
-2. Dieser Ort ist: \`${path}\`
+## Step 2: Find the right location
+1. You need to put the file in a special location on your computer.
+2. This location is: \`${path}\`
 ${isWin ? `
-3. Drücke auf deiner Tastatur gleichzeitig die Taste mit dem **Windows-Logo** (unten links) und den Buchstaben **R**.
-4. Ein kleines Fenster öffnet sich. Tippe dort den Pfad von oben ein und drücke die Eingabetaste (Enter).` : `
-3. Klicke oben in deiner Menüleiste auf "Gehe zu" und dann auf "Gehe zum Ordner...".
-4. Tippe dort den Pfad von oben ein und drücke die Eingabetaste.`}
+3. Press the **Windows key** (bottom left) and the letter **R** at the same time.
+4. A small window opens. Type the path from above and press Enter.` : `
+3. Click "Go" in your menu bar, then "Go to Folder...".
+4. Type the path from above and press Enter.`}
 
-## Schritt 3: Die Datei einfügen
-1. Wenn du in dem oben genannten Ordner bist, klicke auf eine freie weiße Stelle mit der **${mouseBtn}**.
-2. Wähle aus dem Menü den Punkt **"Einfügen"**.
-3. Falls gefragt wird, ob eine vorhandene Datei überschrieben werden soll, klicke auf **"Ja"** oder **"Ersetzen"**.
+## Step 3: Paste the file
+1. When you are in the folder mentioned above, **${mouseBtn}** on a free white space.
+2. Select **"Paste"** from the menu.
+3. If asked whether to replace an existing file, click **"Yes"** or **"Replace"**.
 
-## Schritt 4: Deinen Schlüssel (API-Key) eintragen
-1. Klicke mit der **${mouseBtn}** auf die eingefügte Datei \`${tool.config_file}\`.
-2. Wähle **"Öffnen mit..."** und suche ein Programm wie "Editor" (Windows) oder "TextEdit" (Mac).
-3. Suche im Text nach der Stelle \`DEIN_API_KEY_HIER\`.
-4. Lösche diesen Text vorsichtig und füge stattdessen deinen persönlichen Schlüssel von OpenRouter ein.
-5. Klicke oben links auf **"Datei"** und dann auf **"Speichern"**.
+## Step 4: Add your API Key
+1. **${mouseBtn}** on the pasted file \`${tool.config_file}\`.
+2. Select **"Open with..."** and choose a text editor like "Notepad" (Windows) or "TextEdit" (Mac).
+3. Find \`DEIN_API_KEY_HERE\` in the text.
+4. Delete this text and replace it with your personal OpenRouter key.
+5. Click **"File"** and then **"Save"**.
 
-Fertig! Dein Assistent ist nun bereit.
+Done! Your ${tool.name} assistant is now ready.
     `.trim();
 }

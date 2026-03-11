@@ -13,22 +13,6 @@ let state = {
 };
 
 const translations = {
-    de: {
-        step1Title: "Wähle deine Free-LLM Modelle",
-        step1Desc: "Wähle ein oder mehrere Modelle von OpenRouter",
-        step2Title: "Wähle deine Tools",
-        step2Desc: "Wähle ein oder mehrere Tools für die Config",
-        step3Title: "Wähle dein Bundle",
-        step3Desc: "Welches Paket möchtest du?",
-        step4Title: "Checkout & Download",
-        step4Desc: "Erstelle und lade deine Configs herunter",
-        summaryModel: "Ausgewählte Modelle:",
-        summaryTool: "Tools:",
-        summaryBundle: "Bundle:",
-        downloadBtn: "Als ZIP Herunterladen",
-        noModel: "Keine Modelle ausgewählt",
-        noTool: "Keine Tools ausgewählt"
-    },
     en: {
         step1Title: "Select your Free-LLM Models",
         step1Desc: "Select one or more models from OpenRouter",
