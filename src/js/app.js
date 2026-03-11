@@ -111,11 +111,11 @@ async function loadModels() {
         div.innerHTML = `
             <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedModels.includes(id) ? 'checked' : ''}>
             <div class="flex-1">
-                <div class="flex justify-between items-start mb-1">
-                    <span class="text-sm font-bold text-sky-500 uppercase">${data.role}</span>
+                <div class="text-sm font-bold text-sky-500 uppercase mb-1">${id}</div>
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-bold text-white uppercase">${data.role}</span>
                     <span class="text-xs text-slate-500 font-mono">${data.context}</span>
                 </div>
-                <div class="text-xs text-slate-400 truncate">${id}</div>
                 <div class="text-xs text-slate-600 truncate">${data.desc}</div>
                 <div class="text-xs text-slate-500 mt-1 truncate">${langs}</div>
             </div>
@@ -144,11 +144,11 @@ async function loadModels() {
             div.innerHTML = `
                 <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedModels.includes(m.id) ? 'checked' : ''}>
                 <div class="flex-1">
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="text-sm font-bold text-sky-500 uppercase">${provider}</span>
+                    <div class="text-sm font-bold text-sky-500 uppercase mb-1">${m.id}</div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-bold text-white uppercase">${provider}</span>
                         <span class="text-xs text-slate-500 font-mono">${context}</span>
                     </div>
-                    <div class="text-xs text-slate-400 truncate">${m.id}</div>
                     <div class="text-xs text-yellow-500 truncate">Live Model</div>
                 </div>
             `;
