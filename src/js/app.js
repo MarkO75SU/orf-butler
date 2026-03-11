@@ -25,7 +25,7 @@ const translations = {
         summaryModel: "Ausgewählte Modelle:",
         summaryTool: "Tools:",
         summaryBundle: "Bundle:",
-        downloadBtn: "Configs Herunterladen",
+        downloadBtn: "Als ZIP Herunterladen",
         noModel: "Keine Modelle ausgewählt",
         noTool: "Keine Tools ausgewählt"
     },
@@ -41,7 +41,7 @@ const translations = {
         summaryModel: "Selected Models:",
         summaryTool: "Tools:",
         summaryBundle: "Bundle:",
-        downloadBtn: "Download Configs",
+        downloadBtn: "Download as ZIP",
         noModel: "No models selected",
         noTool: "No tools selected"
     }
@@ -265,10 +265,11 @@ function downloadFile(filename, content) {
     window.URL.revokeObjectURL(url);
 }
 
-window.generateAndDownload = () => {
+window.generateAndDownload = async () => {
     if (state.selectedModels.length === 0 || state.selectedTools.length === 0) return;
     
     const os = navigator.platform.toLowerCase().includes('win') ? 'win32' : 'darwin';
+    const zip = new JSZip();
     
     state.selectedTools.forEach(toolId => {
         const tool = TOOL_TEMPLATES[toolId];
@@ -279,9 +280,12 @@ window.generateAndDownload = () => {
         const installMD = generateInstallMD({ id: toolId, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path);
         
         const safeName = tool.name.toLowerCase().replace(/ /g, '-');
-        downloadFile(safeName + '-config.json', configContent);
-        downloadFile(safeName + '-INSTALL.md', installMD);
+        zip.file(safeName + '-config.json', configContent);
+        zip.file(safeName + '-INSTALL.md', installMD);
     });
+    
+    const content = await zip.generateAsync({ type: 'blob' });
+    downloadFile('orfb-configs.zip', content);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -6,6 +6,7 @@
     <title>Openrouter Free Butler</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
         .step-active { display: block; }
@@ -14,8 +15,8 @@
         .status-badge { font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 2px; text-transform: uppercase; }
         .status-stable { background: #064e3b; color: #34d399; }
         .status-partial { background: #451a03; color: #fbbf24; }
-        .model-card { background: #16161a; border: 1px solid #27272a; padding: 20px; border-radius: 8px; overflow: hidden; }
-        .tool-card { background: #1a1a1e; border: 1px solid #27272a; padding: 16px; border-radius: 6px; overflow: hidden; }
+        .model-card { background: #16161a; border: 1px solid #27272a; padding: 20px; border-radius: 8px; }
+        .tool-card { background: #1a1a1e; border: 1px solid #27272a; padding: 20px; border-radius: 8px; }
         .tool-card.selected { border-color: #38bdf8; background: #1e293b; }
         .model-card.selected { border-color: #38bdf8; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -44,7 +45,7 @@
                 <span id="step1-title">Wähle dein Free-LLM Model</span>
             </h2>
             <p class="text-xs text-slate-500 mb-4" id="step1-desc">Wähle ein kostenloses Modell von OpenRouter</p>
-            <div id="models-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+            <div id="models-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 <!-- Models loaded via JS -->
             </div>
             <p class="text-xs text-yellow-500 mt-2 hidden" id="model-error">Fehler beim Laden der Modelle</p>
@@ -57,7 +58,7 @@
                 <span id="step2-title">Wähle dein Tool</span>
             </h2>
             <p class="text-xs text-slate-500 mb-4" id="step2-desc">Für welches Tool soll die Config erstellt werden?</p>
-            <div id="tools-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Tools loaded via JS -->
             </div>
         </section>
