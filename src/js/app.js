@@ -100,69 +100,77 @@ async function loadModels() {
     const grid = document.getElementById('models-grid');
     const errorEl = document.getElementById('model-error');
     
-    // Load static mapping data first (with full details)
-    Object.entries(MODEL_MAPPING).forEach(([id, data]) => {
-        const div = document.createElement('button');
-        div.className = `model-card text-left transition flex items-start gap-3 ${state.selectedModels.includes(id) ? 'selected' : ''}`;
-        div.onclick = () => toggleModel(id);
-        
-        const langs = data.languages ? data.languages.slice(0, 4).join(', ') : '';
-        
-        div.innerHTML = `
-            <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedModels.includes(id) ? 'checked' : ''}>
-            <div class="flex-1">
-                <div class="text-sm font-bold text-sky-500 uppercase mb-1">${id}</div>
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-xs font-bold text-white uppercase">${data.role}</span>
-                    <span class="text-xs text-slate-500 font-mono">${data.context}</span>
-                </div>
-                <div class="text-xs text-slate-600 truncate">${data.desc}</div>
-                <div class="text-xs text-slate-500 mt-1 truncate">${langs}</div>
-            </div>
-        `;
-        grid.appendChild(div);
-    });
+    // Section header for live models
+    const liveHeader = document.createElement('div');
+    liveHeader.className = 'col-span-full text-xs font-bold text-sky-500 uppercase mt-4 mb-2';
+    liveHeader.textContent = '--- Live Models ---';
+    grid.appendChild(liveHeader);
     
-    // Try to load live models and merge
+    // Load live models first (sorted alphabetically)
     try {
         const liveModels = await fetchLiveFreeModels();
         
-        if (!liveModels || liveModels.length === 0) {
-            return;
+        if (liveModels && liveModels.length > 0) {
+            const sortedLive = liveModels
+                .filter(m => !MODEL_MAPPING[m.id])
+                .sort((a, b) => a.id.localeCompare(b.id));
+            
+            sortedLive.forEach(m => {
+                const div = createModelCard(m.id, null, m.context_length);
+                grid.appendChild(div);
+            });
         }
-        
-        liveModels.forEach(m => {
-            if (MODEL_MAPPING[m.id]) return;
-            
-            const div = document.createElement('button');
-            div.className = `model-card text-left transition flex items-start gap-3 ${state.selectedModels.includes(m.id) ? 'selected' : ''}`;
-            div.onclick = () => toggleModel(m.id);
-            
-            const provider = m.id.split('/')[0];
-            const context = m.context_length ? `${(m.context_length / 1000).toFixed(0)}k` : '?';
-            
-            div.innerHTML = `
-                <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedModels.includes(m.id) ? 'checked' : ''}>
-                <div class="flex-1">
-                    <div class="text-sm font-bold text-sky-500 uppercase mb-1">${m.id}</div>
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs font-bold text-white uppercase">${provider}</span>
-                        <span class="text-xs text-slate-500 font-mono">${context}</span>
-                    </div>
-                    <div class="text-xs text-yellow-500 truncate">Live Model</div>
-                </div>
-            `;
-            grid.appendChild(div);
-        });
     } catch (e) {
-        // Static models already shown
+        // Continue with static models
     }
+    
+    // Section header for curated models
+    const staticHeader = document.createElement('div');
+    staticHeader.className = 'col-span-full text-xs font-bold text-sky-500 uppercase mt-4 mb-2';
+    staticHeader.textContent = '--- Kuratierte Modelle ---';
+    grid.appendChild(staticHeader);
+    
+    // Load static models (sorted alphabetically)
+    const sortedStatic = Object.entries(MODEL_MAPPING).sort((a, b) => a[0].localeCompare(b[0]));
+    
+    sortedStatic.forEach(([id, data]) => {
+        const div = createModelCard(id, data, data.context);
+        grid.appendChild(div);
+    });
+}
+
+function createModelCard(id, data, context) {
+    const div = document.createElement('button');
+    div.className = `model-card text-left transition flex items-start gap-3 ${state.selectedModels.includes(id) ? 'selected' : ''}`;
+    div.onclick = () => toggleModel(id);
+    
+    const role = data ? data.role : id.split('/')[0];
+    const desc = data ? data.desc : 'Live Model';
+    const langs = data && data.languages ? data.languages.slice(0, 4).join(', ') : '';
+    const ctx = context ? (typeof context === 'number' ? `${(context / 1000).toFixed(0)}k` : context) : '?';
+    
+    div.innerHTML = `
+        <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedModels.includes(id) ? 'checked' : ''}>
+        <div class="flex-1">
+            <div class="text-sm font-bold text-sky-500 uppercase mb-1">${id}</div>
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-white uppercase">${role}</span>
+                <span class="text-xs text-slate-500 font-mono">${ctx}</span>
+            </div>
+            <div class="text-xs text-slate-600 truncate">${desc}</div>
+            ${langs ? `<div class="text-xs text-slate-500 mt-1 truncate">${langs}</div>` : ''}
+        </div>
+    `;
+    return div;
 }
 
 function loadTools() {
     const grid = document.getElementById('tools-grid');
     
-    Object.entries(TOOL_TEMPLATES).forEach(([id, tool]) => {
+    // Sort tools alphabetically by name
+    const sortedTools = Object.entries(TOOL_TEMPLATES).sort((a, b) => a[1].name.localeCompare(b[1].name));
+    
+    sortedTools.forEach(([id, tool]) => {
         const div = document.createElement('button');
         div.className = `tool-card text-left transition flex items-start gap-3 ${state.selectedTools.includes(id) ? 'selected' : ''}`;
         div.onclick = () => toggleTool(id);
