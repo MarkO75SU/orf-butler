@@ -38,11 +38,15 @@ async function cmdGenerate(args) {
     const count = parseInt(args[0]) || 1;
     const maxUses = parseInt(args[1]) || 10;
     const store = readStore();
+    if (!store.nextAnonId) store.nextAnonId = 1;
     const generated = [];
     for (let i = 0; i < count; i++) {
         let code = generateCode();
         while (store.codes[code]) code = generateCode();
+        const anonId = 'anon' + String(store.nextAnonId).padStart(3, '0');
+        store.nextAnonId += 1;
         store.codes[code] = {
+            anonId,
             maxUses,
             uses: 0,
             active: true,
@@ -65,18 +69,19 @@ async function cmdList() {
         console.log('\n  Keine Codes vorhanden.\n');
         return;
     }
-    console.log(`\n  ${'='.repeat(70)}`);
+    console.log(`\n  ${'='.repeat(85)}`);
     console.log(`  ${entries.length} Codes gefunden:`);
-    console.log(`  ${'='.repeat(70)}`);
-    console.log(`  CODE       | GENUTZT | MAX  | AKTIV | ERSTELLT`);
-    console.log(`  ${'-'.repeat(70)}`);
+    console.log(`  ${'='.repeat(85)}`);
+    console.log(`  CODE       | NUTZER    | GENUTZT | AKTIV | ERSTELLT`);
+    console.log(`  ${'-'.repeat(85)}`);
     entries.forEach(([code, data]) => {
+        const anon = (data.anonId || '-').padEnd(9);
         const used = `${data.uses}/${data.maxUses}`.padStart(7);
         const active = data.active ? 'ja  ' : 'nein';
         const created = new Date(data.createdAt).toLocaleDateString('de-DE');
-        console.log(`  ${code.padEnd(10)} | ${used.padEnd(7)} | ${String(data.maxUses).padEnd(4)} | ${active} | ${created}`);
+        console.log(`  ${code.padEnd(10)} | ${anon} | ${used.padEnd(7)} | ${active} | ${created}`);
     });
-    console.log(`  ${'='.repeat(70)}\n`);
+    console.log(`  ${'='.repeat(85)}\n`);
 }
 
 async function cmdRevoke(code) {

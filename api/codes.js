@@ -42,7 +42,10 @@ export default async function handler(req, res) {
                     while (store.codes[code]) {
                         code = generateCode();
                     }
+                    const anonId = 'anon' + String(store.nextAnonId).padStart(3, '0');
+                    store.nextAnonId += 1;
                     store.codes[code] = {
+                        anonId,
                         maxUses,
                         uses: 0,
                         active: true,
@@ -64,15 +67,11 @@ export default async function handler(req, res) {
                 if (!entry.active) return res.status(403).json({ error: 'Code wurde deaktiviert' });
                 if (entry.uses >= entry.maxUses) return res.status(403).json({ error: 'Code bereits aufgebraucht' });
                 entry.uses += 1;
-                const anonId = 'anon' + String(store.nextAnonId || 1).padStart(3, '0');
-                store.nextAnonId = (store.nextAnonId || 1) + 1;
-                if (!entry.assignedAnons) entry.assignedAnons = [];
-                entry.assignedAnons.push(anonId);
                 await writeCodes(store, sha);
                 return res.json({
                     success: true,
                     code: cleaned,
-                    anonId: anonId,
+                    anonId: entry.anonId || 'anon',
                     uses: entry.uses,
                     maxUses: entry.maxUses,
                     remaining: entry.maxUses - entry.uses

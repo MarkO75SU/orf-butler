@@ -597,14 +597,14 @@ window.refreshCodesList = async () => {
             const activeText = info.active ? 
                 (getLang() === 'de' ? 'Aktiv' : 'Active') : 
                 (getLang() === 'de' ? 'Inaktiv' : 'Inactive');
-            const anons = (info.assignedAnons || []).join(', ');
+            const anonUser = info.anonId || '-';
             tr.innerHTML = `
                 <td class="py-2 px-2 font-mono text-white">
                     ${code}
                     <button onclick="copyCode('${code}')" class="text-slate-500 hover:text-slate-300 ml-1" title="Kopieren">📋</button>
                 </td>
                 <td class="py-2 px-2">${info.uses}/${info.maxUses}</td>
-                <td class="py-2 px-2 text-sky-400">${anons || '-'}</td>
+                <td class="py-2 px-2 text-sky-400">${anonUser}</td>
                 <td class="py-2 px-2 ${active}">${activeText}</td>
                 <td class="py-2 px-2 text-slate-500">${new Date(info.createdAt).toLocaleDateString()}</td>
                 <td class="py-2 px-2">
