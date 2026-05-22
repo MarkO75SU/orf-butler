@@ -476,9 +476,22 @@ window.downloadZIP = downloadZIP;
 
 // ---- Code Management (Admin) ----
 
+let _adminCreds = null;
+
+function getAdminCreds() {
+    if (_adminCreds) return _adminCreds;
+    const user = getUser();
+    const pass = prompt('Admin-Passwort eingeben (das aus der .env-Datei):');
+    if (!pass) return null;
+    _adminCreds = btoa(user + ':' + pass);
+    return _adminCreds;
+}
+
 window.openCodesPanel = async () => {
     const panel = document.getElementById('codes-modal');
     if (panel) panel.classList.remove('hidden');
+    _adminCreds = null;
+    if (!getAdminCreds()) return;
     await refreshCodesList();
 };
 
@@ -490,10 +503,8 @@ window.closeCodesPanel = () => {
 window.generateCodes = async () => {
     const count = parseInt(document.getElementById('codes-count')?.value) || 5;
     const maxUses = parseInt(document.getElementById('codes-maxuses')?.value) || 10;
-    const user = getUser();
-    const pass = prompt('Admin-Passwort zur Bestätigung:');
-    if (!pass) return;
-    const creds = btoa(user + ':' + pass);
+    const creds = getAdminCreds();
+    if (!creds) return;
     try {
         const res = await fetch('/api/codes?action=generate', {
             method: 'POST',
@@ -514,10 +525,8 @@ window.generateCodes = async () => {
 
 window.revokeCode = async (code) => {
     if (!confirm('Code ' + code + ' deaktivieren?')) return;
-    const user = getUser();
-    const pass = prompt('Admin-Passwort:');
-    if (!pass) return;
-    const creds = btoa(user + ':' + pass);
+    const creds = getAdminCreds();
+    if (!creds) return;
     try {
         const res = await fetch('/api/codes?action=revoke', {
             method: 'POST',
@@ -537,10 +546,8 @@ window.revokeCode = async (code) => {
 
 window.resetCode = async (code) => {
     if (!confirm('Code ' + code + ' zurücksetzen (0 Nutzungen)?')) return;
-    const user = getUser();
-    const pass = prompt('Admin-Passwort:');
-    if (!pass) return;
-    const creds = btoa(user + ':' + pass);
+    const creds = getAdminCreds();
+    if (!creds) return;
     try {
         const res = await fetch('/api/codes?action=reset', {
             method: 'POST',
@@ -559,10 +566,8 @@ window.resetCode = async (code) => {
 };
 
 window.refreshCodesList = async () => {
-    const user = getUser();
-    const pass = prompt('Admin-Passwort für Code-Liste:');
-    if (!pass) return;
-    const creds = btoa(user + ':' + pass);
+    const creds = getAdminCreds();
+    if (!creds) return;
     try {
         const res = await fetch('/api/codes?action=list', {
             headers: { Authorization: 'Basic ' + creds }
