@@ -17,6 +17,17 @@ if errorlevel 1 (
   echo   [OK] Node.js ist installiert.
 )
 echo.
+
+set APIKEY=
+set /p "APIKEY=OpenRouter API Key (optional - Enter zum Ueberspringen): "
+echo.
+
+if not "%APIKEY%"=="" (
+  echo Setze API-Key in Configs ein...
+  powershell -Command "$k='%APIKEY:''=''%'; Get-ChildItem '.' -Include '*-config.json','*.yml','*.yaml' -Name | ForEach-Object { $c = Get-Content $_ -Raw; $c = $c -replace 'DEIN_API_KEY_HERE', $k; Set-Content $_ $c }; Write-Host '  [OK] API-Key eingetragen'"
+  echo.
+)
+
 echo Kopiere Config-Dateien...
 echo.
 

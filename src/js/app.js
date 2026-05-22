@@ -391,13 +391,12 @@ async function downloadZIP() {
                navigator.platform.toLowerCase().includes('mac') ? 'darwin' : 'linux';
     
     const primaryModel = state.selectedModels[0];
-    const apiKey = document.getElementById('api-key-input')?.value.trim() || '';
     
     state.selectedTools.forEach(toolId => {
         const tool = TOOL_TEMPLATES[toolId];
         if (!tool) return;
         
-        const configContent = generateConfig(tool, state.selectedModels, state.selectedBundle, primaryModel, apiKey);
+        const configContent = generateConfig(tool, state.selectedModels, state.selectedBundle, primaryModel);
         const path = OS_PATHS[os][toolId];
         const installMD = generateInstallMD({ id: toolId, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path);
         

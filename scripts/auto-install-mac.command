@@ -13,6 +13,19 @@ if ! command -v node &> /dev/null; then
   echo ""
 fi
 echo ""
+
+read -p "OpenRouter API Key (optional - Enter zum Ueberspringen): " APIKEY
+echo ""
+if [ -n "$APIKEY" ]; then
+  echo "Setze API-Key in Configs ein..."
+  for f in *-config.json *.yml *.yaml; do
+    [ -f "$f" ] && sed -i.bak "s|DEIN_API_KEY_HERE|$APIKEY|g" "$f" 2>/dev/null
+  done
+  rm -f *.bak 2>/dev/null
+  echo "  [OK] API-Key eingetragen"
+  echo ""
+fi
+
 echo "Kopiere Config-Dateien..."
 echo ""
 
