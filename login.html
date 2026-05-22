@@ -23,8 +23,25 @@
             <div>
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
                 <input type="text" id="username" name="username" required autocomplete="username"
-                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-center tracking-[0.2em] text-white font-mono uppercase"
-                    placeholder="CODE EINGEBEN">
+                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
+                    placeholder="Benutzername">
+            </div>
+            
+            <div class="relative">
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" required autocomplete="current-password"
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white pr-12"
+                        placeholder="Passwort">
+                    <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+                        👁
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600" checked>
+                <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
             </div>
 
             <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">
@@ -40,6 +57,20 @@
         </div>
     </div>
 
+    <script>
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const btn = pw.nextElementSibling;
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                pw.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+    </script>
+
     <script type="module">
         import { isAuthenticated, login } from './src/js/auth.js';
         
@@ -49,19 +80,21 @@
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value.trim().toUpperCase();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
             const errorEl = document.getElementById('error-msg');
             const successEl = document.getElementById('success-msg');
             errorEl.classList.add('hidden');
             successEl.classList.add('hidden');
 
-            if (!username) {
-                errorEl.textContent = 'Bitte gib deinen Code ein.';
+            if (!username || !password) {
+                errorEl.textContent = 'Bitte Benutzername und Passwort eingeben.';
                 errorEl.classList.remove('hidden');
                 return;
             }
 
-            const result = await login(username);
+            const result = await login(username, password, remember);
             
             if (result.success) {
                 successEl.textContent = 'Login erfolgreich! Weiterleitung...';

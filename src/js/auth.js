@@ -29,27 +29,26 @@ export function isAuthenticated() {
     }
 }
 
-export async function login(username) {
-    if (!username) {
-        return { success: false, error: 'Bitte Benutzername eingeben.' };
+export async function login(username, password, remember) {
+    if (!username || !password) {
+        return { success: false, error: 'Bitte Benutzername und Passwort eingeben.' };
     }
     
-    const cleaned = username.trim().toUpperCase();
+    const cleanedUser = username.trim().toLowerCase();
     
-    if (cleaned === 'GENERALI') {
-        const pass = prompt('Admin-Passwort eingeben:');
-        if (!pass) return { success: false, error: 'Abgebrochen' };
+    if (cleanedUser === 'generali') {
         try {
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: 'generali', password: pass })
+                body: JSON.stringify({ username: username.trim(), password })
             });
             
             if (response.ok) {
+                const expires = remember ? Date.now() + (30 * 24 * 60 * 60 * 1000) : null;
                 localStorage.setItem('orf_auth', JSON.stringify({ 
                     user: 'generali',
-                    expires: Date.now() + (30 * 24 * 60 * 60 * 1000)
+                    expires: expires
                 }));
                 return { success: true };
             }
@@ -65,18 +64,19 @@ export async function login(username) {
         const response = await fetch('/api/codes?action=redeem', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: cleaned })
+            body: JSON.stringify({ code: password.trim().toUpperCase() })
         });
         
         const data = await response.json();
         
         if (response.ok && data.success) {
+            const expires = remember ? Date.now() + (7 * 24 * 60 * 60 * 1000) : null;
             localStorage.setItem('orf_auth', JSON.stringify({
                 user: data.anonId || 'anon',
                 code: data.code,
                 uses: data.uses,
                 maxUses: data.maxUses,
-                expires: Date.now() + (7 * 24 * 60 * 60 * 1000)
+                expires: expires
             }));
             return { success: true };
         }
