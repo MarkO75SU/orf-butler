@@ -20,15 +20,20 @@
         </div>
 
         <form id="login-form" class="space-y-6">
-            <input type="text" name="username" value="anon" autocomplete="username" class="hidden" aria-hidden="true" tabindex="-1">
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
+                <input type="text" id="username" name="username" required autocomplete="username"
+                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
+                    placeholder="Benutzername oder Code">
+            </div>
             
             <div class="relative">
-                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Nutzercode</label>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
                 <div class="relative">
-                    <input type="password" id="login-code" name="password" required maxlength="10" autocomplete="new-password"
-                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-center tracking-[0.3em] text-white font-mono uppercase pr-12"
-                        placeholder="CODE EINGEBEN">
-                    <button type="button" onclick="toggleCode()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+                    <input type="password" id="password" name="password" required autocomplete="current-password"
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white pr-12"
+                        placeholder="Passwort oder Code">
+                    <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
                         👁
                     </button>
                 </div>
@@ -53,21 +58,21 @@
     </div>
 
     <script>
-        function toggleCode() {
-            const el = document.getElementById('login-code');
-            const btn = el.nextElementSibling;
-            if (el.type === 'password') {
-                el.type = 'text';
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const btn = pw.nextElementSibling;
+            if (pw.type === 'password') {
+                pw.type = 'text';
                 btn.textContent = '🙈';
             } else {
-                el.type = 'password';
+                pw.type = 'password';
                 btn.textContent = '👁';
             }
         }
     </script>
 
     <script type="module">
-        import { isAuthenticated, loginWithCode } from './src/js/auth.js';
+        import { isAuthenticated, login } from './src/js/auth.js';
         
         if (isAuthenticated()) {
             window.location.href = 'index.html';
@@ -75,19 +80,21 @@
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const code = document.getElementById('login-code').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
             const errorEl = document.getElementById('error-msg');
             const successEl = document.getElementById('success-msg');
             errorEl.classList.add('hidden');
             successEl.classList.add('hidden');
 
-            if (!code) {
-                errorEl.textContent = 'Bitte gib einen Code ein.';
+            if (!username || !password) {
+                errorEl.textContent = 'Bitte Benutzername und Passwort eingeben.';
                 errorEl.classList.remove('hidden');
                 return;
             }
 
-            const result = await loginWithCode(code);
+            const result = await login(username, password, remember);
             
             if (result.success) {
                 successEl.textContent = 'Login erfolgreich! Weiterleitung...';

@@ -3,7 +3,7 @@ import { DAILY_PROMPTS, getPromptOfDay, generateRSS } from '../js/prompts.js';
 import { MODEL_MAPPING, getBestModels, MODEL_HISTORY } from '../js/mapping.js';
 import { TOOL_TEMPLATES, generateConfig } from '../js/templates.js';
 import { generateInstallMD, CLI_COMMANDS, OS_PATHS } from '../js/docs.js';
-import { checkAuth, isAuthenticated, login, loginWithCode, logout, getUser } from '../js/auth.js';
+import { checkAuth, isAuthenticated, login, logout, getUser } from '../js/auth.js';
 import { fetchLiveFreeModels, verifyUpdateWindow } from '../js/api.js';
 
 let passed = 0;
@@ -304,7 +304,6 @@ runTestGroup("Auth Tests", () => {
     assert(typeof checkAuth === 'function', "Auth: checkAuth is function");
     assert(typeof isAuthenticated === 'function', "Auth: isAuthenticated is function");
     assert(typeof login === 'function', "Auth: login is function");
-    assert(typeof loginWithCode === 'function', "Auth: loginWithCode is function");
     assert(typeof logout === 'function', "Auth: logout is function");
     assert(typeof getUser === 'function', "Auth: getUser is function");
 });

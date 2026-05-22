@@ -30,49 +30,47 @@ export function isAuthenticated() {
 }
 
 export async function login(username, password, remember) {
-    try {
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-        
-        if (response.ok) {
-            const expires = remember ? Date.now() + (30 * 24 * 60 * 60 * 1000) : null;
-            localStorage.setItem('orf_auth', JSON.stringify({ 
-                user: username,
-                expires: expires
-            }));
-            return { success: true };
-        }
-        
-        const error = await response.json();
-        return { success: false, error: error.error || 'Login fehlgeschlagen' };
-    } catch (e) {
-        return { success: false, error: 'Verbindung zum Server fehlgeschlagen' };
+    if (!username || !password) {
+        return { success: false, error: 'Bitte Benutzername und Passwort eingeben.' };
     }
-}
-
-export async function loginWithCode(code) {
-    const cleaned = code.trim().toUpperCase();
     
-    if (cleaned === 'GENERALI') {
-        const pass = prompt('Admin-Passwort eingeben:');
-        if (!pass) return { success: false, error: 'Abgebrochen' };
-        return await login('generali', pass, true);
+    const cleanedUser = username.trim().toLowerCase();
+    
+    if (cleanedUser === 'generali') {
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username.trim(), password })
+            });
+            
+            if (response.ok) {
+                const expires = remember ? Date.now() + (30 * 24 * 60 * 60 * 1000) : null;
+                localStorage.setItem('orf_auth', JSON.stringify({ 
+                    user: 'generali',
+                    expires: expires
+                }));
+                return { success: true };
+            }
+            
+            const error = await response.json();
+            return { success: false, error: error.error || 'Zugang verweigert' };
+        } catch (e) {
+            return { success: false, error: 'Server nicht erreichbar' };
+        }
     }
     
     try {
         const response = await fetch('/api/codes?action=redeem', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: cleaned })
+            body: JSON.stringify({ code: password.trim().toUpperCase() })
         });
         
         const data = await response.json();
         
         if (response.ok && data.success) {
-            const expires = Date.now() + (7 * 24 * 60 * 60 * 1000);
+            const expires = remember ? Date.now() + (7 * 24 * 60 * 60 * 1000) : null;
             localStorage.setItem('orf_auth', JSON.stringify({
                 user: data.anonId || 'anon',
                 code: data.code,
