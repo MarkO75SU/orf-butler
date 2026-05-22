@@ -127,8 +127,9 @@ function updateUI() {
         }
     }
     
-    document.getElementById('bundle-basic-price').textContent = '5€';
-    document.getElementById('bundle-premium-price').textContent = '20€';
+    const admin = isAdmin();
+    document.getElementById('bundle-basic-price').textContent = admin ? texts.bundleFree : '5€';
+    document.getElementById('bundle-premium-price').textContent = admin ? texts.bundleFree : '20€';
     
     const codesPanel = document.getElementById('codes-panel');
     if (codesPanel) {
@@ -153,9 +154,10 @@ function updateSummary() {
     
     const toolNames = state.selectedTools.map(id => TOOL_TEMPLATES[id]?.name || id).join(', ');
     
+    const admin = isAdmin();
     const bundleLabel = state.selectedBundle === 'basic' 
-        ? 'Standard Bundle (5€)' 
-        : 'Premium Bundle (20€)';
+        ? `Standard Bundle${admin ? '' : ' (5€)'}` 
+        : `Premium Bundle${admin ? '' : ' (20€)'}`;
 
     document.getElementById('summary-models').textContent = state.selectedModels.length 
         ? `(${state.selectedModels.length}) ${modelNames}` 
@@ -403,7 +405,7 @@ async function downloadZIP() {
         zip.file(safeName + '-INSTALL.md', installMD);
     });
     
-    if (state.selectedBundle === 'premium') {
+    if (state.selectedBundle === 'premium' || isAdmin()) {
         try {
             const launchers = [
                 ['auto-install.js', 'auto-install.js'],
