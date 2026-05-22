@@ -40,7 +40,9 @@ let currentLang = 'de';
 
 export function setLanguage(lang) {
     currentLang = lang;
-    document.documentElement.lang = lang;
+    if (typeof document !== 'undefined') {
+        document.documentElement.lang = lang;
+    }
 }
 
 export function t(key) {
