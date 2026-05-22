@@ -2,8 +2,11 @@ import { t, setLanguage, getLang } from './i18n.js';
 import { TOOL_TEMPLATES } from './templates.js';
 import { generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
-import { isAuthenticated, logout } from './auth.js';
+import { isAuthenticated, logout, getUser } from './auth.js';
 import { MODEL_MAPPING, MODEL_HISTORY } from './mapping.js';
+
+const ADMIN_USER = 'generali';
+const isAdmin = () => getUser() === ADMIN_USER;
 
 let state = {
     selectedModels: [],
@@ -31,7 +34,9 @@ const translations = {
         historyToggleShow: "▼ Einblenden",
         historyToggleHide: "▲ Ausblenden",
         historyAvailable: "Verfügbar",
-        historyReason: "Grund"
+        historyReason: "Grund",
+        adminBadge: "ADMIN",
+        bundleFree: "Kostenlos"
     },
     en: {
         step1Title: "Select your Free-LLM Models",
@@ -52,7 +57,9 @@ const translations = {
         historyToggleShow: "▼ Show",
         historyToggleHide: "▲ Hide",
         historyAvailable: "Available",
-        historyReason: "Reason"
+        historyReason: "Reason",
+        adminBadge: "ADMIN",
+        bundleFree: "Free"
     }
 };
 
@@ -86,6 +93,22 @@ function updateUI() {
     document.getElementById('history-title').textContent = texts.historyTitle;
     document.getElementById('history-toggle-text').textContent = texts.historyToggleShow;
     
+    // Admin badge
+    const badge = document.getElementById('admin-badge');
+    if (badge) {
+        if (isAdmin()) {
+            badge.classList.remove('hidden');
+            badge.textContent = texts.adminBadge;
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+    
+    // Bundle pricing for admin
+    const admin = isAdmin();
+    document.getElementById('bundle-basic-price').textContent = admin ? texts.bundleFree : '5€';
+    document.getElementById('bundle-premium-price').textContent = admin ? texts.bundleFree : '20€';
+    
     updateSummary();
 }
 
@@ -100,9 +123,14 @@ function updateSummary() {
     
     const toolNames = state.selectedTools.map(id => TOOL_TEMPLATES[id]?.name || id).join(', ');
     
+    const admin = isAdmin();
+    const bundleLabel = state.selectedBundle === 'basic' 
+        ? `Standard Bundle${admin ? '' : ' (5€)'}` 
+        : `Premium Bundle${admin ? '' : ' (20€)'}`;
+    
     document.getElementById('summary-model').textContent = modelNames || texts.noModel;
     document.getElementById('summary-tool').textContent = toolNames || texts.noTool;
-    document.getElementById('summary-bundle').textContent = state.selectedBundle === 'basic' ? 'Standard Bundle (5€)' : 'Premium Bundle (20€)';
+    document.getElementById('summary-bundle').textContent = bundleLabel;
     
     const btn = document.getElementById('download-btn');
     btn.disabled = state.selectedModels.length === 0 || state.selectedTools.length === 0;

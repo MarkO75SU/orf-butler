@@ -61,3 +61,14 @@ export async function login(username, password, remember) {
 export function logout() {
     localStorage.removeItem('orf_auth');
 }
+
+export function getUser() {
+    const stored = localStorage.getItem('orf_auth');
+    if (!stored) return null;
+    try {
+        const data = JSON.parse(stored);
+        return data.user || null;
+    } catch {
+        return null;
+    }
+}
