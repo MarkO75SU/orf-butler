@@ -19,6 +19,8 @@
         .tool-card { background: #1a1a1e; border: 1px solid #27272a; padding: 20px; border-radius: 8px; }
         .tool-card.selected { border-color: #38bdf8; background: #1e293b; }
         .model-card.selected { border-color: #38bdf8; }
+        .history-card { background: #111114; border: 1px solid #1e293b; padding: 16px; border-radius: 8px; opacity: 0.8; }
+        .history-card:hover { opacity: 1; border-color: #334155; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #111114; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
@@ -113,6 +115,20 @@
                 <button onclick="generateAndDownload()" id="download-btn" class="w-full bg-sky-600 text-white text-sm font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                     Config Herunterladen
                 </button>
+            </div>
+        </section>
+
+        <!-- HISTORY: Former free models (admin view) -->
+        <section class="mb-8">
+            <button onclick="toggleHistory()" class="w-full flex justify-between items-center p-4 bg-[#111114] border border-slate-800 rounded-lg hover:border-slate-600 transition">
+                <span class="text-sm font-bold text-slate-400 uppercase flex items-center gap-2">
+                    <span class="text-xs text-slate-600">⌛</span>
+                    <span id="history-title">Historische Free-Modelle</span>
+                </span>
+                <span class="text-slate-600 text-xs" id="history-toggle-text">▼ Einblenden</span>
+            </button>
+            <div id="history-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+                <!-- History models loaded via JS -->
             </div>
         </section>
     </div>

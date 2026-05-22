@@ -22,20 +22,25 @@
         <form id="login-form" class="space-y-6">
             <div>
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
-                <input type="text" id="username" required 
+                <input type="text" id="username" name="username" value="generali" required autocomplete="username"
                     class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white"
                     placeholder="USERNAME">
             </div>
             
-            <div>
+            <div class="relative">
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
-                <input type="text" id="password" required 
-                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white"
-                    placeholder="PASSWORD (WIRD ANGEZEIGT)">
+                <div class="relative">
+                    <input type="password" id="password" name="password" required autocomplete="current-password"
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white pr-12"
+                        placeholder="PASSWORD">
+                    <button type="button" id="pw-toggle" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+                        👁
+                    </button>
+                </div>
             </div>
 
             <div class="flex items-center gap-2">
-                <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600">
+                <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600" checked>
                 <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
             </div>
 
@@ -47,9 +52,23 @@
         </form>
 
         <div class="mt-6 text-center">
-            <a href="index.html" class="text-[10px] text-slate-600 hover:text-slate-400 uppercase tracking-widest">← Zurück zur Startseite</a>
+            <a href="landing.html" class="text-[10px] text-slate-600 hover:text-slate-400 uppercase tracking-widest">← Zurück</a>
         </div>
     </div>
+
+    <script>
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const btn = document.getElementById('pw-toggle');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                pw.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+    </script>
 
     <script type="module">
         import { checkAuth, login, isAuthenticated } from './src/js/auth.js';

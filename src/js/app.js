@@ -3,7 +3,7 @@ import { TOOL_TEMPLATES } from './templates.js';
 import { generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
 import { isAuthenticated, logout } from './auth.js';
-import { MODEL_MAPPING } from './mapping.js';
+import { MODEL_MAPPING, MODEL_HISTORY } from './mapping.js';
 
 let state = {
     selectedModels: [],
@@ -26,7 +26,12 @@ const translations = {
         summaryBundle: "Bundle:",
         downloadBtn: "Als ZIP Herunterladen",
         noModel: "Keine Modelle ausgewählt",
-        noTool: "Keine Tools ausgewählt"
+        noTool: "Keine Tools ausgewählt",
+        historyTitle: "Historische Free-Modelle",
+        historyToggleShow: "▼ Einblenden",
+        historyToggleHide: "▲ Ausblenden",
+        historyAvailable: "Verfügbar",
+        historyReason: "Grund"
     },
     en: {
         step1Title: "Select your Free-LLM Models",
@@ -42,7 +47,12 @@ const translations = {
         summaryBundle: "Bundle:",
         downloadBtn: "Download as ZIP",
         noModel: "No models selected",
-        noTool: "No tools selected"
+        noTool: "No tools selected",
+        historyTitle: "Historical Free Models",
+        historyToggleShow: "▼ Show",
+        historyToggleHide: "▲ Hide",
+        historyAvailable: "Available",
+        historyReason: "Reason"
     }
 };
 
@@ -54,7 +64,7 @@ window.setLang = (lang) => {
 
 window.logout = () => {
     logout();
-    window.location.href = 'login.html';
+    window.location.href = 'landing.html';
 };
 
 function updateUI() {
@@ -73,6 +83,8 @@ function updateUI() {
     document.getElementById('summary-tool-label').textContent = texts.summaryTool;
     document.getElementById('summary-bundle-label').textContent = texts.summaryBundle;
     document.getElementById('download-btn').textContent = texts.downloadBtn;
+    document.getElementById('history-title').textContent = texts.historyTitle;
+    document.getElementById('history-toggle-text').textContent = texts.historyToggleShow;
     
     updateSummary();
 }
@@ -160,10 +172,6 @@ function loadTools() {
         
         div.innerHTML = `
             <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedTools.includes(id) ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleTool('${id}')">
-            <div class="flex-1">
-        
-        div.innerHTML = `
-            <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedTools.includes(id) ? 'checked' : ''}>
             <div class="flex-1">
                 <div class="flex justify-between items-center">
                     <span class="text-sm font-bold text-white uppercase">${tool.name}</span>
@@ -283,15 +291,64 @@ window.generateAndDownload = async () => {
     downloadFile('orfb-configs.zip', content);
 };
 
+function loadHistory() {
+    const grid = document.getElementById('history-grid');
+    if (!grid) return;
+    
+    const sorted = [...MODEL_HISTORY].sort((a, b) => a.id.localeCompare(b.id));
+    
+    sorted.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'history-card';
+        const isGerman = getLang() === 'de';
+        const role = isGerman && m.role_de ? m.role_de : m.role;
+        const desc = isGerman && m.desc_de ? m.desc_de : m.desc_en;
+        const langs = m.languages ? m.languages.slice(0, 4).join(', ') : '';
+        const reason = isGerman && m.reason_de ? m.reason_de : m.reason;
+        
+        div.innerHTML = `
+            <div class="text-xs font-bold text-slate-500 uppercase mb-1">${m.id}</div>
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-white uppercase">${role}</span>
+                <span class="text-xs text-slate-600 font-mono">${m.context}</span>
+            </div>
+            <div class="text-xs text-slate-600 truncate mb-1">${desc}</div>
+            ${langs ? `<div class="text-xs text-slate-600 truncate">${langs}</div>` : ''}
+            <div class="flex items-center gap-3 mt-2 text-[10px]">
+                <span class="text-slate-500">${isGerman ? 'Verfügbar' : 'Available'}: <span class="text-sky-400">${m.available}</span></span>
+                <span class="text-slate-500">${isGerman ? 'Grund' : 'Reason'}: <span class="text-yellow-400">${reason}</span></span>
+            </div>
+        `;
+        grid.appendChild(div);
+    });
+}
+
+window.toggleHistory = () => {
+    const grid = document.getElementById('history-grid');
+    const toggle = document.getElementById('history-toggle-text');
+    const isHidden = grid.classList.contains('hidden');
+    const lang = getLang();
+    const texts = translations[lang] || translations.de;
+    
+    if (isHidden) {
+        grid.classList.remove('hidden');
+        toggle.textContent = texts.historyToggleHide;
+    } else {
+        grid.classList.add('hidden');
+        toggle.textContent = texts.historyToggleShow;
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     if (!isAuthenticated()) {
-        window.location.href = 'login.html';
+        window.location.href = 'landing.html';
         return;
     }
     
     setLanguage('de');
     loadModels();
     loadTools();
+    loadHistory();
     updateSummary();
     
     document.getElementById('bundle-basic').classList.add('border-sky-500');

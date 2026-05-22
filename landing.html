@@ -2,60 +2,133 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ORFB - OpenRouter Free Butler</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-[#0a0a0c] text-slate-300 min-h-screen">
 
-    <nav class="p-4 bg-white shadow-sm flex justify-between items-center">
-        <h1 class="font-bold text-xl">ORFB</h1>
-        <div class="space-x-4">
-            <a href="#wizard" class="hover:text-blue-600">Start Wizard</a>
-            <a href="login.html" class="text-gray-500">Login</a>
+    <nav class="border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-lg font-bold text-white uppercase tracking-wider">ORF Butler</h1>
+                <p class="text-[10px] text-slate-600 uppercase tracking-[0.2em]">OpenRouter Free Deployment</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#features" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Features</a>
+                <a href="#pricing" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Preise</a>
+                <a href="#tools" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Tools</a>
+                <a href="login.html" class="bg-sky-600 text-white text-[10px] font-bold px-6 py-3 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Login</a>
+            </div>
         </div>
     </nav>
 
-    <header class="max-w-6xl mx-auto py-12 px-4 text-center">
-        <h2 class="text-4xl font-extrabold mb-4">Kostenlose KI-Power für dein Setup</h2>
-        <p class="text-gray-600 mb-8">Konfiguriere Free-Modelle für Continue, Zed und Aider in Sekunden.</p>
-        
-        <div class="w-full h-24 bg-gray-200 border-dashed border-2 border-gray-400 flex items-center justify-center my-6">
-            <span class="text-gray-400 text-xs italic">Anzeige: Empfohlene Developer-Hardware (Affiliate)</span>
+    <header class="max-w-6xl mx-auto px-4 py-20 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+            Kostenlose KI-Modelle<br>
+            <span class="gradient-text">für deine Entwicklungsumgebung</span>
+        </h2>
+        <p class="text-slate-500 text-sm max-w-xl mx-auto mb-10">
+            Wähle aus <strong class="text-white">16+ kostenlosen OpenRouter-Modellen</strong> und exportiere 
+            fertige Konfigurationen für VS Code, Zed, Aider, Cursor und mehr – in <strong class="text-white">4 Klicks</strong>.
+        </p>
+        <div class="flex justify-center gap-4">
+            <a href="login.html" class="bg-sky-600 text-white text-sm font-bold px-10 py-4 rounded hover:bg-sky-500 transition uppercase tracking-wider">Jetzt Konfigurieren</a>
+            <a href="#features" class="border border-slate-700 text-slate-400 text-sm font-bold px-10 py-4 rounded hover:border-slate-500 transition uppercase tracking-wider">Mehr Erfahren</a>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-        
-        <section class="md:col-span-2 bg-white p-6 rounded-xl shadow-md">
-            <h3 class="text-2xl font-bold mb-4">Schritt 1: Free-LLM Auswahl</h3>
-            <div id="model-list" class="space-y-4">
-                <div class="border p-4 rounded hover:border-blue-500 cursor-pointer">
-                    <span class="font-mono font-bold">Mistral 7B Free</span>
-                    <p class="text-sm text-gray-500">Rolle: Code Generation | Context: 32k</p>
-                </div>
+    <section id="features" class="max-w-6xl mx-auto px-4 py-16 border-t border-slate-800">
+        <h3 class="text-xl font-bold text-white text-center mb-12 uppercase tracking-wider">Features</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-8 text-center">
+                <div class="text-3xl mb-4">🧠</div>
+                <h4 class="text-sm font-bold text-white uppercase mb-2">Free-LLM Auswahl</h4>
+                <p class="text-xs text-slate-500">16+ kuratierte Free-Modelle von Qwen, DeepSeek, Meta, Google, Mistral, Microsoft & mehr. Mit Uptime-Status und Latenz.</p>
             </div>
-            
-            <div class="mt-8 p-4 bg-blue-50 rounded border border-blue-100">
-                <p class="text-sm"><strong>Tipp:</strong> Nutzt du ein MacBook? Entdecke optimierte Setups für Local AI. <a href="#" class="underline text-blue-600">Mehr erfahren (Affiliate)</a></p>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-8 text-center">
+                <div class="text-3xl mb-4">🔧</div>
+                <h4 class="text-sm font-bold text-white uppercase mb-2">Multi-Tool Export</h4>
+                <p class="text-xs text-slate-500">Exportiere Configs für VS Code (Continue), OpenCode, Zed Editor, Aider, Cursor, Windsurf, Claude Code & mehr.</p>
             </div>
-        </section>
-
-        <aside class="space-y-6">
-            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-6 rounded-xl shadow-lg">
-                <h4 class="text-xl font-bold mb-2">Premium Bundle</h4>
-                <p class="text-sm mb-4">Experten-Prompts & direkter Support für dein Team.</p>
-                <button class="w-full bg-white text-blue-600 py-2 rounded font-bold">Jetzt für 20€ sichern</button>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-8 text-center">
+                <div class="text-3xl mb-4">📦</div>
+                <h4 class="text-sm font-bold text-white uppercase mb-2">ZIP Download</h4>
+                <p class="text-xs text-slate-500">Fertige Config + Schritt-für-Schritt Installationsanleitung als ZIP. Inkl. API-Key Platzhalter.</p>
             </div>
+        </div>
+    </section>
 
-            <div class="w-full h-64 bg-gray-200 border-dashed border-2 border-gray-400 flex items-center justify-center">
-                <span class="text-gray-400 text-xs italic">Anzeige: Cloud-Hosting Partner</span>
+    <section id="tools" class="max-w-6xl mx-auto px-4 py-16 border-t border-slate-800">
+        <h3 class="text-xl font-bold text-white text-center mb-12 uppercase tracking-wider">Unterstützte Tools</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
+                <span class="text-xs font-bold text-white">VS Code</span>
+                <p class="text-[10px] text-slate-500">Continue Extension</p>
             </div>
-        </aside>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
+                <span class="text-xs font-bold text-white">OpenCode</span>
+                <p class="text-[10px] text-slate-500">Terminal CLI</p>
+            </div>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
+                <span class="text-xs font-bold text-white">Zed Editor</span>
+                <p class="text-[10px] text-slate-500">Rust Editor</p>
+            </div>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
+                <span class="text-xs font-bold text-white">Aider</span>
+                <p class="text-[10px] text-slate-500">Pair Programming</p>
+            </div>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
+                <span class="text-xs font-bold text-white">Cursor</span>
+                <p class="text-[10px] text-slate-500">AI Editor</p>
+            </div>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
+                <span class="text-xs font-bold text-white">Windsurf</span>
+                <p class="text-[10px] text-slate-500">Agentic IDE</p>
+            </div>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
+                <span class="text-xs font-bold text-white">Claude Code</span>
+                <p class="text-[10px] text-slate-500">Anthropic CLI</p>
+            </div>
+            <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
+                <span class="text-xs font-bold text-white">GitHub Copilot</span>
+                <p class="text-[10px] text-slate-500">Instructions</p>
+            </div>
+        </div>
+    </section>
 
-    </main>
+    <section id="pricing" class="max-w-6xl mx-auto px-4 py-16 border-t border-slate-800">
+        <h3 class="text-xl font-bold text-white text-center mb-12 uppercase tracking-wider">Bundles</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <div class="bg-[#111114] border border-slate-700 rounded-lg p-8 text-center">
+                <h4 class="text-sm font-bold text-white uppercase mb-2">Standard Bundle</h4>
+                <p class="text-3xl font-bold text-sky-500 mb-4">5€</p>
+                <p class="text-xs text-slate-500 mb-6">Basic Config + Installationsanleitung</p>
+                <a href="login.html" class="block w-full border border-sky-600 text-sky-500 text-xs font-bold py-3 rounded hover:bg-sky-600 hover:text-white transition uppercase tracking-wider">Auswählen</a>
+            </div>
+            <div class="bg-[#111114] border-2 border-sky-900 rounded-lg p-8 text-center relative">
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-sky-600 text-white text-[10px] font-bold px-4 py-1 rounded uppercase tracking-wider">Empfohlen</span>
+                <h4 class="text-sm font-bold text-white uppercase mb-2">Premium Bundle</h4>
+                <p class="text-3xl font-bold text-sky-500 mb-4">20€</p>
+                <p class="text-xs text-slate-500 mb-6">Extended Config + Expert Prompts + Support</p>
+                <a href="login.html" class="block w-full bg-sky-600 text-white text-xs font-bold py-3 rounded hover:bg-sky-500 transition uppercase tracking-wider">Auswählen</a>
+            </div>
+        </div>
+    </section>
 
-    <footer class="mt-20 py-10 border-t text-center text-gray-400 text-sm">
-        <p>&copy; 2026 Openrouter Free Butler. MIT Lizenz.</p>
+    <section class="max-w-6xl mx-auto px-4 py-16 text-center border-t border-slate-800">
+        <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-wider">Bereit zu starten?</h3>
+        <p class="text-xs text-slate-500 mb-8">Keine Registrierung nötig. Einfach einloggen und loslegen.</p>
+        <a href="login.html" class="bg-sky-600 text-white text-sm font-bold px-10 py-4 rounded hover:bg-sky-500 transition uppercase tracking-wider">Zum Login</a>
+    </section>
+
+    <footer class="border-t border-slate-800 py-8 text-center">
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest">&copy; 2026 Openrouter Free Butler &mdash; MIT Lizenz</p>
     </footer>
 
 </body>
