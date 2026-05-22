@@ -7,68 +7,98 @@ echo    ORF-Butler Auto-Installer
 echo    OpenRouter Free Butler - Konfiguration
 echo ============================================
 echo.
+
 where node >nul 2>nul
-if %ERRORLEVEL% NEQ 0 (
-    echo   [HINWEIS] Node.js wurde nicht gefunden.
-    echo   Viele Tools brauchen Node.js (z.B. Continue, OpenCode).
-    echo   Download: https://nodejs.org (Version 18 oder neuer)
-    echo.
+if errorlevel 1 (
+  echo   [HINWEIS] Node.js nicht gefunden.
+  echo   Download: https://nodejs.org (Version 18+)
+  echo.
 ) else (
-    echo   [OK] Node.js ist installiert.
+  echo   [OK] Node.js ist installiert.
 )
 echo.
-echo Kopiere Config-Dateien an die richtigen Orte...
+echo Kopiere Config-Dateien...
 echo.
 
+setlocal enabledelayedexpansion
 set INSTALLED=0
 set SKIPPED=0
 
-call :try_copy "opencode-config.json" "%APPDATA%\opencode\opencode.json"
-call :try_copy "continue-config.json" "%USERPROFILE%\.continue\config.json"
-call :try_copy "zed-config.json" "%APPDATA%\Zed\settings.json"
-call :try_copy "aider-config.json" "%CD%\.aider.conf.yml"
-call :try_copy "antigravity-config.json" "%CD%\settings.yaml"
-echo   [SKIP] Amazon Q: Nur im Browser nutzbar
-call :try_copy "cursor-config.json" "%CD%\.cursorrules"
-call :try_copy "windsurf-config.json" "%CD%\.windsurfrules"
-call :try_copy "claude-code-config.json" "%CD%\CLAUDE.md"
-call :try_copy "github-copilot-config.json" "%CD%\.github\copilot-instructions.md"
-call :try_copy "cline-config.json" "%CD%\.clinerules"
-call :try_copy "codeium-config.json" "%CD%\.codeiumrules"
+if exist "opencode-config.json" (
+  if not exist "%APPDATA%\opencode" mkdir "%APPDATA%\opencode"
+  if exist "%APPDATA%\opencode\opencode.json" copy "%APPDATA%\opencode\opencode.json" "%APPDATA%\opencode\opencode.json.backup" >nul
+  copy "opencode-config.json" "%APPDATA%\opencode\opencode.json" >nul
+  if errorlevel 1 (echo   [FEHLER] OpenCode CLI) else (echo   [OK] OpenCode CLI & set /a INSTALLED+=1)
+)
+
+if exist "continue-config.json" (
+  if not exist "%USERPROFILE%\.continue" mkdir "%USERPROFILE%\.continue"
+  if exist "%USERPROFILE%\.continue\config.json" copy "%USERPROFILE%\.continue\config.json" "%USERPROFILE%\.continue\config.json.backup" >nul
+  copy "continue-config.json" "%USERPROFILE%\.continue\config.json" >nul
+  if errorlevel 1 (echo   [FEHLER] Continue) else (echo   [OK] Continue & set /a INSTALLED+=1)
+)
+
+if exist "zed-config.json" (
+  if not exist "%APPDATA%\Zed" mkdir "%APPDATA%\Zed"
+  if exist "%APPDATA%\Zed\settings.json" copy "%APPDATA%\Zed\settings.json" "%APPDATA%\Zed\settings.json.backup" >nul
+  copy "zed-config.json" "%APPDATA%\Zed\settings.json" >nul
+  if errorlevel 1 (echo   [FEHLER] Zed Editor) else (echo   [OK] Zed Editor & set /a INSTALLED+=1)
+)
+
+if exist "aider-config.json" (
+  if exist ".aider.conf.yml" copy ".aider.conf.yml" ".aider.conf.yml.backup" >nul
+  copy "aider-config.json" ".aider.conf.yml" >nul
+  if errorlevel 1 (echo   [FEHLER] Aider CLI) else (echo   [OK] Aider CLI & set /a INSTALLED+=1)
+)
+
+if exist "antigravity-config.json" (
+  if exist "settings.yaml" copy "settings.yaml" "settings.yaml.backup" >nul
+  copy "antigravity-config.json" "settings.yaml" >nul
+  if errorlevel 1 (echo   [FEHLER] Antigravity) else (echo   [OK] Antigravity & set /a INSTALLED+=1)
+)
+
+echo   [SKIP] Amazon Q - Nur im Browser nutzbar
+
+if exist "cursor-config.json" (
+  if exist ".cursorrules" copy ".cursorrules" ".cursorrules.backup" >nul
+  copy "cursor-config.json" ".cursorrules" >nul
+  if errorlevel 1 (echo   [FEHLER] Cursor Editor) else (echo   [OK] Cursor Editor & set /a INSTALLED+=1)
+)
+
+if exist "windsurf-config.json" (
+  if exist ".windsurfrules" copy ".windsurfrules" ".windsurfrules.backup" >nul
+  copy "windsurf-config.json" ".windsurfrules" >nul
+  if errorlevel 1 (echo   [FEHLER] Windsurf Editor) else (echo   [OK] Windsurf Editor & set /a INSTALLED+=1)
+)
+
+if exist "claude-code-config.json" (
+  if exist "CLAUDE.md" copy "CLAUDE.md" "CLAUDE.md.backup" >nul
+  copy "claude-code-config.json" "CLAUDE.md" >nul
+  if errorlevel 1 (echo   [FEHLER] Claude Code CLI) else (echo   [OK] Claude Code CLI & set /a INSTALLED+=1)
+)
+
+if exist "github-copilot-config.json" (
+  if not exist ".github" mkdir ".github"
+  if exist ".github\copilot-instructions.md" copy ".github\copilot-instructions.md" ".github\copilot-instructions.md.backup" >nul
+  copy "github-copilot-config.json" ".github\copilot-instructions.md" >nul
+  if errorlevel 1 (echo   [FEHLER] GitHub Copilot) else (echo   [OK] GitHub Copilot & set /a INSTALLED+=1)
+)
+
+if exist "cline-config.json" (
+  if exist ".clinerules" copy ".clinerules" ".clinerules.backup" >nul
+  copy "cline-config.json" ".clinerules" >nul
+  if errorlevel 1 (echo   [FEHLER] Cline) else (echo   [OK] Cline & set /a INSTALLED+=1)
+)
+
+if exist "codeium-config.json" (
+  if exist ".codeiumrules" copy ".codeiumrules" ".codeiumrules.backup" >nul
+  copy "codeium-config.json" ".codeiumrules" >nul
+  if errorlevel 1 (echo   [FEHLER] Codeium) else (echo   [OK] Codeium & set /a INSTALLED+=1)
+)
 
 echo.
 echo ============================================
-echo   Fertig! %INSTALLED% installiert, %SKIPPED% uebersprungen.
+echo   Fertig - !INSTALLED! Configs installiert
 echo   Starte dein Tool neu.
 echo ============================================
 pause
-exit /b 0
-
-:try_copy
-set "SRC=%~1"
-set "DEST=%~2"
-set "TOOL=%~n1"
-set "TOOL=%TOOL:-config=%"
-
-if not exist "%SRC%" (
-    set /a SKIPPED+=1
-    goto :eof
-)
-
-set "DESTDIR=%~dp2"
-if not exist "%DESTDIR%" mkdir "%DESTDIR%" 2>nul
-
-if exist "%DEST%" (
-    copy "%DEST%" "%DEST%.backup" >nul 2>nul
-    echo   [BACKUP] Alte %TOOL%-Config gesichert
-)
-
-copy "%SRC%" "%DEST%" >nul 2>nul
-if %ERRORLEVEL% EQU 0 (
-    echo   [OK] %TOOL%
-    set /a INSTALLED+=1
-) else (
-    echo   [FEHLER] %TOOL%
-    set /a SKIPPED+=1
-)
-goto :eof
