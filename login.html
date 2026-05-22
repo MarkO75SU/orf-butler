@@ -19,48 +19,8 @@
             <p class="text-slate-500 text-xs uppercase tracking-[0.2em] mt-1">Access Required</p>
         </div>
 
-        <!-- Tabs -->
-        <div class="flex mb-6 border-b border-slate-800">
-            <button id="tab-admin" class="flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-sky-500 border-b-2 border-sky-600 transition" onclick="switchTab('admin')">Admin Login</button>
-            <button id="tab-anon" class="flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-slate-600 border-b-2 border-transparent transition" onclick="switchTab('anon')">Anonymer Code</button>
-        </div>
-
-        <!-- Admin Login Form -->
-        <form id="form-admin" class="space-y-6">
-            <div>
-                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
-                <input type="text" id="username" name="username" value="generali" required autocomplete="username"
-                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white"
-                    placeholder="USERNAME">
-            </div>
-            
-            <div class="relative">
-                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
-                <div class="relative">
-                    <input type="password" id="password" name="password" required autocomplete="current-password"
-                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white pr-12"
-                        placeholder="PASSWORD">
-                    <button type="button" id="pw-toggle" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
-                        👁
-                    </button>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600" checked>
-                <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
-            </div>
-
-            <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">
-                Login
-            </button>
-            
-            <p id="error-msg" class="text-red-500 text-[10px] text-center hidden">Zugang verweigert</p>
-        </form>
-
-        <!-- Anonymous Code Form -->
-        <form id="form-anon" class="space-y-6 hidden">
-            <!-- Hidden username field for browser autocomplete -->
+        <!-- Code Login (default) -->
+        <form id="form-anon" class="space-y-6">
             <input type="text" name="username" value="anon" autocomplete="username" class="hidden" aria-hidden="true" tabindex="-1">
             
             <div class="relative">
@@ -80,17 +40,52 @@
                 <label for="anon-remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Code speichern</label>
             </div>
 
-            <div class="text-center text-[10px] text-slate-600 leading-relaxed">
-                Gib deinen persönlichen Nutzercode ein.<br>
-                Jeder Code ist begrenzt nutzbar.
-            </div>
-
             <button type="submit" class="w-full bg-emerald-700 text-white text-xs font-bold py-4 rounded hover:bg-emerald-600 transition uppercase tracking-[0.2em]">
                 Anonym einloggen
             </button>
             
             <p id="anon-error-msg" class="text-red-500 text-[10px] text-center hidden"></p>
             <p id="anon-success-msg" class="text-green-500 text-[10px] text-center hidden"></p>
+        </form>
+
+        <!-- Admin toggle -->
+        <div class="mt-4 text-center">
+            <button onclick="toggleAdminForm()" id="admin-toggle-btn" class="text-[10px] text-slate-700 hover:text-slate-500 uppercase tracking-widest transition">Admin?</button>
+        </div>
+
+        <!-- Admin Login Form (hidden) -->
+        <form id="form-admin" class="space-y-6 mt-4 hidden">
+            <div class="border-t border-slate-800 pt-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
+                    <input type="text" id="username" name="username" value="generali" required autocomplete="username"
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white"
+                        placeholder="USERNAME">
+                </div>
+                
+                <div class="relative mt-4">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required autocomplete="current-password"
+                            class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-[10px] outline-none focus:border-sky-600 transition uppercase tracking-[0.2em] text-white pr-12"
+                            placeholder="PASSWORD">
+                        <button type="button" id="pw-toggle" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+                            👁
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 mt-4">
+                    <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600" checked>
+                    <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
+                </div>
+
+                <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em] mt-4">
+                    Admin Login
+                </button>
+                
+                <p id="error-msg" class="text-red-500 text-[10px] text-center hidden mt-2">Zugang verweigert</p>
+            </div>
         </form>
 
         <div class="mt-6 text-center">
@@ -124,23 +119,12 @@
             }
         }
 
-        function switchTab(tab) {
-            const adminForm = document.getElementById('form-admin');
-            const anonForm = document.getElementById('form-anon');
-            const tabAdmin = document.getElementById('tab-admin');
-            const tabAnon = document.getElementById('tab-anon');
-
-            if (tab === 'admin') {
-                adminForm.classList.remove('hidden');
-                anonForm.classList.add('hidden');
-                tabAdmin.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-sky-500 border-b-2 border-sky-600 transition';
-                tabAnon.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-slate-600 border-b-2 border-transparent transition';
-            } else {
-                adminForm.classList.add('hidden');
-                anonForm.classList.remove('hidden');
-                tabAdmin.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-slate-600 border-b-2 border-transparent transition';
-                tabAnon.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-sky-500 border-b-2 border-sky-600 transition';
-            }
+        function toggleAdminForm() {
+            const form = document.getElementById('form-admin');
+            const btn = document.getElementById('admin-toggle-btn');
+            const isHidden = form.classList.contains('hidden');
+            form.classList.toggle('hidden');
+            btn.textContent = isHidden ? 'Admin ausblenden' : 'Admin?';
         }
     </script>
 
