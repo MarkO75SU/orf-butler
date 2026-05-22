@@ -568,7 +568,7 @@ window.resetCode = async (code) => {
 window.copyCode = (code) => {
     const info = window.__codesData ? window.__codesData[code] : null;
     const anon = info ? info.anonId : '';
-    const text = anon ? code + ' - ' + anon : code;
+    const text = anon ? anon + ' - ' + code : code;
     navigator.clipboard.writeText(text).then(() => {
         const btn = event.target;
         const orig = btn.textContent;

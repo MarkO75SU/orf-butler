@@ -84,7 +84,7 @@ async function cmdList() {
     console.log(`  ${'='.repeat(95)}`);
     console.log(`\n  ${'Kopierbereit:'}`);
     entries.forEach(([code, data]) => {
-        if (data.anonId) console.log(`  ${code} - ${data.anonId}`);
+        if (data.anonId) console.log(`  ${data.anonId} - ${code}`);
     });
     console.log();
 }
