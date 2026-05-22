@@ -1,6 +1,3 @@
-// src/js/auth.js
-// Credentials verified server-side via API
-
 export async function checkAuth() {
     const stored = localStorage.getItem('orf_auth');
     if (!stored) return false;
@@ -55,6 +52,34 @@ export async function login(username, password, remember) {
     } catch (e) {
         alert('Verbindung zum Server fehlgeschlagen');
         return false;
+    }
+}
+
+export async function loginWithCode(code) {
+    try {
+        const response = await fetch('/api/codes?action=redeem', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            const expires = Date.now() + (7 * 24 * 60 * 60 * 1000);
+            localStorage.setItem('orf_auth', JSON.stringify({
+                user: 'anon',
+                code: data.code,
+                uses: data.uses,
+                maxUses: data.maxUses,
+                expires: expires
+            }));
+            return { success: true };
+        }
+        
+        return { success: false, error: data.error || 'Ungültiger Code' };
+    } catch (e) {
+        return { success: false, error: 'Server nicht erreichbar' };
     }
 }
 

@@ -79,4 +79,9 @@ npm test                          # all 48 tests
 - `models-grid` and `tools-grid` use 2-column layout with max-height 400px + custom scrollbar
 - OS paths in `docs.js` differentiate `win32` vs `darwin`; used for INSTALL.md generation
 - Login prefills "generali" as username; password uses `type="password"` with show/hide toggle
+- **Login with code**: Tab "Anonymer Code" on login page; validates via `POST /api/codes?action=redeem`; stores `orf_auth` with `user: "anon"` in localStorage
+- **Codes API** (`api/codes.js`): Actions: `generate`, `redeem`, `check`, `list`, `revoke`, `reset`. Admin auth via Basic header. Storage via `lib/github-store.js` (GitHub Content API, needs `GH_TOKEN` env var)
+- **Code Management**: Admin sees "🔑 Code-Verwaltung" panel on main page (modal with generate/list/revoke/reset). CLI: `npm run codes [generate|list|revoke|reset]` reads/writes `data/codes.json` directly
+- **Code format**: 8-char alphanumeric (uppercase, no ambiguous chars), max 10 uses by default, stored per code with `uses` counter in `data/codes.json`
+- `GH_TOKEN` env var required on Vercel for code persistence via GitHub Content API
 

@@ -36,7 +36,19 @@ const translations = {
         historyAvailable: "Verfügbar",
         historyReason: "Grund",
         adminBadge: "ADMIN",
-        bundleFree: "Kostenlos"
+        bundleFree: "Kostenlos",
+        codesTitle: "🔑 Code-Verwaltung",
+        codesGenerate: "Codes generieren",
+        codesGenerateBtn: "Generieren",
+        codesList: "Codes anzeigen",
+        codesRevoke: "Deaktivieren",
+        codesReset: "Zurücksetzen",
+        codesNone: "Keine Codes vorhanden",
+        codesUsage: "Nutzungen",
+        codesActive: "Aktiv",
+        codesInactive: "Inaktiv",
+        codesRefresh: "Aktualisieren",
+        codesClose: "Schließen"
     },
     en: {
         step1Title: "Select your Free-LLM Models",
@@ -59,7 +71,19 @@ const translations = {
         historyAvailable: "Available",
         historyReason: "Reason",
         adminBadge: "ADMIN",
-        bundleFree: "Free"
+        bundleFree: "Free",
+        codesTitle: "🔑 Code Management",
+        codesGenerate: "Generate codes",
+        codesGenerateBtn: "Generate",
+        codesList: "View codes",
+        codesRevoke: "Revoke",
+        codesReset: "Reset",
+        codesNone: "No codes available",
+        codesUsage: "Uses",
+        codesActive: "Active",
+        codesInactive: "Inactive",
+        codesRefresh: "Refresh",
+        codesClose: "Close"
     }
 };
 
@@ -93,7 +117,6 @@ function updateUI() {
     document.getElementById('history-title').textContent = texts.historyTitle;
     document.getElementById('history-toggle-text').textContent = texts.historyToggleShow;
     
-    // Admin badge
     const badge = document.getElementById('admin-badge');
     if (badge) {
         if (isAdmin()) {
@@ -104,10 +127,18 @@ function updateUI() {
         }
     }
     
-    // Bundle pricing for admin
     const admin = isAdmin();
     document.getElementById('bundle-basic-price').textContent = admin ? texts.bundleFree : '5€';
     document.getElementById('bundle-premium-price').textContent = admin ? texts.bundleFree : '20€';
+    
+    const codesPanel = document.getElementById('codes-panel');
+    if (codesPanel) {
+        if (isAdmin()) {
+            codesPanel.classList.remove('hidden');
+        } else {
+            codesPanel.classList.add('hidden');
+        }
+    }
     
     updateSummary();
 }
@@ -127,186 +158,245 @@ function updateSummary() {
     const bundleLabel = state.selectedBundle === 'basic' 
         ? `Standard Bundle${admin ? '' : ' (5€)'}` 
         : `Premium Bundle${admin ? '' : ' (20€)'}`;
-    
-    document.getElementById('summary-model').textContent = modelNames || texts.noModel;
-    document.getElementById('summary-tool').textContent = toolNames || texts.noTool;
+
+    document.getElementById('summary-models').textContent = state.selectedModels.length 
+        ? `(${state.selectedModels.length}) ${modelNames}` 
+        : texts.noModel;
+    document.getElementById('summary-tools').textContent = state.selectedTools.length 
+        ? `(${state.selectedTools.length}) ${toolNames}` 
+        : texts.noTool;
     document.getElementById('summary-bundle').textContent = bundleLabel;
-    
-    const btn = document.getElementById('download-btn');
-    btn.disabled = state.selectedModels.length === 0 || state.selectedTools.length === 0;
 }
 
-async function loadModels() {
+function loadModels() {
     const grid = document.getElementById('models-grid');
+    grid.innerHTML = '';
+    const lang = getLang();
     
-    // Load static models only (sorted alphabetically)
-    const sortedStatic = Object.entries(MODEL_MAPPING).sort((a, b) => a[0].localeCompare(b[0]));
+    const entries = Object.entries(MODEL_MAPPING).sort(([a], [b]) => a.localeCompare(b));
     
-    sortedStatic.forEach(([id, data]) => {
-        const div = createModelCard(id, data, data.context);
-        grid.appendChild(div);
+    entries.forEach(([id, data]) => {
+        const card = document.createElement('div');
+        const role = lang === 'de' ? data.role_de : data.role;
+        const desc = lang === 'de' ? data.desc_de : data.desc_en;
+        const checkId = `model-${id.replace(/[:/.]/g, '-')}`;
+        const isChecked = state.selectedModels.includes(id) ? 'checked' : '';
+        
+        card.className = `model-card bg-[#1a1a1e] border ${isChecked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
+        card.setAttribute('data-model-id', id);
+        card.innerHTML = `
+            <div class="flex items-start gap-3">
+                <input type="checkbox" id="${checkId}" ${isChecked} 
+                    class="mt-1 accent-sky-600 cursor-pointer shrink-0"
+                    onclick="event.stopPropagation(); window.toggleModel('${id}')">
+                <label for="${checkId}" class="cursor-pointer flex-1 min-w-0" onclick="event.stopPropagation()">
+                    <div class="text-xs font-bold text-white truncate">${id}</div>
+                    <div class="text-[10px] text-sky-400 mt-1 truncate">${role}</div>
+                    <div class="text-[10px] text-slate-500 mt-1 leading-relaxed">${desc}</div>
+                    <div class="flex gap-2 mt-2 text-[9px] text-slate-600">
+                        <span>${data.context || '?'} ctx</span>
+                        <span>${data.languages?.join(', ') || ''}</span>
+                    </div>
+                    <div class="flex gap-2 mt-1 text-[9px]">
+                        <span class="text-green-600">⬆ ${data.uptime || '?'}</span>
+                        <span class="text-yellow-600">⚡ ${data.latency || '?'}</span>
+                        <span class="${data.status === 'online' ? 'text-green-500' : 'text-red-500'}">● ${data.status || '?'}</span>
+                    </div>
+                </label>
+            </div>
+        `;
+        card.addEventListener('click', (e) => {
+            if (e.target.type !== 'checkbox') {
+                const cb = card.querySelector('input[type="checkbox"]');
+                cb.checked = !cb.checked;
+                window.toggleModel(id);
+            }
+        });
+        grid.appendChild(card);
     });
 }
 
-function createModelCard(id, data, context) {
-    const div = document.createElement('div');
-    div.className = `model-card text-left transition flex items-start gap-3 cursor-pointer ${state.selectedModels.includes(id) ? 'selected' : ''}`;
-    div.setAttribute('data-model-id', id);
-    div.onclick = () => toggleModel(id);
-    
-    const isGerman = getLang() === 'de';
-    const role = data ? (isGerman && data.role_de ? data.role_de : data.role) : id.split('/')[0];
-    const desc = data ? (isGerman && data.desc_de ? data.desc_de : data.desc_en) : '';
-    const langs = data && data.languages ? data.languages.slice(0, 4).join(', ') : '';
-    const ctx = context ? (typeof context === 'number' ? `${(context / 1000).toFixed(0)}k` : context) : '?';
-    const uptime = data && data.uptime ? data.uptime : null;
-    const latency = data && data.latency ? data.latency : null;
-    const status = data && data.status ? data.status : null;
-    
-    const statusColor = status === 'online' ? 'text-green-400' : status === 'degraded' ? 'text-yellow-400' : 'text-red-400';
-    const statusLabel = isGerman ? (status === 'online' ? 'Online' : status === 'degraded' ? 'Eingeschränkt' : 'Offline') : (status === 'online' ? 'Online' : status === 'degraded' ? 'Degraded' : 'Offline');
-    
-    div.innerHTML = `
-        <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedModels.includes(id) ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleModel('${id}')">
-        <div class="flex-1">
-            <div class="text-sm font-bold text-sky-500 uppercase mb-1">${id}</div>
-            <div class="flex justify-between items-center mb-1">
-                <span class="text-xs font-bold text-white uppercase">${role}</span>
-                <span class="text-xs text-slate-500 font-mono">${ctx}</span>
-            </div>
-            <div class="text-xs text-slate-600 truncate">${desc}</div>
-            ${langs ? `<div class="text-xs text-slate-500 mt-1 truncate">${langs}</div>` : ''}
-            <div class="flex items-center gap-3 mt-2 text-xs">
-                ${uptime ? `<span class="text-slate-400">Uptime: <span class="text-green-400">${uptime}</span></span>` : ''}
-                ${latency ? `<span class="text-slate-400">Latenz: <span class="text-sky-400">${latency}</span></span>` : ''}
-                ${status ? `<span class="${statusColor}">● ${statusLabel}</span>` : ''}
-            </div>
-        </div>
-    `;
-    return div;
+function createModelCard(modelId) {
+    const data = MODEL_MAPPING[modelId];
+    if (!data) return;
+    const lang = getLang();
+    const role = lang === 'de' ? data.role_de : data.role;
+    const grid = document.getElementById('models-grid');
+    const existing = grid.querySelector(`[data-model-id="${modelId}"]`);
+    if (existing) {
+        const cb = existing.querySelector('input[type="checkbox"]');
+        cb.checked = state.selectedModels.includes(modelId);
+        existing.className = `model-card bg-[#1a1a1e] border ${cb.checked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
+    }
 }
 
 function loadTools() {
     const grid = document.getElementById('tools-grid');
+    grid.innerHTML = '';
     
-    // Sort tools alphabetically by name
-    const sortedTools = Object.entries(TOOL_TEMPLATES).sort((a, b) => a[1].name.localeCompare(b[1].name));
+    const entries = Object.entries(TOOL_TEMPLATES).sort(([, a], [, b]) => a.name.localeCompare(b.name));
     
-    sortedTools.forEach(([id, tool]) => {
-        const div = document.createElement('div');
-        div.className = `tool-card text-left transition flex items-start gap-3 cursor-pointer ${state.selectedTools.includes(id) ? 'selected' : ''}`;
-        div.setAttribute('data-tool-id', id);
-        div.onclick = () => toggleTool(id);
+    entries.forEach(([id, tool]) => {
+        const card = document.createElement('div');
+        const checkId = `tool-${id}`;
+        const isChecked = state.selectedTools.includes(id) ? 'checked' : '';
         
-        div.innerHTML = `
-            <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedTools.includes(id) ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleTool('${id}')">
-            <div class="flex-1">
-                <div class="flex justify-between items-center">
-                    <span class="text-sm font-bold text-white uppercase">${tool.name}</span>
-                    <span class="status-badge status-${tool.status}">${tool.status}</span>
-                </div>
-                <p class="text-xs text-slate-500 mt-1">${tool.desc || ''}</p>
+        card.className = `tool-card bg-[#1a1a1e] border ${isChecked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
+        card.setAttribute('data-tool-id', id);
+        card.innerHTML = `
+            <div class="flex items-start gap-3">
+                <input type="checkbox" id="${checkId}" ${isChecked} 
+                    class="mt-1 accent-sky-600 cursor-pointer shrink-0"
+                    onclick="event.stopPropagation(); window.toggleTool('${id}')">
+                <label for="${checkId}" class="cursor-pointer flex-1" onclick="event.stopPropagation()">
+                    <div class="text-xs font-bold text-white">${tool.name}</div>
+                    <div class="text-[10px] text-slate-500 mt-1">${tool.desc || ''}</div>
+                    <div class="flex gap-2 mt-2">
+                        <span class="text-[9px] text-slate-600">Typ: ${tool.type || '?'}</span>
+                        <span class="text-[9px] text-slate-600">Status: ${tool.status || '?'}</span>
+                    </div>
+                </label>
             </div>
         `;
-        grid.appendChild(div);
+        card.addEventListener('click', (e) => {
+            if (e.target.type !== 'checkbox') {
+                const cb = card.querySelector('input[type="checkbox"]');
+                cb.checked = !cb.checked;
+                window.toggleTool(id);
+            }
+        });
+        grid.appendChild(card);
+    });
+}
+
+function updateModelCards() {
+    const cards = document.querySelectorAll('#models-grid .model-card');
+    cards.forEach(card => {
+        const id = card.getAttribute('data-model-id');
+        if (!id) return;
+        const cb = card.querySelector('input[type="checkbox"]');
+        if (cb) {
+            cb.checked = state.selectedModels.includes(id);
+            card.className = `model-card bg-[#1a1a1e] border ${cb.checked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
+        }
+    });
+}
+
+function updateToolCards() {
+    const cards = document.querySelectorAll('#tools-grid .tool-card');
+    cards.forEach(card => {
+        const id = card.getAttribute('data-tool-id');
+        if (!id) return;
+        const cb = card.querySelector('input[type="checkbox"]');
+        if (cb) {
+            cb.checked = state.selectedTools.includes(id);
+            card.className = `tool-card bg-[#1a1a1e] border ${cb.checked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
+        }
     });
 }
 
 window.toggleModel = (id) => {
-    if (state.selectedModels.includes(id)) {
-        state.selectedModels = state.selectedModels.filter(m => m !== id);
-    } else {
+    const idx = state.selectedModels.indexOf(id);
+    if (idx === -1) {
         state.selectedModels.push(id);
+    } else {
+        state.selectedModels.splice(idx, 1);
     }
     updateModelCards();
     updateSummary();
 };
 
 window.toggleTool = (id) => {
-    if (state.selectedTools.includes(id)) {
-        state.selectedTools = state.selectedTools.filter(t => t !== id);
-    } else {
+    const idx = state.selectedTools.indexOf(id);
+    if (idx === -1) {
         state.selectedTools.push(id);
+    } else {
+        state.selectedTools.splice(idx, 1);
     }
     updateToolCards();
     updateSummary();
 };
 
-function updateModelCards() {
-    document.querySelectorAll('#models-grid .model-card').forEach((div) => {
-        const modelId = div.getAttribute('data-model-id');
-        const checkbox = div.querySelector('input[type="checkbox"]');
-        if (modelId && checkbox) {
-            checkbox.checked = state.selectedModels.includes(modelId);
-            if (state.selectedModels.includes(modelId)) {
-                div.classList.add('selected');
-            } else {
-                div.classList.remove('selected');
-            }
-        }
+function toggleHistory() {
+    const content = document.getElementById('history-content');
+    const text = document.getElementById('history-toggle-text');
+    const lang = getLang();
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        text.textContent = translations[lang]?.historyToggleHide || '▲ Hide';
+        renderHistory();
+    } else {
+        content.classList.add('hidden');
+        text.textContent = translations[lang]?.historyToggleShow || '▼ Show';
+    }
+}
+window.toggleHistory = toggleHistory;
+
+function renderHistory() {
+    const grid = document.getElementById('history-grid');
+    if (!grid || grid.children.length > 0) return;
+    const lang = getLang();
+    
+    MODEL_HISTORY.forEach(model => {
+        const card = document.createElement('div');
+        const role = lang === 'de' ? model.role_de : model.role;
+        const desc = lang === 'de' ? model.desc_de : model.desc_en;
+        const reason = lang === 'de' ? model.reason_de : model.reason;
+        card.className = 'bg-[#1a1a1e] border border-slate-800 rounded p-3';
+        card.innerHTML = `
+            <div class="text-xs font-bold text-white truncate">${model.id}</div>
+            <div class="text-[10px] text-sky-400 mt-1 truncate">${role}</div>
+            <div class="text-[10px] text-slate-500 mt-1">${desc}</div>
+            <div class="flex gap-2 mt-2 text-[9px] text-slate-600">
+                <span>${model.available || ''}</span>
+                <span>${model.context || ''}</span>
+            </div>
+            <div class="text-[9px] text-red-400 mt-1">${reason}</div>
+        `;
+        grid.appendChild(card);
     });
 }
 
-function updateToolCards() {
-    document.querySelectorAll('#tools-grid .tool-card').forEach((div) => {
-        const toolId = div.getAttribute('data-tool-id');
-        const checkbox = div.querySelector('input[type="checkbox"]');
-        if (toolId) {
-            if (state.selectedTools.includes(toolId)) {
-                div.classList.add('selected');
-                if (checkbox) checkbox.checked = true;
-            } else {
-                div.classList.remove('selected');
-                if (checkbox) checkbox.checked = false;
-            }
-        }
+function selectBundle(type) {
+    state.selectedBundle = type;
+    document.querySelectorAll('.bundle-card').forEach(c => {
+        c.classList.remove('border-sky-600');
+        c.classList.add('border-slate-800');
     });
-}
-
-window.selectModel = (id) => {
-    toggleModel(id);
-};
-
-window.selectTool = (id) => {
-    toggleTool(id);
-};
-
-window.selectBundle = (bundle) => {
-    state.selectedBundle = bundle;
-    
-    document.getElementById('bundle-basic').classList.remove('border-sky-500', 'border-sky-600');
-    document.getElementById('bundle-premium').classList.remove('border-sky-500', 'border-sky-600');
-    document.getElementById('bundle-basic').classList.add('border-slate-800');
-    document.getElementById('bundle-premium').classList.add('border-slate-800');
-    
-    const selected = document.getElementById(`bundle-${bundle}`);
-    selected.classList.remove('border-slate-800');
-    selected.classList.add('border-sky-500');
-    
+    const el = document.getElementById(`bundle-${type}`);
+    if (el) {
+        el.classList.remove('border-slate-800');
+        el.classList.add('border-sky-600');
+    }
     updateSummary();
-};
+}
+window.selectBundle = selectBundle;
 
-function downloadFile(filename, content) {
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
+function initBundleSelection() {
+    document.getElementById('bundle-basic')?.addEventListener('click', () => selectBundle('basic'));
+    document.getElementById('bundle-premium')?.addEventListener('click', () => selectBundle('premium'));
 }
 
-window.generateAndDownload = async () => {
-    if (state.selectedModels.length === 0 || state.selectedTools.length === 0) return;
+async function downloadZIP() {
+    const { OS_PATHS } = await import('./docs.js');
+    const { generateConfig } = await import('./templates.js');
     
-    const os = navigator.platform.toLowerCase().includes('win') ? 'win32' : 'darwin';
+    if (state.selectedModels.length === 0 || state.selectedTools.length === 0) {
+        alert(getLang() === 'de' ? 'Bitte wähle Modelle und Tools aus.' : 'Please select models and tools.');
+        return;
+    }
+    
     const zip = new JSZip();
+    const os = navigator.platform.toLowerCase().includes('win') ? 'win32' : 
+               navigator.platform.toLowerCase().includes('mac') ? 'darwin' : 'linux';
+    
+    const primaryModel = state.selectedModels[0];
     
     state.selectedTools.forEach(toolId => {
         const tool = TOOL_TEMPLATES[toolId];
-        const models = state.selectedModels.map(id => [id, MODEL_MAPPING[id] || { role: 'Selected', context: '?' }]);
+        if (!tool) return;
         
-        const configContent = generateConfig(toolId, models, state.selectedBundle);
+        const configContent = generateConfig(tool, state.selectedModels, state.selectedBundle, primaryModel);
         const path = OS_PATHS[os][toolId];
         const installMD = generateInstallMD({ id: toolId, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path);
         
@@ -315,7 +405,6 @@ window.generateAndDownload = async () => {
         zip.file(safeName + '-INSTALL.md', installMD);
     });
     
-    // Premium: add auto-installer + double-click launchers
     if (state.selectedBundle === 'premium' || isAdmin()) {
         try {
             const launchers = [
@@ -332,7 +421,6 @@ window.generateAndDownload = async () => {
                 }
             }
             
-            // Set correct Unix permissions for .command and .sh
             if (zip.file('auto-install-mac.command')) {
                 zip.file('auto-install-mac.command').unixPermissions = '755';
             }
@@ -377,69 +465,155 @@ Doppelklick auf **auto-install-linux.sh**
     }
     
     const content = await zip.generateAsync({ type: 'blob' });
-    downloadFile('orfb-configs.zip', content);
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'orfb-configs.zip';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+window.downloadZIP = downloadZIP;
+
+// ---- Code Management (Admin) ----
+
+window.openCodesPanel = async () => {
+    const panel = document.getElementById('codes-modal');
+    if (panel) panel.classList.remove('hidden');
+    await refreshCodesList();
 };
 
-function loadHistory() {
-    const grid = document.getElementById('history-grid');
-    if (!grid) return;
-    
-    const sorted = [...MODEL_HISTORY].sort((a, b) => a.id.localeCompare(b.id));
-    
-    sorted.forEach(m => {
-        const div = document.createElement('div');
-        div.className = 'history-card';
-        const isGerman = getLang() === 'de';
-        const role = isGerman && m.role_de ? m.role_de : m.role;
-        const desc = isGerman && m.desc_de ? m.desc_de : m.desc_en;
-        const langs = m.languages ? m.languages.slice(0, 4).join(', ') : '';
-        const reason = isGerman && m.reason_de ? m.reason_de : m.reason;
-        
-        div.innerHTML = `
-            <div class="text-xs font-bold text-slate-500 uppercase mb-1">${m.id}</div>
-            <div class="flex justify-between items-center mb-1">
-                <span class="text-xs font-bold text-white uppercase">${role}</span>
-                <span class="text-xs text-slate-600 font-mono">${m.context}</span>
-            </div>
-            <div class="text-xs text-slate-600 truncate mb-1">${desc}</div>
-            ${langs ? `<div class="text-xs text-slate-600 truncate">${langs}</div>` : ''}
-            <div class="flex items-center gap-3 mt-2 text-[10px]">
-                <span class="text-slate-500">${isGerman ? 'Verfügbar' : 'Available'}: <span class="text-sky-400">${m.available}</span></span>
-                <span class="text-slate-500">${isGerman ? 'Grund' : 'Reason'}: <span class="text-yellow-400">${reason}</span></span>
-            </div>
-        `;
-        grid.appendChild(div);
-    });
-}
+window.closeCodesPanel = () => {
+    const panel = document.getElementById('codes-modal');
+    if (panel) panel.classList.add('hidden');
+};
 
-window.toggleHistory = () => {
-    const grid = document.getElementById('history-grid');
-    const toggle = document.getElementById('history-toggle-text');
-    const isHidden = grid.classList.contains('hidden');
-    const lang = getLang();
-    const texts = translations[lang] || translations.de;
-    
-    if (isHidden) {
-        grid.classList.remove('hidden');
-        toggle.textContent = texts.historyToggleHide;
-    } else {
-        grid.classList.add('hidden');
-        toggle.textContent = texts.historyToggleShow;
+window.generateCodes = async () => {
+    const count = parseInt(document.getElementById('codes-count')?.value) || 5;
+    const maxUses = parseInt(document.getElementById('codes-maxuses')?.value) || 10;
+    const user = getUser();
+    const pass = prompt('Admin-Passwort zur Bestätigung:');
+    if (!pass) return;
+    const creds = btoa(user + ':' + pass);
+    try {
+        const res = await fetch('/api/codes?action=generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + creds },
+            body: JSON.stringify({ count, maxUses })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert(data.generated.length + ' Codes generiert:\n\n' + data.generated.join('\n'));
+            await refreshCodesList();
+        } else {
+            alert('Fehler: ' + (data.error || res.status));
+        }
+    } catch (e) {
+        alert('Fehler: ' + e.message);
     }
 };
+
+window.revokeCode = async (code) => {
+    if (!confirm('Code ' + code + ' deaktivieren?')) return;
+    const user = getUser();
+    const pass = prompt('Admin-Passwort:');
+    if (!pass) return;
+    const creds = btoa(user + ':' + pass);
+    try {
+        const res = await fetch('/api/codes?action=revoke', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + creds },
+            body: JSON.stringify({ code })
+        });
+        if (res.ok) {
+            await refreshCodesList();
+        } else {
+            const data = await res.json();
+            alert('Fehler: ' + (data.error || res.status));
+        }
+    } catch (e) {
+        alert('Fehler: ' + e.message);
+    }
+};
+
+window.resetCode = async (code) => {
+    if (!confirm('Code ' + code + ' zurücksetzen (0 Nutzungen)?')) return;
+    const user = getUser();
+    const pass = prompt('Admin-Passwort:');
+    if (!pass) return;
+    const creds = btoa(user + ':' + pass);
+    try {
+        const res = await fetch('/api/codes?action=reset', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + creds },
+            body: JSON.stringify({ code })
+        });
+        if (res.ok) {
+            await refreshCodesList();
+        } else {
+            const data = await res.json();
+            alert('Fehler: ' + (data.error || res.status));
+        }
+    } catch (e) {
+        alert('Fehler: ' + e.message);
+    }
+};
+
+window.refreshCodesList = async () => {
+    const user = getUser();
+    const pass = prompt('Admin-Passwort für Code-Liste:');
+    if (!pass) return;
+    const creds = btoa(user + ':' + pass);
+    try {
+        const res = await fetch('/api/codes?action=list', {
+            headers: { Authorization: 'Basic ' + creds }
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('codes-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        const entries = Object.entries(data.codes || {});
+        if (entries.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-slate-500 text-[10px] text-center py-4">Keine Codes vorhanden</td></tr>';
+            return;
+        }
+        entries.forEach(([code, info]) => {
+            const tr = document.createElement('tr');
+            tr.className = 'border-b border-slate-800 text-[10px]';
+            const active = info.active ? 'text-green-500' : 'text-red-500';
+            const activeText = info.active ? 
+                (getLang() === 'de' ? 'Aktiv' : 'Active') : 
+                (getLang() === 'de' ? 'Inaktiv' : 'Inactive');
+            tr.innerHTML = `
+                <td class="py-2 px-2 font-mono text-white">${code}</td>
+                <td class="py-2 px-2">${info.uses}/${info.maxUses}</td>
+                <td class="py-2 px-2 ${active}">${activeText}</td>
+                <td class="py-2 px-2 text-slate-500">${new Date(info.createdAt).toLocaleDateString()}</td>
+                <td class="py-2 px-2">
+                    <button onclick="revokeCode('${code}')" class="text-red-400 hover:text-red-300 mr-2" ${!info.active ? 'disabled' : ''}>Widerrufen</button>
+                    <button onclick="resetCode('${code}')" class="text-yellow-400 hover:text-yellow-300">Reset</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (e) {
+        console.error('Failed to load codes:', e);
+    }
+};
+
+// ---- Init ----
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (!isAuthenticated()) {
-        window.location.href = 'landing.html';
-        return;
-    }
-    
-    setLanguage('de');
+    const lang = getLang() || 'de';
+    setLanguage(lang);
     loadModels();
     loadTools();
-    loadHistory();
-    updateSummary();
+    initBundleSelection();
+    updateUI();
     
-    document.getElementById('bundle-basic').classList.add('border-sky-500');
-    document.getElementById('bundle-premium').classList.remove('border-sky-500');
+    document.getElementById('download-btn')?.addEventListener('click', downloadZIP);
+    
+    const langBtns = document.querySelectorAll('[data-lang]');
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', () => window.setLang(btn.dataset.lang));
+    });
 });

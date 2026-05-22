@@ -19,7 +19,14 @@
             <p class="text-slate-500 text-xs uppercase tracking-[0.2em] mt-1">Access Required</p>
         </div>
 
-        <form id="login-form" class="space-y-6">
+        <!-- Tabs -->
+        <div class="flex mb-6 border-b border-slate-800">
+            <button id="tab-admin" class="flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-sky-500 border-b-2 border-sky-600 transition" onclick="switchTab('admin')">Admin Login</button>
+            <button id="tab-anon" class="flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-slate-600 border-b-2 border-transparent transition" onclick="switchTab('anon')">Anonymer Code</button>
+        </div>
+
+        <!-- Admin Login Form -->
+        <form id="form-admin" class="space-y-6">
             <div>
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
                 <input type="text" id="username" name="username" value="generali" required autocomplete="username"
@@ -51,6 +58,28 @@
             <p id="error-msg" class="text-red-500 text-[10px] text-center hidden">Zugang verweigert</p>
         </form>
 
+        <!-- Anonymous Code Form -->
+        <form id="form-anon" class="space-y-6 hidden">
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Nutzercode</label>
+                <input type="text" id="anon-code" required maxlength="10"
+                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-center tracking-[0.3em] text-white font-mono uppercase"
+                    placeholder="CODE EINGEBEN">
+            </div>
+
+            <div class="text-center text-[10px] text-slate-600 leading-relaxed">
+                Gib deinen persönlichen Nutzercode ein.<br>
+                Jeder Code ist begrenzt nutzbar.
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-700 text-white text-xs font-bold py-4 rounded hover:bg-emerald-600 transition uppercase tracking-[0.2em]">
+                Anonym einloggen
+            </button>
+            
+            <p id="anon-error-msg" class="text-red-500 text-[10px] text-center hidden"></p>
+            <p id="anon-success-msg" class="text-green-500 text-[10px] text-center hidden"></p>
+        </form>
+
         <div class="mt-6 text-center">
             <a href="landing.html" class="text-[10px] text-slate-600 hover:text-slate-400 uppercase tracking-widest">← Zurück</a>
         </div>
@@ -68,16 +97,35 @@
                 btn.textContent = '👁';
             }
         }
+
+        function switchTab(tab) {
+            const adminForm = document.getElementById('form-admin');
+            const anonForm = document.getElementById('form-anon');
+            const tabAdmin = document.getElementById('tab-admin');
+            const tabAnon = document.getElementById('tab-anon');
+
+            if (tab === 'admin') {
+                adminForm.classList.remove('hidden');
+                anonForm.classList.add('hidden');
+                tabAdmin.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-sky-500 border-b-2 border-sky-600 transition';
+                tabAnon.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-slate-600 border-b-2 border-transparent transition';
+            } else {
+                adminForm.classList.add('hidden');
+                anonForm.classList.remove('hidden');
+                tabAdmin.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-slate-600 border-b-2 border-transparent transition';
+                tabAnon.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest text-sky-500 border-b-2 border-sky-600 transition';
+            }
+        }
     </script>
 
     <script type="module">
-        import { checkAuth, login, isAuthenticated } from './src/js/auth.js';
+        import { checkAuth, login, loginWithCode, isAuthenticated } from './src/js/auth.js';
         
         if (isAuthenticated()) {
             window.location.href = 'index.html';
         }
 
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        document.getElementById('form-admin').addEventListener('submit', async (e) => {
             e.preventDefault();
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
@@ -89,6 +137,32 @@
                 window.location.href = 'index.html';
             } else {
                 document.getElementById('error-msg').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('form-anon').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('anon-code').value.trim().toUpperCase();
+            const errorEl = document.getElementById('anon-error-msg');
+            const successEl = document.getElementById('anon-success-msg');
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+
+            if (!code) {
+                errorEl.textContent = 'Bitte gib einen Code ein.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const result = await loginWithCode(code);
+            
+            if (result.success) {
+                successEl.textContent = 'Login erfolgreich! Weiterleitung...';
+                successEl.classList.remove('hidden');
+                setTimeout(() => { window.location.href = 'index.html'; }, 500);
+            } else {
+                errorEl.textContent = result.error || 'Ungültiger oder aufgebrauchter Code.';
+                errorEl.classList.remove('hidden');
             }
         });
     </script>
