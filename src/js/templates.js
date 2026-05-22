@@ -89,7 +89,7 @@ export const TOOL_TEMPLATES = {
     }
 };
 
-export function generateConfig(toolId, models, tier) {
+export function generateConfig(toolId, models, tier, apiKey) {
     const tool = TOOL_TEMPLATES[toolId] || { type: "json_global" };
     const [id, data] = models[0];
 
@@ -99,13 +99,14 @@ export function generateConfig(toolId, models, tier) {
                 title: `ORF-${tier.toUpperCase()}`,
                 provider: "openrouter",
                 model: id,
+                apiKey: apiKey || 'DEIN_API_KEY_HERE',
                 ...(tier === "premium" && { system_prompt: data.premium_prompt })
             }]
         }, null, 2);
     }
     
     if (tool.type === "yaml_config") {
-        return `model: openrouter/${id}\nendpoint: https://openrouter.ai/api/v1\n# ORF-Butler ${tier} synthezised`;
+        return `api_key: ${apiKey || 'DEIN_API_KEY_HERE'}\nmodel: openrouter/${id}\nendpoint: https://openrouter.ai/api/v1\n# ORF-Butler ${tier} synthezised`;
     }
 
     return `# ORF-Butler Instructions\n${tier === 'premium' ? data.premium_prompt : 'Act as a professional coder.'}`;
