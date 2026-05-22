@@ -1,6 +1,6 @@
 import { TRANSLATIONS, setLanguage, getLang } from '../js/i18n.js';
 import { DAILY_PROMPTS, getPromptOfDay } from '../js/prompts.js';
-import { MODEL_MAPPING, getBestModels } from '../js/mapping.js';
+import { MODEL_MAPPING, getBestModels, MODEL_HISTORY } from '../js/mapping.js';
 import { TOOL_TEMPLATES, generateConfig } from '../js/templates.js';
 import { generateInstallMD, CLI_COMMANDS, OS_PATHS } from '../js/docs.js';
 import { checkAuth, isAuthenticated, login, logout } from '../js/auth.js';
@@ -74,6 +74,16 @@ try {
         
         const pyFiltered = pythonModels.every(([_, d]) => d.languages.includes("python"));
         assert(pyFiltered, "getBestModels: Python filter correct");
+    });
+
+    // 4b. History Tests
+    runTestGroup("History Tests", () => {
+        assert(MODEL_HISTORY.length > 0, "History: Not empty");
+        assert(MODEL_HISTORY[0].id, "History: First entry has ID");
+        assert(MODEL_HISTORY.every(m => m.available), "History: All entries have available period");
+        assert(MODEL_HISTORY.every(m => m.reason), "History: All entries have removal reason");
+        assert(MODEL_HISTORY.some(m => m.id.includes("openai")), "History: Contains OpenAI models");
+        assert(MODEL_HISTORY.some(m => m.id.includes("anthropic")), "History: Contains Anthropic models");
     });
 
     // 5. Templates Tests
