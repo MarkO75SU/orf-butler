@@ -1,0 +1,39 @@
+name: Daily Free Model Update
+
+on:
+  schedule:
+    - cron: '1 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-models:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run model update script
+        run: node scripts/update-models.js
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git config user.name "ORF Butler Bot"
+          git config user.email "bot@orfb.app"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git commit -m "Auto-Update: Free models + configs $(date +'%Y-%m-%d')"
+          git push

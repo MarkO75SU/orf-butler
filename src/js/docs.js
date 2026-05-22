@@ -38,29 +38,63 @@ export const CLI_COMMANDS = {
             darwin: `pip install --upgrade aider-install`,
             linux: `pip install --upgrade aider-install`
         }
+    },
+    "claude_code": {
+        name: "Claude Code",
+        install: {
+            win32: `npm install -g @anthropic-ai/claude-code`,
+            darwin: `npm install -g @anthropic-ai/claude-code`,
+            linux: `npm install -g @anthropic-ai/claude-code`
+        },
+        update: {
+            win32: `npm update -g @anthropic-ai/claude-code`,
+            darwin: `npm update -g @anthropic-ai/claude-code`,
+            linux: `npm update -g @anthropic-ai/claude-code`
+        }
+    },
+    "cline": {
+        name: "Cline",
+        install: {
+            win32: `winget install cline`,
+            darwin: `brew install cline`,
+            linux: `npm install -g @cline/cline`
+        },
+        update: {
+            win32: `winget upgrade cline`,
+            darwin: `brew upgrade cline`,
+            linux: `npm update -g @cline/cline`
+        }
     }
 };
 
 export const OS_PATHS = {
     "win32": {
         "continue": "C:\\Users\\[YourName]\\.continue\\config.json",
-        "cursor": ".cursorrules (In your project folder)",
+        "cursor": ".cursorrules (In deinem Projektordner)",
+        "windsurf": ".windsurfrules (In deinem Projektordner)",
         "zed": "C:\\Users\\[YourName]\\AppData\\Roaming\\Zed\\settings.json",
-        "aider": ".aider.conf.yml (In your project folder)",
-        "copilot": ".github\\copilot-instructions.md (In your project folder)",
-        "amazon_q": "Amazon Q Settings in Browser",
+        "aider": ".aider.conf.yml (In deinem Projektordner)",
+        "copilot": ".github\\copilot-instructions.md (In deinem Projektordner)",
+        "amazon_q": "Amazon Q Settings im Browser",
         "opencode": "C:\\Users\\[YourName]\\AppData\\Roaming\\opencode\\opencode.json",
-        "antigravity": "settings.yaml (In your project folder)"
+        "antigravity": "settings.yaml (In deinem Projektordner)",
+        "claude_code": "CLAUDE.md (In deinem Projektordner)",
+        "cline": ".clinerules (In deinem Projektordner)",
+        "codeium": ".codeiumrules (In deinem Projektordner)"
     },
     "darwin": {
         "continue": "Users/[YourName]/.continue/config.json",
-        "cursor": ".cursorrules (In your project folder)",
+        "cursor": ".cursorrules (In deinem Projektordner)",
+        "windsurf": ".windsurfrules (In deinem Projektordner)",
         "zed": "~/.config/zed/settings.json",
         "aider": ".aider.conf.yml",
         "copilot": ".github/copilot-instructions.md",
         "amazon_q": "Amazon Q Settings",
         "opencode": "~/.config/opencode/opencode.json",
-        "antigravity": "settings.yaml"
+        "antigravity": "settings.yaml",
+        "claude_code": "CLAUDE.md (In deinem Projektordner)",
+        "cline": ".clinerules (In deinem Projektordner)",
+        "codeium": ".codeiumrules (In deinem Projektordner)"
     }
 };
 
@@ -71,7 +105,7 @@ export function generateInstallMD(tool, os, tier, path) {
 
     let cliSection = "";
     
-    if (tool.id === "opencode" || tool.id === "ollama" || tool.id === "aider") {
+    if (tool.id === "opencode" || tool.id === "ollama" || tool.id === "aider" || tool.id === "claude_code" || tool.id === "cline") {
         const cli = CLI_COMMANDS[tool.id];
         if (cli) {
             cliSection = `

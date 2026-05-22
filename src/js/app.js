@@ -109,18 +109,25 @@ async function loadModels() {
 }
 
 function createModelCard(id, data, context) {
-    const div = document.createElement('button');
-    div.className = `model-card text-left transition flex items-start gap-3 ${state.selectedModels.includes(id) ? 'selected' : ''}`;
+    const div = document.createElement('div');
+    div.className = `model-card text-left transition flex items-start gap-3 cursor-pointer ${state.selectedModels.includes(id) ? 'selected' : ''}`;
+    div.setAttribute('data-model-id', id);
     div.onclick = () => toggleModel(id);
     
     const isGerman = getLang() === 'de';
     const role = data ? (isGerman && data.role_de ? data.role_de : data.role) : id.split('/')[0];
-    const desc = data ? (isGerman && data.desc_de ? data.desc_de : data.desc_en) : 'Live Model';
+    const desc = data ? (isGerman && data.desc_de ? data.desc_de : data.desc_en) : '';
     const langs = data && data.languages ? data.languages.slice(0, 4).join(', ') : '';
     const ctx = context ? (typeof context === 'number' ? `${(context / 1000).toFixed(0)}k` : context) : '?';
+    const uptime = data && data.uptime ? data.uptime : null;
+    const latency = data && data.latency ? data.latency : null;
+    const status = data && data.status ? data.status : null;
+    
+    const statusColor = status === 'online' ? 'text-green-400' : status === 'degraded' ? 'text-yellow-400' : 'text-red-400';
+    const statusLabel = isGerman ? (status === 'online' ? 'Online' : status === 'degraded' ? 'Eingeschränkt' : 'Offline') : (status === 'online' ? 'Online' : status === 'degraded' ? 'Degraded' : 'Offline');
     
     div.innerHTML = `
-        <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedModels.includes(id) ? 'checked' : ''}>
+        <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedModels.includes(id) ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleModel('${id}')">
         <div class="flex-1">
             <div class="text-sm font-bold text-sky-500 uppercase mb-1">${id}</div>
             <div class="flex justify-between items-center mb-1">
@@ -129,6 +136,11 @@ function createModelCard(id, data, context) {
             </div>
             <div class="text-xs text-slate-600 truncate">${desc}</div>
             ${langs ? `<div class="text-xs text-slate-500 mt-1 truncate">${langs}</div>` : ''}
+            <div class="flex items-center gap-3 mt-2 text-xs">
+                ${uptime ? `<span class="text-slate-400">Uptime: <span class="text-green-400">${uptime}</span></span>` : ''}
+                ${latency ? `<span class="text-slate-400">Latenz: <span class="text-sky-400">${latency}</span></span>` : ''}
+                ${status ? `<span class="${statusColor}">● ${statusLabel}</span>` : ''}
+            </div>
         </div>
     `;
     return div;
@@ -141,9 +153,14 @@ function loadTools() {
     const sortedTools = Object.entries(TOOL_TEMPLATES).sort((a, b) => a[1].name.localeCompare(b[1].name));
     
     sortedTools.forEach(([id, tool]) => {
-        const div = document.createElement('button');
-        div.className = `tool-card text-left transition flex items-start gap-3 ${state.selectedTools.includes(id) ? 'selected' : ''}`;
+        const div = document.createElement('div');
+        div.className = `tool-card text-left transition flex items-start gap-3 cursor-pointer ${state.selectedTools.includes(id) ? 'selected' : ''}`;
+        div.setAttribute('data-tool-id', id);
         div.onclick = () => toggleTool(id);
+        
+        div.innerHTML = `
+            <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedTools.includes(id) ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleTool('${id}')">
+            <div class="flex-1">
         
         div.innerHTML = `
             <input type="checkbox" class="mt-1 accent-sky-500 w-4 h-4" ${state.selectedTools.includes(id) ? 'checked' : ''}>
@@ -180,24 +197,24 @@ window.toggleTool = (id) => {
 };
 
 function updateModelCards() {
-    document.querySelectorAll('#models-grid .model-card').forEach((div, index) => {
-        const modelId = Object.keys(MODEL_MAPPING)[index];
+    document.querySelectorAll('#models-grid .model-card').forEach((div) => {
+        const modelId = div.getAttribute('data-model-id');
         const checkbox = div.querySelector('input[type="checkbox"]');
-        if (checkbox) {
+        if (modelId && checkbox) {
             checkbox.checked = state.selectedModels.includes(modelId);
-        }
-        if (state.selectedModels.includes(modelId)) {
-            div.classList.add('selected');
-        } else {
-            div.classList.remove('selected');
+            if (state.selectedModels.includes(modelId)) {
+                div.classList.add('selected');
+            } else {
+                div.classList.remove('selected');
+            }
         }
     });
 }
 
 function updateToolCards() {
     document.querySelectorAll('#tools-grid .tool-card').forEach((div) => {
+        const toolId = div.getAttribute('data-tool-id');
         const checkbox = div.querySelector('input[type="checkbox"]');
-        const toolId = Object.keys(TOOL_TEMPLATES).find(id => div.textContent.includes(TOOL_TEMPLATES[id].name));
         if (toolId) {
             if (state.selectedTools.includes(toolId)) {
                 div.classList.add('selected');

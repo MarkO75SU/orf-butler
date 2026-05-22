@@ -44,6 +44,48 @@ export const TOOL_TEMPLATES = {
         type: "instruction_paste", 
         status: "stable",
         desc: "Cloud-Spezialist für AWS-Workflows." 
+    },
+    "cursor": {
+        name: "Cursor Editor",
+        config_file: ".cursorrules",
+        type: "instruction_paste",
+        status: "stable",
+        desc: "AI-native Code Editor mit Deep Context."
+    },
+    "windsurf": {
+        name: "Windsurf Editor",
+        config_file: ".windsurfrules",
+        type: "instruction_paste",
+        status: "stable",
+        desc: "Agentic IDE mit Flow-Autonomie."
+    },
+    "claude_code": {
+        name: "Claude Code CLI",
+        config_file: "CLAUDE.md",
+        type: "instruction_paste",
+        status: "stable",
+        desc: "Anthropics offizielles Terminal-Tool."
+    },
+    "github_copilot": {
+        name: "GitHub Copilot",
+        config_file: ".github/copilot-instructions.md",
+        type: "instruction_paste",
+        status: "stable",
+        desc: "Microsofts AI-Pair-Programmer."
+    },
+    "cline": {
+        name: "Cline",
+        config_file: ".clinerules",
+        type: "instruction_paste",
+        status: "stable",
+        desc: "Open-Source Agentic Coding Assistant."
+    },
+    "codeium": {
+        name: "Codeium / Windsurf",
+        config_file: ".codeiumrules",
+        type: "instruction_paste",
+        status: "stable",
+        desc: "Schnelle Code-Vervollständigung."
     }
 };
 
