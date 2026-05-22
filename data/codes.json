@@ -42,6 +42,12 @@
       "uses": 0,
       "active": true,
       "createdAt": "2026-05-22T08:10:31.207Z"
+    },
+    "99NR63CM": {
+      "maxUses": 10,
+      "uses": 0,
+      "active": true,
+      "createdAt": "2026-05-22T08:19:56.377Z"
     }
   }
 }
