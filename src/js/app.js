@@ -315,6 +315,37 @@ window.generateAndDownload = async () => {
         zip.file(safeName + '-INSTALL.md', installMD);
     });
     
+    // Premium: add auto-installer
+    if (state.selectedBundle === 'premium' || isAdmin()) {
+        try {
+            const res = await fetch('./scripts/auto-install.js');
+            const script = await res.text();
+            zip.file('auto-install.js', script);
+            zip.file('README-AUTOINSTALL.md',
+`# ORF-Butler Auto-Installer (Premium)
+
+Kopiert alle Config-Dateien automatisch an die richtigen Pfade.
+
+## Verwendung
+
+${os === 'win32' ? 'powershell -ExecutionPolicy Bypass -Command "node auto-install.js"' : 'node auto-install.js'}
+
+## Voraussetzungen
+
+- Node.js 18+
+
+## Was passiert?
+
+1. Das Skript erkennt dein Betriebssystem (Windows/Mac/Linux)
+2. Es findet die richtigen Verzeichnisse für jedes Tool
+3. Es kopiert die Configs dorthin
+4. Fertig – starte dein Tool neu
+`);
+        } catch (e) {
+            console.warn('Auto-installer not available:', e.message);
+        }
+    }
+    
     const content = await zip.generateAsync({ type: 'blob' });
     downloadFile('orfb-configs.zip', content);
 };
