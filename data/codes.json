@@ -1,3 +1,22 @@
 {
-  "codes": {}
+  "codes": {
+    "2U48EYWY": {
+      "maxUses": 10,
+      "uses": 0,
+      "active": true,
+      "createdAt": "2026-05-22T07:46:05.325Z"
+    },
+    "ART62ZTV": {
+      "maxUses": 10,
+      "uses": 0,
+      "active": true,
+      "createdAt": "2026-05-22T07:46:05.326Z"
+    },
+    "LJT7WGT5": {
+      "maxUses": 10,
+      "uses": 0,
+      "active": true,
+      "createdAt": "2026-05-22T07:46:05.326Z"
+    }
+  }
 }
