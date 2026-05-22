@@ -66,6 +66,8 @@ export default async function handler(req, res) {
                 entry.uses += 1;
                 const anonId = 'anon' + String(store.nextAnonId || 1).padStart(3, '0');
                 store.nextAnonId = (store.nextAnonId || 1) + 1;
+                if (!entry.assignedAnons) entry.assignedAnons = [];
+                entry.assignedAnons.push(anonId);
                 await writeCodes(store, sha);
                 return res.json({
                     success: true,

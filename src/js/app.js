@@ -565,6 +565,15 @@ window.resetCode = async (code) => {
     }
 };
 
+window.copyCode = (code) => {
+    navigator.clipboard.writeText(code).then(() => {
+        const btn = event.target;
+        const orig = btn.textContent;
+        btn.textContent = '✅';
+        setTimeout(() => btn.textContent = orig, 1000);
+    }).catch(() => alert(code));
+};
+
 window.refreshCodesList = async () => {
     const creds = getAdminCreds();
     if (!creds) return;
@@ -578,7 +587,7 @@ window.refreshCodesList = async () => {
         tbody.innerHTML = '';
         const entries = Object.entries(data.codes || {});
         if (entries.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-slate-500 text-[10px] text-center py-4">Keine Codes vorhanden</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-slate-500 text-[10px] text-center py-4">Keine Codes vorhanden</td></tr>';
             return;
         }
         entries.forEach(([code, info]) => {
@@ -588,9 +597,14 @@ window.refreshCodesList = async () => {
             const activeText = info.active ? 
                 (getLang() === 'de' ? 'Aktiv' : 'Active') : 
                 (getLang() === 'de' ? 'Inaktiv' : 'Inactive');
+            const anons = (info.assignedAnons || []).join(', ');
             tr.innerHTML = `
-                <td class="py-2 px-2 font-mono text-white">${code}</td>
+                <td class="py-2 px-2 font-mono text-white">
+                    ${code}
+                    <button onclick="copyCode('${code}')" class="text-slate-500 hover:text-slate-300 ml-1" title="Kopieren">📋</button>
+                </td>
                 <td class="py-2 px-2">${info.uses}/${info.maxUses}</td>
+                <td class="py-2 px-2 text-sky-400">${anons || '-'}</td>
                 <td class="py-2 px-2 ${active}">${activeText}</td>
                 <td class="py-2 px-2 text-slate-500">${new Date(info.createdAt).toLocaleDateString()}</td>
                 <td class="py-2 px-2">
