@@ -64,7 +64,7 @@ export default async function handler(req, res) {
                 if (!entry.active) return res.status(403).json({ error: 'Code wurde deaktiviert' });
                 if (entry.uses >= entry.maxUses) return res.status(403).json({ error: 'Code bereits aufgebraucht' });
                 entry.uses += 1;
-                const anonId = 'anon' + String(store.nextAnonId || 1).padStart(4, '0');
+                const anonId = 'anon' + String(store.nextAnonId || 1).padStart(3, '0');
                 store.nextAnonId = (store.nextAnonId || 1) + 1;
                 await writeCodes(store, sha);
                 return res.json({
