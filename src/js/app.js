@@ -315,12 +315,31 @@ window.generateAndDownload = async () => {
         zip.file(safeName + '-INSTALL.md', installMD);
     });
     
-    // Premium: add auto-installer
+    // Premium: add auto-installer + double-click launchers
     if (state.selectedBundle === 'premium' || isAdmin()) {
         try {
-            const res = await fetch('./scripts/auto-install.js');
-            const script = await res.text();
-            zip.file('auto-install.js', script);
+            const launchers = [
+                ['auto-install.js', 'auto-install.js'],
+                ['auto-install-win.bat', 'auto-install-win.bat'],
+                ['auto-install-mac.command', 'auto-install-mac.command'],
+                ['auto-install-linux.sh', 'auto-install-linux.sh']
+            ];
+            for (const [src, dest] of launchers) {
+                const res = await fetch('./scripts/' + src);
+                if (res.ok) {
+                    const text = await res.text();
+                    zip.file(dest, text);
+                }
+            }
+            
+            // Set correct Unix permissions for .command and .sh
+            if (zip.file('auto-install-mac.command')) {
+                zip.file('auto-install-mac.command').unixPermissions = '755';
+            }
+            if (zip.file('auto-install-linux.sh')) {
+                zip.file('auto-install-linux.sh').unixPermissions = '755';
+            }
+            
             zip.file('README-AUTOINSTALL.md',
 `# ORF-Butler Auto-Installer (Premium)
 
@@ -328,17 +347,28 @@ Kopiert alle Config-Dateien automatisch an die richtigen Pfade.
 
 ## Verwendung
 
-${os === 'win32' ? 'powershell -ExecutionPolicy Bypass -Command "node auto-install.js"' : 'node auto-install.js'}
+### Windows
+Doppelklick auf **auto-install-win.bat** (erkennbar am Zahnrad-Symbol)
+
+### Mac
+Doppelklick auf **auto-install-mac.command**
+
+### Linux
+Doppelklick auf **auto-install-linux.sh**
+
+### Alternativ (jedes System)
+\`node auto-install.js\` im Terminal
 
 ## Voraussetzungen
 
-- Node.js 18+
+- Node.js 18+ (https://nodejs.org)
+- Config-Dateien im selben Ordner
 
 ## Was passiert?
 
 1. Das Skript erkennt dein Betriebssystem (Windows/Mac/Linux)
 2. Es findet die richtigen Verzeichnisse für jedes Tool
-3. Es kopiert die Configs dorthin
+3. Existierende Configs werden gesichert und ersetzt
 4. Fertig – starte dein Tool neu
 `);
         } catch (e) {

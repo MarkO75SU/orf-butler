@@ -1,15 +1,8 @@
-// ORF-Butler Auto-Installer (Premium)
-// Usage: node auto-install.js
-// Kopiert Config-Dateien automatisch an die richtigen Pfade.
-
 import fs from 'fs';
 import path from 'path';
-import readline from 'readline';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-const ask = (q) => new Promise(r => rl.question(q, r));
 
 const GREEN = '\x1b[32m';
 const CYAN = '\x1b[36m';
@@ -63,14 +56,14 @@ const OS_PATHS = {
     }
 };
 
-async function detectOS() {
+function detectOS() {
     const p = process.platform;
     if (p === 'win32') return 'win32';
     if (p === 'darwin') return 'darwin';
     return 'linux';
 }
 
-async function findConfigFiles(dir) {
+function findConfigFiles(dir) {
     return fs.readdirSync(dir).filter(f =>
         f.endsWith('-config.json') || f.endsWith('.md')
     ).map(f => {
@@ -79,26 +72,26 @@ async function findConfigFiles(dir) {
     });
 }
 
-async function run() {
+function run() {
     console.log(`\n${BOLD}${CYAN}╔══════════════════════════════════════╗${RESET}`);
     console.log(`${BOLD}${CYAN}║   ORF-Butler Auto-Installer (Premium) ║${RESET}`);
     console.log(`${BOLD}${CYAN}╚══════════════════════════════════════╝${RESET}\n`);
 
-    const os = await detectOS();
-    console.log(`${YELLOW}Betriebssystem:${RESET} ${os}\n`);
+    const os = detectOS();
+    console.log(`  Betriebssystem: ${os}\n`);
 
-    const configs = await findConfigFiles(__dirname);
+    const configs = findConfigFiles(__dirname);
     if (configs.length === 0) {
-        console.log(`${RED}Keine Config-Dateien gefunden.${RESET}`);
-        console.log(`${YELLOW}Lege das Skript in den Ordner mit den Config-Dateien.${RESET}\n`);
-        rl.close();
+        console.log(`  ${RED}Keine Config-Dateien gefunden.${RESET}`);
+        console.log(`  ${YELLOW}Lege das Skript in den Ordner mit den Config-Dateien.${RESET}\n`);
         return;
     }
 
-    console.log(`${BOLD}Gefundene Konfigurationen:${RESET}`);
+    console.log(`  ${BOLD}Gefundene Konfigurationen:${RESET}`);
     configs.forEach((c, i) => {
         const info = OS_PATHS[os][c.toolId];
-        console.log(`  ${i + 1}. ${info ? info.label : c.toolId} (${c.file})`);
+        const label = info ? info.label : c.toolId;
+        console.log(`    ${i + 1}. ${label}`);
     });
     console.log();
 
@@ -107,7 +100,7 @@ async function run() {
     for (const config of configs) {
         const info = OS_PATHS[os][config.toolId];
         if (!info || !info.path) {
-            console.log(`${YELLOW}⚠ ${config.toolId}: Kein Pfad bekannt → übersprungen${RESET}`);
+            console.log(`  ${YELLOW}⚠ ${config.toolId}: Nur im Browser nutzbar → übersprungen${RESET}`);
             skipped++;
             continue;
         }
@@ -116,27 +109,30 @@ async function run() {
         const srcPath = path.join(__dirname, config.file);
 
         if (!fs.existsSync(srcPath)) {
-            console.log(`${RED}✗ ${info.label}: ${config.file} nicht gefunden${RESET}`);
+            console.log(`  ${RED}✗ ${info.label}: Datei nicht gefunden${RESET}`);
             skipped++;
             continue;
         }
 
         const destDir = path.dirname(destPath);
         if (!fs.existsSync(destDir)) {
-            const create = await ask(`${YELLOW}Verzeichnis fehlt: ${destDir}${RESET}\nErstellen? (j/N): `);
-            if (create.toLowerCase() === 'j' || create.toLowerCase() === 'y') {
+            try {
                 fs.mkdirSync(destDir, { recursive: true });
-            } else {
-                console.log(`${YELLOW}  → Übersprungen${RESET}`);
+                console.log(`  ${CYAN}📁 Ordner erstellt: ${destDir}${RESET}`);
+            } catch (err) {
+                console.log(`  ${RED}✗ ${info.label}: Ordner konnte nicht erstellt werden - ${err.message}${RESET}`);
                 skipped++;
                 continue;
             }
         }
 
         if (fs.existsSync(destPath)) {
-            const overwrite = await ask(`${YELLOW}${info.label}: Existiert bereits${RESET}\nÜberschreiben? (j/N): `);
-            if (overwrite.toLowerCase() !== 'j' && overwrite.toLowerCase() !== 'y') {
-                console.log(`${YELLOW}  → Übersprungen${RESET}`);
+            const backupPath = destPath + '.backup-' + new Date().toISOString().replace(/[:.]/g, '-');
+            try {
+                fs.copyFileSync(destPath, backupPath);
+                console.log(`  ${YELLOW}📦 Alte Config gesichert als: ${path.basename(backupPath)}${RESET}`);
+            } catch (err) {
+                console.log(`  ${RED}✗ ${info.label}: Konnte alte Datei nicht sichern - ${err.message}${RESET}`);
                 skipped++;
                 continue;
             }
@@ -144,23 +140,18 @@ async function run() {
 
         try {
             fs.copyFileSync(srcPath, destPath);
-            console.log(`${GREEN}✔ ${info.label} → ${destPath}${RESET}`);
+            console.log(`  ${GREEN}✔ ${info.label} → Installiert${RESET}`);
             installed++;
         } catch (err) {
-            console.log(`${RED}✗ ${info.label}: ${err.message}${RESET}`);
+            console.log(`  ${RED}✗ ${info.label}: Fehler - ${err.message}${RESET}`);
             skipped++;
         }
     }
 
-    console.log(`\n${BOLD}══════════════════════════════════════${RESET}`);
-    console.log(`${GREEN}✔ Installiert: ${installed}${RESET}`);
-    console.log(`${YELLOW}⚠ Übersprungen: ${skipped}${RESET}`);
-    console.log(`\n${CYAN}Fertig! Starte dein Tool neu.${RESET}\n`);
-    rl.close();
+    console.log(`\n  ${BOLD}══════════════════════════════════════${RESET}`);
+    console.log(`  ${GREEN}✔ Erfolgreich installiert: ${installed}${RESET}`);
+    console.log(`  ${YELLOW}⚠ Übersprungen: ${skipped}${RESET}`);
+    console.log(`\n  ${CYAN}✅ Fertig! Starte dein Tool neu.${RESET}\n`);
 }
 
-run().catch(err => {
-    console.error(`${RED}Fehler: ${err.message}${RESET}`);
-    rl.close();
-    process.exit(1);
-});
+run();
