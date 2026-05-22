@@ -35,6 +35,7 @@ export default async function handler(req, res) {
                 const count = Math.min(parseInt(req.body?.count) || 1, 100);
                 const maxUses = parseInt(req.body?.maxUses) || 10;
                 const { codes: store, sha } = await readCodes();
+                if (!store.nextAnonId) store.nextAnonId = 1;
                 const generated = [];
                 for (let i = 0; i < count; i++) {
                     let code = generateCode();
@@ -63,10 +64,13 @@ export default async function handler(req, res) {
                 if (!entry.active) return res.status(403).json({ error: 'Code wurde deaktiviert' });
                 if (entry.uses >= entry.maxUses) return res.status(403).json({ error: 'Code bereits aufgebraucht' });
                 entry.uses += 1;
+                const anonId = 'anon' + String(store.nextAnonId || 1).padStart(4, '0');
+                store.nextAnonId = (store.nextAnonId || 1) + 1;
                 await writeCodes(store, sha);
                 return res.json({
                     success: true,
                     code: cleaned,
+                    anonId: anonId,
                     uses: entry.uses,
                     maxUses: entry.maxUses,
                     remaining: entry.maxUses - entry.uses

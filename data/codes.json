@@ -1,28 +1,17 @@
 {
+  "nextAnonId": 1,
   "codes": {
-    "2U48EYWY": {
-      "maxUses": 10,
-      "uses": 2,
-      "active": true,
-      "createdAt": "2026-05-22T07:46:05.325Z"
-    },
-    "ART62ZTV": {
+    "FZYRECZL": {
       "maxUses": 10,
       "uses": 0,
       "active": true,
-      "createdAt": "2026-05-22T07:46:05.326Z"
+      "createdAt": "2026-05-22T07:58:38.440Z"
     },
-    "LJT7WGT5": {
+    "VBJKFNGJ": {
       "maxUses": 10,
       "uses": 0,
       "active": true,
-      "createdAt": "2026-05-22T07:46:05.326Z"
-    },
-    "DQV43VPE": {
-      "maxUses": 10,
-      "uses": 0,
-      "active": true,
-      "createdAt": "2026-05-22T07:46:53.370Z"
+      "createdAt": "2026-05-22T07:58:38.442Z"
     }
   }
 }

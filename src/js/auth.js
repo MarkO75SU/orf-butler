@@ -43,24 +43,30 @@ export async function login(username, password, remember) {
                 user: username,
                 expires: expires
             }));
-            return true;
+            return { success: true };
         }
         
         const error = await response.json();
-        alert(error.error || 'Login fehlgeschlagen');
-        return false;
+        return { success: false, error: error.error || 'Login fehlgeschlagen' };
     } catch (e) {
-        alert('Verbindung zum Server fehlgeschlagen');
-        return false;
+        return { success: false, error: 'Verbindung zum Server fehlgeschlagen' };
     }
 }
 
 export async function loginWithCode(code) {
+    const cleaned = code.trim().toUpperCase();
+    
+    if (cleaned === 'GENERALI') {
+        const pass = prompt('Admin-Passwort eingeben:');
+        if (!pass) return { success: false, error: 'Abgebrochen' };
+        return await login('generali', pass, true);
+    }
+    
     try {
         const response = await fetch('/api/codes?action=redeem', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code })
+            body: JSON.stringify({ code: cleaned })
         });
         
         const data = await response.json();
@@ -68,7 +74,7 @@ export async function loginWithCode(code) {
         if (response.ok && data.success) {
             const expires = Date.now() + (7 * 24 * 60 * 60 * 1000);
             localStorage.setItem('orf_auth', JSON.stringify({
-                user: 'anon',
+                user: data.anonId || 'anon',
                 code: data.code,
                 uses: data.uses,
                 maxUses: data.maxUses,

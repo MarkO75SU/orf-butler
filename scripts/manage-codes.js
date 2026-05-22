@@ -22,9 +22,11 @@ function generateCode(length = 8) {
 
 function readStore() {
     try {
-        return JSON.parse(fs.readFileSync(CODES_PATH, 'utf-8'));
+        const data = JSON.parse(fs.readFileSync(CODES_PATH, 'utf-8'));
+        if (!data.nextAnonId) data.nextAnonId = 1;
+        return data;
     } catch {
-        return { codes: {} };
+        return { codes: {}, nextAnonId: 1 };
     }
 }
 
