@@ -69,11 +69,11 @@ async function cmdList() {
         console.log('\n  Keine Codes vorhanden.\n');
         return;
     }
-    console.log(`\n  ${'='.repeat(85)}`);
+    console.log(`\n  ${'='.repeat(95)}`);
     console.log(`  ${entries.length} Codes gefunden:`);
-    console.log(`  ${'='.repeat(85)}`);
+    console.log(`  ${'='.repeat(95)}`);
     console.log(`  CODE       | NUTZER    | GENUTZT | AKTIV | ERSTELLT`);
-    console.log(`  ${'-'.repeat(85)}`);
+    console.log(`  ${'-'.repeat(95)}`);
     entries.forEach(([code, data]) => {
         const anon = (data.anonId || '-').padEnd(9);
         const used = `${data.uses}/${data.maxUses}`.padStart(7);
@@ -81,7 +81,12 @@ async function cmdList() {
         const created = new Date(data.createdAt).toLocaleDateString('de-DE');
         console.log(`  ${code.padEnd(10)} | ${anon} | ${used.padEnd(7)} | ${active} | ${created}`);
     });
-    console.log(`  ${'='.repeat(85)}\n`);
+    console.log(`  ${'='.repeat(95)}`);
+    console.log(`\n  ${'Kopierbereit:'}`);
+    entries.forEach(([code, data]) => {
+        if (data.anonId) console.log(`  ${code} - ${data.anonId}`);
+    });
+    console.log();
 }
 
 async function cmdRevoke(code) {

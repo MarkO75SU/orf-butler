@@ -566,12 +566,15 @@ window.resetCode = async (code) => {
 };
 
 window.copyCode = (code) => {
-    navigator.clipboard.writeText(code).then(() => {
+    const info = window.__codesData ? window.__codesData[code] : null;
+    const anon = info ? info.anonId : '';
+    const text = anon ? code + ' - ' + anon : code;
+    navigator.clipboard.writeText(text).then(() => {
         const btn = event.target;
         const orig = btn.textContent;
         btn.textContent = '✅';
         setTimeout(() => btn.textContent = orig, 1000);
-    }).catch(() => alert(code));
+    }).catch(() => alert(text));
 };
 
 window.refreshCodesList = async () => {
@@ -582,6 +585,7 @@ window.refreshCodesList = async () => {
             headers: { Authorization: 'Basic ' + creds }
         });
         const data = await res.json();
+        window.__codesData = data.codes || {};
         const tbody = document.getElementById('codes-table-body');
         if (!tbody) return;
         tbody.innerHTML = '';

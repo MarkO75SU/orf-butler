@@ -1,49 +1,57 @@
 {
-  "nextAnonId": 3,
+  "nextAnonId": 11,
   "codes": {
     "FZYRECZL": {
+      "anonId": "anon003",
       "maxUses": 10,
       "uses": 0,
       "active": true,
       "createdAt": "2026-05-22T07:58:38.440Z"
     },
     "VBJKFNGJ": {
+      "anonId": "anon004",
       "maxUses": 10,
       "uses": 0,
       "active": true,
       "createdAt": "2026-05-22T07:58:38.442Z"
     },
     "2D7G5Y6D": {
+      "anonId": "anon005",
       "maxUses": 10,
       "uses": 0,
       "active": true,
       "createdAt": "2026-05-22T08:10:31.207Z"
     },
     "6UWKQ3Q3": {
+      "anonId": "anon006",
       "maxUses": 10,
       "uses": 0,
       "active": true,
       "createdAt": "2026-05-22T08:10:31.207Z"
     },
     "R39R96UV": {
+      "anonId": "anon007",
       "maxUses": 10,
       "uses": 0,
       "active": true,
       "createdAt": "2026-05-22T08:10:31.207Z"
     },
     "8NTGVJLT": {
+      "anonId": "anon008",
       "maxUses": 10,
       "uses": 0,
       "active": true,
       "createdAt": "2026-05-22T08:10:31.207Z"
     },
     "FGL33GAE": {
+      "anonId": "anon009",
       "maxUses": 10,
       "uses": 0,
       "active": true,
       "createdAt": "2026-05-22T08:10:31.207Z"
     },
     "99NR63CM": {
+      "anonId": "anon010",
       "maxUses": 10,
       "uses": 0,
       "active": true,
