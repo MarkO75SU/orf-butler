@@ -60,11 +60,24 @@
 
         <!-- Anonymous Code Form -->
         <form id="form-anon" class="space-y-6 hidden">
-            <div>
+            <!-- Hidden username field for browser autocomplete -->
+            <input type="text" name="username" value="anon" autocomplete="username" class="hidden" aria-hidden="true" tabindex="-1">
+            
+            <div class="relative">
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Nutzercode</label>
-                <input type="text" id="anon-code" required maxlength="10"
-                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-center tracking-[0.3em] text-white font-mono uppercase"
-                    placeholder="CODE EINGEBEN">
+                <div class="relative">
+                    <input type="password" id="anon-code" name="password" required maxlength="10" autocomplete="new-password"
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-center tracking-[0.3em] text-white font-mono uppercase pr-12"
+                        placeholder="CODE EINGEBEN">
+                    <button type="button" onclick="toggleAnonCode()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+                        👁
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="anon-remember" class="w-4 h-4 accent-emerald-700" checked>
+                <label for="anon-remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Code speichern</label>
             </div>
 
             <div class="text-center text-[10px] text-slate-600 leading-relaxed">
@@ -94,6 +107,19 @@
                 btn.textContent = '🙈';
             } else {
                 pw.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+
+        function toggleAnonCode() {
+            const el = document.getElementById('anon-code');
+            const btns = document.querySelectorAll('#anon-code + button');
+            const btn = btns[0];
+            if (el.type === 'password') {
+                el.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                el.type = 'password';
                 btn.textContent = '👁';
             }
         }
