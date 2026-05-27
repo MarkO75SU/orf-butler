@@ -54,7 +54,7 @@ function generateMapping(freeModels) {
     freeModels.forEach((m, i) => {
         const cat = categorize(m.id, m.name);
         const langs = guessLanguages(m.id, m.name);
-        const ctxStr = m.context ? (m.context < 1000 ? \`\${m.context}\` : \`\${Math.round(m.context/1000)}k\`) : '?';
+        const ctxStr = m.context ? (m.context < 1000 ? `${m.context}` : `${Math.round(m.context/1000)}k`) : '?';
         const uptime = (99 + Math.random()).toFixed(1) + '%';
         const latency = (0.3 + Math.random() * 2.5).toFixed(1) + 's';
         const status = Math.random() > 0.1 ? 'online' : 'degraded';
