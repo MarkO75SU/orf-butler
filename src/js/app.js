@@ -206,11 +206,6 @@ function loadModels() {
                         <span>${data.context || '?'} ctx</span>
                         <span>${data.languages?.join(', ') || ''}</span>
                     </div>
-                    <div class="flex gap-2 mt-1 text-[9px]">
-                        <span class="text-green-600">⬆ ${data.uptime || '?'}</span>
-                        <span class="text-yellow-600">⚡ ${data.latency || '?'}</span>
-                        <span class="${data.status === 'online' ? 'text-green-500' : 'text-red-500'}">● ${data.status || '?'}</span>
-                    </div>
                 </label>
             </div>
         `;

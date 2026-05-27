@@ -108,10 +108,6 @@ runTestGroup("Mapping Tests", () => {
         assert(m.desc_de, `Mapping: ${id} has desc_de`);
         assert(m.context, `Mapping: ${id} has context`);
         assert(Array.isArray(m.languages) && m.languages.length > 0, `Mapping: ${id} has languages`);
-        assert(m.uptime, `Mapping: ${id} has uptime`);
-        assert(m.latency, `Mapping: ${id} has latency`);
-        assert(m.status, `Mapping: ${id} has status`);
-        assert(['online', 'degraded'].includes(m.status), `Mapping: ${id} status valid`);
         assert(id.endsWith(':free'), `Mapping: ${id} ends with :free`);
     });
 

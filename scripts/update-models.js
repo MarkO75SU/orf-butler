@@ -69,9 +69,6 @@ function buildMappingContent(freeModels, existingIds) {
         const cat = categorize(m.id, m.name);
         const langs = guessLanguages(m.id, m.name);
         const ctxStr = m.context ? (m.context < 1000 ? `${m.context}` : `${Math.round(m.context/1000)}k`) : '?';
-        const uptime = (99 + Math.random()).toFixed(1) + '%';
-        const latency = (0.3 + Math.random() * 2.5).toFixed(1) + 's';
-        const status = Math.random() > 0.1 ? 'online' : 'degraded';
         
         out += '    "' + m.id + '": {\n';
         out += '        role: "' + cat.role + '",\n';
@@ -79,10 +76,7 @@ function buildMappingContent(freeModels, existingIds) {
         out += '        context: "' + ctxStr + '",\n';
         out += '        desc_en: "' + cat.role + ' model via OpenRouter free tier.",\n';
         out += '        desc_de: "' + cat.role_de + '-Modell \u00fcber OpenRouter kostenlos.",\n';
-        out += '        languages: ' + JSON.stringify(langs) + ',\n';
-        out += '        uptime: "' + uptime + '",\n';
-        out += '        latency: "' + latency + '",\n';
-        out += '        status: "' + status + '"' + (m.isNew ? ',\n        new: true' : '') + '\n';
+        out += '        languages: ' + JSON.stringify(langs) + (m.isNew ? ',\n        new: true' : '') + '\n';
         out += '    }' + (i < withNew.length - 1 ? ',' : '') + '\n';
     });
     out += '};\n';

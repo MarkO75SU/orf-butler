@@ -8,10 +8,7 @@ export const MODEL_MAPPING = {
         context: "33k",
         desc_en: "Lightweight model via OpenRouter free tier.",
         desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.6%",
-        latency: "2.2s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "deepseek/deepseek-v4-flash:free": {
         role: "Reasoning",
@@ -19,10 +16,7 @@ export const MODEL_MAPPING = {
         context: "1049k",
         desc_en: "Reasoning model via OpenRouter free tier.",
         desc_de: "Logik-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.6%",
-        latency: "0.9s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "google/gemma-4-26b-a4b-it:free": {
         role: "Lightweight",
@@ -30,10 +24,7 @@ export const MODEL_MAPPING = {
         context: "262k",
         desc_en: "Lightweight model via OpenRouter free tier.",
         desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.0%",
-        latency: "0.9s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "google/gemma-4-31b-it:free": {
         role: "Lightweight",
@@ -41,10 +32,7 @@ export const MODEL_MAPPING = {
         context: "262k",
         desc_en: "Lightweight model via OpenRouter free tier.",
         desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.2%",
-        latency: "0.8s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "liquid/lfm-2.5-1.2b-instruct:free": {
         role: "Assistant",
@@ -52,10 +40,7 @@ export const MODEL_MAPPING = {
         context: "33k",
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.3%",
-        latency: "2.6s",
-        status: "degraded"
+        languages: ["python","javascript","typescript","go"]
     },
     "liquid/lfm-2.5-1.2b-thinking:free": {
         role: "General",
@@ -63,10 +48,7 @@ export const MODEL_MAPPING = {
         context: "33k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "100.0%",
-        latency: "0.5s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "meta-llama/llama-3.2-3b-instruct:free": {
         role: "Assistant",
@@ -74,10 +56,7 @@ export const MODEL_MAPPING = {
         context: "131k",
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.1%",
-        latency: "0.9s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "meta-llama/llama-3.3-70b-instruct:free": {
         role: "Assistant",
@@ -85,10 +64,7 @@ export const MODEL_MAPPING = {
         context: "131k",
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.1%",
-        latency: "0.3s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "minimax/minimax-m2.5:free": {
         role: "General",
@@ -96,10 +72,7 @@ export const MODEL_MAPPING = {
         context: "205k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.9%",
-        latency: "1.0s",
-        status: "degraded"
+        languages: ["python","javascript","typescript","go"]
     },
     "nousresearch/hermes-3-llama-3.1-405b:free": {
         role: "Assistant",
@@ -107,10 +80,7 @@ export const MODEL_MAPPING = {
         context: "131k",
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.4%",
-        latency: "2.8s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "nvidia/nemotron-3-nano-30b-a3b:free": {
         role: "General",
@@ -118,10 +88,7 @@ export const MODEL_MAPPING = {
         context: "256k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.8%",
-        latency: "2.5s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
         role: "Reasoning",
@@ -129,10 +96,7 @@ export const MODEL_MAPPING = {
         context: "256k",
         desc_en: "Reasoning model via OpenRouter free tier.",
         desc_de: "Logik-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.3%",
-        latency: "2.3s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "nvidia/nemotron-3-super-120b-a12b:free": {
         role: "General",
@@ -140,10 +104,7 @@ export const MODEL_MAPPING = {
         context: "1000k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.1%",
-        latency: "0.9s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "nvidia/nemotron-nano-12b-v2-vl:free": {
         role: "General",
@@ -151,10 +112,7 @@ export const MODEL_MAPPING = {
         context: "128k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.5%",
-        latency: "0.6s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "nvidia/nemotron-nano-9b-v2:free": {
         role: "General",
@@ -162,10 +120,7 @@ export const MODEL_MAPPING = {
         context: "128k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.2%",
-        latency: "2.7s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "openai/gpt-oss-120b:free": {
         role: "General",
@@ -173,10 +128,7 @@ export const MODEL_MAPPING = {
         context: "131k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "100.0%",
-        latency: "0.8s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "openai/gpt-oss-20b:free": {
         role: "General",
@@ -184,10 +136,7 @@ export const MODEL_MAPPING = {
         context: "131k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.3%",
-        latency: "2.0s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "poolside/laguna-m.1:free": {
         role: "General",
@@ -195,10 +144,7 @@ export const MODEL_MAPPING = {
         context: "262k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.8%",
-        latency: "2.3s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "poolside/laguna-xs.2:free": {
         role: "General",
@@ -206,10 +152,7 @@ export const MODEL_MAPPING = {
         context: "262k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.0%",
-        latency: "1.1s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "qwen/qwen3-coder:free": {
         role: "Code Generation",
@@ -217,10 +160,7 @@ export const MODEL_MAPPING = {
         context: "1049k",
         desc_en: "Code Generation model via OpenRouter free tier.",
         desc_de: "Code-Generierung-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "100.0%",
-        latency: "0.4s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "qwen/qwen3-next-80b-a3b-instruct:free": {
         role: "Assistant",
@@ -228,10 +168,7 @@ export const MODEL_MAPPING = {
         context: "262k",
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.6%",
-        latency: "1.1s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     },
     "z-ai/glm-4.5-air:free": {
         role: "General",
@@ -239,10 +176,7 @@ export const MODEL_MAPPING = {
         context: "131k",
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        uptime: "99.3%",
-        latency: "0.6s",
-        status: "online"
+        languages: ["python","javascript","typescript","go"]
     }
 };
 
