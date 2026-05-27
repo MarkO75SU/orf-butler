@@ -190,7 +190,10 @@ function loadModels() {
                     class="mt-1 accent-sky-600 cursor-pointer shrink-0"
                     onclick="event.stopPropagation(); window.toggleModel('${id}')">
                 <label for="${checkId}" class="cursor-pointer flex-1 min-w-0" onclick="event.stopPropagation()">
-                    <div class="text-xs font-bold text-white truncate">${id}</div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-white truncate">${id}</span>
+                        <a href="https://openrouter.ai/models/${id}" target="_blank" rel="noopener" class="text-[9px] text-sky-600 hover:text-sky-400 shrink-0" onclick="event.stopPropagation()">↗</a>
+                    </div>
                     <div class="text-[10px] text-sky-400 mt-1 truncate">${role}</div>
                     <div class="text-[10px] text-slate-500 mt-1 leading-relaxed">${desc}</div>
                     <div class="flex gap-2 mt-2 text-[9px] text-slate-600">
@@ -344,7 +347,10 @@ function renderHistory() {
         const reason = lang === 'de' ? model.reason_de : model.reason;
         card.className = 'bg-[#1a1a1e] border border-slate-800 rounded p-3';
         card.innerHTML = `
-            <div class="text-xs font-bold text-white truncate">${model.id}</div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-white truncate">${model.id}</span>
+                <a href="https://openrouter.ai/models/${model.id}" target="_blank" rel="noopener" class="text-[9px] text-sky-600 hover:text-sky-400 shrink-0">↗</a>
+            </div>
             <div class="text-[10px] text-sky-400 mt-1 truncate">${role}</div>
             <div class="text-[10px] text-slate-500 mt-1">${desc}</div>
             <div class="flex gap-2 mt-2 text-[9px] text-slate-600">
