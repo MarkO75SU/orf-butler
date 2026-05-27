@@ -259,16 +259,14 @@ runTestGroup("CLI Commands Tests", () => {
 // ──────────────────────────────────────────────
 runTestGroup("InstallMD Tests", () => {
     const md = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: "opencode.json" }, "win32", "basic", "C:\\test");
-    assert(md.includes("Step-by-Step"), "InstallMD: Title");
-    assert(md.includes("winget install opencode"), "InstallMD: Win install command");
+    assert(md.includes("Setup-Anleitung"), "InstallMD: Title");
+    assert(md.includes("npm install -g opencode"), "InstallMD: Win install command");
     assert(md.includes("DEIN_API_KEY_HERE"), "InstallMD: API placeholder");
     assert(md.includes("C:\\test"), "InstallMD: Win path in body");
-    assert(md.includes("PowerShell"), "InstallMD: Win shell reference");
 
     const mdMac = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: "opencode.json" }, "darwin", "basic", "~/.config");
-    assert(mdMac.includes("brew install opencode"), "InstallMD: Mac install command");
+    assert(mdMac.includes("npm install -g opencode"), "InstallMD: Mac install command");
     assert(mdMac.includes("~/.config"), "InstallMD: Mac path in body");
-    assert(mdMac.includes("Terminal"), "InstallMD: Mac shell reference");
 
     const mdClaude = generateInstallMD({ id: "claude_code", name: "Claude Code", config_file: "CLAUDE.md" }, "darwin", "basic", "~/CLAUDE.md");
     assert(mdClaude.includes("Claude Code"), "InstallMD: Claude Code title");

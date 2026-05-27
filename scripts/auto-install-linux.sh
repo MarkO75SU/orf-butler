@@ -31,14 +31,14 @@ echo "Kopiere Config-Dateien..."
 echo ""
 
 INSTALLED=0
-SKIPPED=0
+INSTALLED_TOOLS=""
 
 try_copy() {
   SRC="$1"
   DEST="$2"
   NAME="$3"
+  TOOLKEY="$4"
   if [ ! -f "$SRC" ]; then
-    SKIPPED=$((SKIPPED + 1))
     return
   fi
   mkdir -p "$(dirname "$DEST")" 2>/dev/null
@@ -48,28 +48,103 @@ try_copy() {
   if cp "$SRC" "$DEST" 2>/dev/null; then
     echo "  [OK] $NAME"
     INSTALLED=$((INSTALLED + 1))
+    INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
   else
     echo "  [FEHLER] $NAME"
-    SKIPPED=$((SKIPPED + 1))
   fi
 }
 
-try_copy "opencode-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode CLI"
-try_copy "continue-config.json" "$HOME/.continue/config.json" "Continue"
-try_copy "zed-config.json" "$HOME/.config/zed/settings.json" "Zed Editor"
-try_copy "aider-config.json" "$PWD/.aider.conf.yml" "Aider CLI"
-try_copy "antigravity-config.json" "$PWD/settings.yaml" "Antigravity"
+try_copy "opencode-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode CLI" "opencode"
+try_copy "continue-config.json" "$HOME/.continue/config.json" "Continue" "continue"
+try_copy "zed-config.json" "$HOME/.config/zed/settings.json" "Zed Editor" "zed"
+try_copy "aider-config.json" "$PWD/.aider.conf.yml" "Aider CLI" "aider"
+try_copy "antigravity-config.json" "$PWD/settings.yaml" "Antigravity" "antigravity"
 echo "  [SKIP] Amazon Q - Nur im Browser nutzbar"
-try_copy "cursor-config.json" "$PWD/.cursorrules" "Cursor Editor"
-try_copy "windsurf-config.json" "$PWD/.windsurfrules" "Windsurf Editor"
-try_copy "claude-code-config.json" "$PWD/CLAUDE.md" "Claude Code CLI"
-try_copy "github-copilot-config.json" "$PWD/.github/copilot-instructions.md" "GitHub Copilot"
-try_copy "cline-config.json" "$PWD/.clinerules" "Cline"
-try_copy "codeium-config.json" "$PWD/.codeiumrules" "Codeium"
+try_copy "cursor-config.json" "$PWD/.cursorrules" "Cursor Editor" "cursor"
+try_copy "windsurf-config.json" "$PWD/.windsurfrules" "Windsurf Editor" "windsurf"
+try_copy "claude-code-config.json" "$PWD/CLAUDE.md" "Claude Code CLI" "claude_code"
+try_copy "github-copilot-config.json" "$PWD/.github/copilot-instructions.md" "GitHub Copilot" "github_copilot"
+try_copy "cline-config.json" "$PWD/.clinerules" "Cline" "cline"
+try_copy "codeium-config.json" "$PWD/.codeiumrules" "Codeium" "codeium"
 
 echo ""
 echo "============================================"
 echo "  Fertig - $INSTALLED Configs installiert"
-echo "  Starte dein Tool neu."
 echo "============================================"
+echo ""
+echo "  WICHTIG: Das Modell laeuft auf OpenRouter-Servern."
+echo "  Du brauchst einen kostenlosen Account auf openrouter.ai"
+echo "  und einen API-Key (falls nicht eingegeben)."
+echo ""
+
+print_guide() {
+  TOOLKEY="$1"
+  if [ "$TOOLKEY" = "continue" ]; then
+    echo "  VS Code (Continue Extension):"
+    echo "  1. Continue Extension installiert? (VS Code - Extensions - 'Continue')"
+    echo "  2. VS Code neu starten"
+    echo "  3. Strg+Shift+P - 'Continue: Open Chat'"
+    echo "  4. Chat unten rechts zeigt dein Modell an"
+    echo ""
+  elif [ "$TOOLKEY" = "opencode" ]; then
+    echo "  OpenCode CLI:"
+    echo "  1. npm install -g opencode"
+    echo "  2. Terminal: opencode"
+    echo ""
+  elif [ "$TOOLKEY" = "cursor" ]; then
+    echo "  Cursor Editor:"
+    echo "  1. Cursor Editor installieren (cursor.com)"
+    echo "  2. Cursor Chat oeffnen (Strg+I)"
+    echo "  3. Modell auf OpenRouter umstellen"
+    echo ""
+  elif [ "$TOOLKEY" = "windsurf" ]; then
+    echo "  Windsurf Editor:"
+    echo "  1. Windsurf installieren (codeium.com/windsurf)"
+    echo "  2. Cascade oeffnen - Modell auf OpenRouter"
+    echo ""
+  elif [ "$TOOLKEY" = "zed" ]; then
+    echo "  Zed Editor:"
+    echo "  1. Zed oeffnen"
+    echo "  2. Assistant-Panel (Strg+R)"
+    echo "  3. Modell sollte als 'ORF' erscheinen"
+    echo ""
+  elif [ "$TOOLKEY" = "aider" ]; then
+    echo "  Aider CLI:"
+    echo "  1. pip install aider-install"
+    echo "  2. Terminal: aider --model openrouter/DEIN_MODELL"
+    echo ""
+  elif [ "$TOOLKEY" = "claude_code" ]; then
+    echo "  Claude Code CLI:"
+    echo "  1. npm install -g @anthropic-ai/claude-code"
+    echo "  2. Terminal im Projekt: claude"
+    echo ""
+  elif [ "$TOOLKEY" = "github_copilot" ]; then
+    echo "  GitHub Copilot:"
+    echo "  1. GitHub Copilot in VS Code installiert + Abo?"
+    echo "  2. VS Code neu starten"
+    echo ""
+  elif [ "$TOOLKEY" = "cline" ]; then
+    echo "  Cline (VS Code Extension):"
+    echo "  1. Cline Extension installieren"
+    echo "  2. VS Code - Cline-Symbol in Sidebar"
+    echo "  3. OpenRouter-Modell auswaehlen"
+    echo ""
+  elif [ "$TOOLKEY" = "codeium" ]; then
+    echo "  Codeium:"
+    echo "  1. Codeium Extension installieren"
+    echo "  2. .codeiumrules im Projekt wird gelesen"
+    echo ""
+  elif [ "$TOOLKEY" = "antigravity" ]; then
+    echo "  Antigravity:"
+    echo "  1. Antigravity starten"
+    echo "  2. Config wird automatisch geladen"
+    echo ""
+  fi
+}
+
+for t in $INSTALLED_TOOLS; do
+  print_guide "$t"
+done
+
+echo "  Starte dein Tool neu."
 read -p "Druecke Enter zum Schliessen..."

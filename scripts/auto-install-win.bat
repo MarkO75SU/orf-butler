@@ -33,39 +33,40 @@ echo.
 
 setlocal enabledelayedexpansion
 set INSTALLED=0
-set SKIPPED=0
+
+set installed_tools=
 
 if exist "opencode-config.json" (
   if not exist "%APPDATA%\opencode" mkdir "%APPDATA%\opencode"
   if exist "%APPDATA%\opencode\opencode.json" copy "%APPDATA%\opencode\opencode.json" "%APPDATA%\opencode\opencode.json.backup" >nul
   copy "opencode-config.json" "%APPDATA%\opencode\opencode.json" >nul
-  if errorlevel 1 (echo   [FEHLER] OpenCode CLI) else (echo   [OK] OpenCode CLI & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] OpenCode CLI) else (echo   [OK] OpenCode CLI & set /a INSTALLED+=1 & set installed_tools=!installed_tools! opencode)
 )
 
 if exist "continue-config.json" (
   if not exist "%USERPROFILE%\.continue" mkdir "%USERPROFILE%\.continue"
   if exist "%USERPROFILE%\.continue\config.json" copy "%USERPROFILE%\.continue\config.json" "%USERPROFILE%\.continue\config.json.backup" >nul
   copy "continue-config.json" "%USERPROFILE%\.continue\config.json" >nul
-  if errorlevel 1 (echo   [FEHLER] Continue) else (echo   [OK] Continue & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Continue) else (echo   [OK] Continue & set /a INSTALLED+=1 & set installed_tools=!installed_tools! continue)
 )
 
 if exist "zed-config.json" (
   if not exist "%APPDATA%\Zed" mkdir "%APPDATA%\Zed"
   if exist "%APPDATA%\Zed\settings.json" copy "%APPDATA%\Zed\settings.json" "%APPDATA%\Zed\settings.json.backup" >nul
   copy "zed-config.json" "%APPDATA%\Zed\settings.json" >nul
-  if errorlevel 1 (echo   [FEHLER] Zed Editor) else (echo   [OK] Zed Editor & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Zed Editor) else (echo   [OK] Zed Editor & set /a INSTALLED+=1 & set installed_tools=!installed_tools! zed)
 )
 
 if exist "aider-config.json" (
   if exist ".aider.conf.yml" copy ".aider.conf.yml" ".aider.conf.yml.backup" >nul
   copy "aider-config.json" ".aider.conf.yml" >nul
-  if errorlevel 1 (echo   [FEHLER] Aider CLI) else (echo   [OK] Aider CLI & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Aider CLI) else (echo   [OK] Aider CLI & set /a INSTALLED+=1 & set installed_tools=!installed_tools! aider)
 )
 
 if exist "antigravity-config.json" (
   if exist "settings.yaml" copy "settings.yaml" "settings.yaml.backup" >nul
   copy "antigravity-config.json" "settings.yaml" >nul
-  if errorlevel 1 (echo   [FEHLER] Antigravity) else (echo   [OK] Antigravity & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Antigravity) else (echo   [OK] Antigravity & set /a INSTALLED+=1 & set installed_tools=!installed_tools! antigravity)
 )
 
 echo   [SKIP] Amazon Q - Nur im Browser nutzbar
@@ -73,43 +74,124 @@ echo   [SKIP] Amazon Q - Nur im Browser nutzbar
 if exist "cursor-config.json" (
   if exist ".cursorrules" copy ".cursorrules" ".cursorrules.backup" >nul
   copy "cursor-config.json" ".cursorrules" >nul
-  if errorlevel 1 (echo   [FEHLER] Cursor Editor) else (echo   [OK] Cursor Editor & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Cursor Editor) else (echo   [OK] Cursor Editor & set /a INSTALLED+=1 & set installed_tools=!installed_tools! cursor)
 )
 
 if exist "windsurf-config.json" (
   if exist ".windsurfrules" copy ".windsurfrules" ".windsurfrules.backup" >nul
   copy "windsurf-config.json" ".windsurfrules" >nul
-  if errorlevel 1 (echo   [FEHLER] Windsurf Editor) else (echo   [OK] Windsurf Editor & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Windsurf Editor) else (echo   [OK] Windsurf Editor & set /a INSTALLED+=1 & set installed_tools=!installed_tools! windsurf)
 )
 
 if exist "claude-code-config.json" (
   if exist "CLAUDE.md" copy "CLAUDE.md" "CLAUDE.md.backup" >nul
   copy "claude-code-config.json" "CLAUDE.md" >nul
-  if errorlevel 1 (echo   [FEHLER] Claude Code CLI) else (echo   [OK] Claude Code CLI & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Claude Code CLI) else (echo   [OK] Claude Code CLI & set /a INSTALLED+=1 & set installed_tools=!installed_tools! claude_code)
 )
 
 if exist "github-copilot-config.json" (
   if not exist ".github" mkdir ".github"
   if exist ".github\copilot-instructions.md" copy ".github\copilot-instructions.md" ".github\copilot-instructions.md.backup" >nul
   copy "github-copilot-config.json" ".github\copilot-instructions.md" >nul
-  if errorlevel 1 (echo   [FEHLER] GitHub Copilot) else (echo   [OK] GitHub Copilot & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] GitHub Copilot) else (echo   [OK] GitHub Copilot & set /a INSTALLED+=1 & set installed_tools=!installed_tools! github_copilot)
 )
 
 if exist "cline-config.json" (
   if exist ".clinerules" copy ".clinerules" ".clinerules.backup" >nul
   copy "cline-config.json" ".clinerules" >nul
-  if errorlevel 1 (echo   [FEHLER] Cline) else (echo   [OK] Cline & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Cline) else (echo   [OK] Cline & set /a INSTALLED+=1 & set installed_tools=!installed_tools! cline)
 )
 
 if exist "codeium-config.json" (
   if exist ".codeiumrules" copy ".codeiumrules" ".codeiumrules.backup" >nul
   copy "codeium-config.json" ".codeiumrules" >nul
-  if errorlevel 1 (echo   [FEHLER] Codeium) else (echo   [OK] Codeium & set /a INSTALLED+=1)
+  if errorlevel 1 (echo   [FEHLER] Codeium) else (echo   [OK] Codeium & set /a INSTALLED+=1 & set installed_tools=!installed_tools! codeium)
 )
 
 echo.
 echo ============================================
 echo   Fertig - !INSTALLED! Configs installiert
-echo   Starte dein Tool neu.
 echo ============================================
+echo.
+echo   WICHTIG: Das Modell laeuft auf OpenRouter-Servern.
+echo   Du brauchst einen kostenlosen Account auf openrouter.ai
+echo   und einen API-Key (falls nicht eingegeben).
+echo.
+
+for %%t in (!installed_tools!) do (
+  if "%%t"=="continue" (
+    echo   VS Code (Continue Extension):
+    echo   1. Continue Extension installiert? (VS Code - Extensions - "Continue")
+    echo   2. VS Code neu starten
+    echo   3. Strg+Shift+P - "Continue: Open Chat"
+    echo   4. Chat unten rechts zeigt dein Modell an
+    echo.
+  )
+  if "%%t"=="opencode" (
+    echo   OpenCode CLI:
+    echo   1. npm install -g opencode
+    echo   2. Terminal: opencode
+    echo.
+  )
+  if "%%t"=="cursor" (
+    echo   Cursor Editor:
+    echo   1. Cursor Editor installieren (cursor.com)
+    echo   2. Im Projektordner: .cursorrules wurde installiert
+    echo   3. Cursor Chat oeffnen (Strg+I)
+    echo   4. Modell auf OpenRouter umstellen
+    echo.
+  )
+  if "%%t"=="windsurf" (
+    echo   Windsurf Editor:
+    echo   1. Windsurf installieren (codeium.com/windsurf)
+    echo   2. Cascade oeffnen - Modell auf OpenRouter
+    echo.
+  )
+  if "%%t"=="zed" (
+    echo   Zed Editor:
+    echo   1. Zed oeffnen
+    echo   2. Assistant-Panel (Strg+R)
+    echo   3. Modell sollte als "ORF" erscheinen
+    echo.
+  )
+  if "%%t"=="aider" (
+    echo   Aider CLI:
+    echo   1. pip install aider-install
+    echo   2. Terminal: aider --model openrouter/DEIN_MODELL
+    echo.
+  )
+  if "%%t"=="claude_code" (
+    echo   Claude Code CLI:
+    echo   1. npm install -g @anthropic-ai/claude-code
+    echo   2. Terminal im Projekt: claude
+    echo.
+  )
+  if "%%t"=="github_copilot" (
+    echo   GitHub Copilot:
+    echo   1. GitHub Copilot in VS Code installiert + Abo?
+    echo   2. VS Code neu starten - Instructions werden genutzt
+    echo.
+  )
+  if "%%t"=="cline" (
+    echo   Cline (VS Code Extension):
+    echo   1. Cline Extension installieren
+    echo   2. VS Code - Cline-Symbol in Sidebar
+    echo   3. OpenRouter-Modell auswaehlen
+    echo.
+  )
+  if "%%t"=="codeium" (
+    echo   Codeium:
+    echo   1. Codeium Extension installieren
+    echo   2. .codeiumrules im Projekt wird gelesen
+    echo.
+  )
+  if "%%t"=="antigravity" (
+    echo   Antigravity:
+    echo   1. Antigravity starten
+    echo   2. Config wird automatisch geladen
+    echo.
+  )
+)
+
+echo   Starte dein Tool neu.
 pause

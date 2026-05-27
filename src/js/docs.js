@@ -100,64 +100,150 @@ export const OS_PATHS = {
 
 export function generateInstallMD(tool, os, tier, path) {
     const isWin = os === "win32";
-    const mouseBtn = isWin ? "right mouse button" : "right-click (two fingers)";
     const shell = isWin ? "PowerShell or Command Prompt" : "Terminal";
+    const home = isWin ? '%USERPROFILE%' : '~';
 
-    let cliSection = "";
-    
-    if (tool.id === "opencode" || tool.id === "ollama" || tool.id === "aider" || tool.id === "claude_code" || tool.id === "cline") {
-        const cli = CLI_COMMANDS[tool.id];
-        if (cli) {
-            cliSection = `
+    const toolGuides = {
+        continue: {
+            type: 'extension',
+            desc: 'VS Code Erweiterung für KI-Assistenz.',
+            needInstall: 'Continue Extension im VS Code Marketplace installieren (Strg+Shift+X → "Continue" suchen).',
+            configAt: path || home + '/.continue/config.json',
+            howToUse: 'VS Code öffnen → Strg+Shift+P → "Continue: Open Chat" → Chat-Panel unten rechts zeigt dein Modell an. Oder Strg+L für Inline-Chat.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        cursor: {
+            type: 'rules',
+            desc: '.cursorrules wird von Cursor Editor automatisch gelesen.',
+            needInstall: 'Cursor Editor installieren von cursor.com.',
+            configAt: 'Im selben Ordner wie dein Projekt.',
+            howToUse: 'Cursor öffnen → Chat öffnen (Strg+I) → Modell oben im Dropdown auf "OpenRouter" umstellen.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        windsurf: {
+            type: 'rules',
+            desc: '.windsurfrules wird von Windsurf Editor automatisch gelesen.',
+            needInstall: 'Windsurf Editor installieren von codeium.com/windsurf.',
+            configAt: 'Im selben Ordner wie dein Projekt.',
+            howToUse: 'Windsurf öffnen → Cascade-Öffnung (Strg+Shift+P → "Cascade: Open") → Modell auf OpenRouter umstellen.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        zed: {
+            type: 'config',
+            desc: 'Zed Editor nutzt settings.json für KI-Modelle.',
+            needInstall: 'Zed Editor installieren von zed.dev.',
+            configAt: path || home + '/.config/zed/settings.json',
+            howToUse: 'Zed öffnen → Strg+R → Assistant-Panel → Modell sollte als "ORF" erscheinen.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        aider: {
+            type: 'cli',
+            desc: 'Aider CLI – Terminal-basiertes Pair-Programming.',
+            needInstall: 'pip install aider-install',
+            installCmd: 'pip install aider-install',
+            configAt: '.aider.conf.yml im aktuellen Projektordner.',
+            howToUse: 'Terminal öffnen → in dein Projektverzeichnis wechseln → `aider --model openrouter/DEIN_MODELL` ausführen.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        amazon_q: {
+            type: 'browser',
+            desc: 'Amazon Q – Nur im Browser nutzbar (keine lokale Config).',
+            needInstall: 'Amazon Q Web unter q.amazon.com öffnen.',
+            configAt: 'n/a (Browser)',
+            howToUse: 'Amazon Q Web öffnen → Anleitung aus der Config-Datei manuell einfügen.',
+            note: 'Dieses Tool hat keine automatische Config-Installation. Folge der Anleitung in der Config-Datei.'
+        },
+        opencode: {
+            type: 'cli',
+            desc: 'OpenCode CLI – Terminal-basierte KI.',
+            needInstall: 'npm install -g opencode',
+            installCmd: 'npm install -g opencode',
+            configAt: path || home + '/.config/opencode/opencode.json',
+            howToUse: 'Terminal öffnen → `opencode` ausführen → Das Modell wird automatisch geladen.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        antigravity: {
+            type: 'yaml',
+            desc: 'Antigravity – settings.yaml Konfiguration.',
+            needInstall: 'Antigravity installieren (siehe antigravity.dev).',
+            configAt: path || 'settings.yaml im aktuellen Ordner.',
+            howToUse: 'Antigravity starten → Config wird automatisch geladen.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        claude_code: {
+            type: 'cli',
+            desc: 'Claude Code CLI – Anthropics offizielles Terminal-Tool.',
+            needInstall: 'npm install -g @anthropic-ai/claude-code',
+            installCmd: 'npm install -g @anthropic-ai/claude-code',
+            configAt: 'CLAUDE.md in deinem Projektordner.',
+            howToUse: 'Terminal öffnen → in dein Projekt wechseln → `claude` ausführen.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        github_copilot: {
+            type: 'instructions',
+            desc: 'GitHub Copilot – Custom Instructions für VS Code.',
+            needInstall: 'GitHub Copilot Extension in VS Code installieren + aktives GitHub-Abo.',
+            configAt: '.github/copilot-instructions.md in deinem Projekt.',
+            howToUse: 'VS Code öffnen → Copilot Chat (Strg+Shift+I) → Copilot nutzt die Instructions automatisch.',
+            note: 'GitHub Copilot nutzt standardmäßig OpenAI-Modelle. Die Instructions passen das Verhalten an.'
+        },
+        cline: {
+            type: 'extension',
+            desc: 'Cline – VS Code Extension für agentische Workflows.',
+            needInstall: 'Cline Extension im VS Code Marketplace installieren.',
+            configAt: '.clinerules in deinem Projektordner.',
+            howToUse: 'VS Code öffnen → Cline-Symbol in der Sidebar → OpenRouter-Modell auswählen.',
+            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
+        },
+        codeium: {
+            type: 'rules',
+            desc: 'Codeium – .codeiumrules für Code-Vervollständigung.',
+            needInstall: 'Codeium Extension in VS Code installieren oder Windsurf nutzen.',
+            configAt: '.codeiumrules in deinem Projektordner.',
+            howToUse: 'VS Code öffnen → Codeium Chat → Modell-Einstellungen prüfen.',
+            note: 'Codeium hat eigene Modelle. Die Config passt ergänzende Einstellungen an.'
+        }
+    };
 
-## CLI Tools (Optional)
-If you haven't installed ${cli.name} yet, run the following command in your ${shell}:
+    const guide = toolGuides[tool.id] || { type: 'generic', desc: '', needInstall: '', configAt: path, howToUse: 'Config wurde installiert. Starte das Tool neu.', note: '' };
 
+    let installCmdSection = '';
+    if (guide.installCmd) {
+        installCmdSection = `
 ### Installation:
 \`\`\`bash
-${cli.install[os]}
-\`\`\`
-
-### Update:
-\`\`\`bash
-${cli.update[os]}
-\`\`\`
-`;
-        }
+${guide.installCmd}
+\`\`\``;
     }
-    
+
     return `
-# Step-by-Step Guide for ${tool.name}
+# ${tool.name} – Setup-Anleitung
 
-This guide is written so that you don't need computer knowledge. Just follow each click.
-${cliSection}
-## Step 1: Find the file
-1. You just downloaded a file named \`${tool.config_file}\`.
-2. Find this file in your "Downloads" folder.
-3. **${mouseBtn}** on the file.
-4. Select **"Copy"** from the menu.
+## Was ist das?
+${guide.desc}
 
-## Step 2: Find the right location
-1. You need to put the file in a special location on your computer.
-2. This location is: \`${path}\`
-${isWin ? `
-3. Press the **Windows key** (bottom left) and the letter **R** at the same time.
-4. A small window opens. Type the path from above and press Enter.` : `
-3. Click "Go" in your menu bar, then "Go to Folder...".
-4. Type the path from above and press Enter.`}
+## Wichtig zu wissen
+${guide.note}
 
-## Step 3: Paste the file
-1. When you are in the folder mentioned above, **${mouseBtn}** on a free white space.
-2. Select **"Paste"** from the menu.
-3. If asked whether to replace an existing file, click **"Yes"** or **"Replace"**.
+## 1. Tool installieren (falls nicht vorhanden)
+${guide.needInstall}${installCmdSection}
 
-## Step 4: Add your API Key
-1. **${mouseBtn}** on the pasted file \`${tool.config_file}\`.
-2. Select **"Open with..."** and choose a text editor like "Notepad" (Windows) or "TextEdit" (Mac).
-3. Find \`DEIN_API_KEY_HERE\` in the text.
-4. Delete this text and replace it with your personal OpenRouter key.
-5. Click **"File"** and then **"Save"**.
+## 2. Config-Datei
+Die Config wurde installiert unter:
+\`${guide.configAt}\`
 
-Done! Your ${tool.name} assistant is now ready.
+Falls darin noch \`DEIN_API_KEY_HERE\` steht:
+1. Datei mit Texteditor öffnen
+2. \`DEIN_API_KEY_HERE\` durch deinen OpenRouter-API-Key ersetzen
+3. Speichern
+
+## 3. Nutzung
+${guide.howToUse}
+
+## 4. Problembehebung
+- Config nicht gefunden? → Installer erneut ausführen
+- Modell erscheint nicht? → Tool neustarten
+- "Invalid API Key"? → Key in der Config prüfen
+- Weiterhin Probleme? → openrouter.ai/docs für Hilfe
     `.trim();
 }
