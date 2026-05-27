@@ -173,7 +173,11 @@ function loadModels() {
     grid.innerHTML = '';
     const lang = getLang();
     
-    const entries = Object.entries(MODEL_MAPPING).sort(([a], [b]) => a.localeCompare(b));
+    const entries = Object.entries(MODEL_MAPPING).sort(([idA, a], [idB, b]) => {
+        if (a.new && !b.new) return -1;
+        if (!a.new && b.new) return 1;
+        return idA.localeCompare(idB);
+    });
     
     entries.forEach(([id, data]) => {
         const card = document.createElement('div');
@@ -181,6 +185,7 @@ function loadModels() {
         const desc = lang === 'de' ? data.desc_de : data.desc_en;
         const checkId = `model-${id.replace(/[:/.]/g, '-')}`;
         const isChecked = state.selectedModels.includes(id) ? 'checked' : '';
+        const neueBadge = data.new ? '<span class="text-[9px] bg-sky-600 text-white px-1.5 py-0.5 rounded font-bold ml-1">NEU</span>' : '';
         
         card.className = `model-card bg-[#1a1a1e] border ${isChecked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
         card.setAttribute('data-model-id', id);
@@ -193,6 +198,7 @@ function loadModels() {
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-bold text-white truncate">${id}</span>
                         <a href="https://openrouter.ai/models/${id}" target="_blank" rel="noopener" class="text-[9px] text-sky-600 hover:text-sky-400 shrink-0" onclick="event.stopPropagation()">↗</a>
+                        ${neueBadge}
                     </div>
                     <div class="text-[10px] text-sky-400 mt-1 truncate">${role}</div>
                     <div class="text-[10px] text-slate-500 mt-1 leading-relaxed">${desc}</div>

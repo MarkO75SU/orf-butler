@@ -9,8 +9,8 @@ export const MODEL_MAPPING = {
         desc_en: "Lightweight model via OpenRouter free tier.",
         desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.0%",
-        latency: "1.7s",
+        uptime: "99.6%",
+        latency: "2.2s",
         status: "online"
     },
     "deepseek/deepseek-v4-flash:free": {
@@ -20,8 +20,8 @@ export const MODEL_MAPPING = {
         desc_en: "Reasoning model via OpenRouter free tier.",
         desc_de: "Logik-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.3%",
-        latency: "1.4s",
+        uptime: "99.6%",
+        latency: "0.9s",
         status: "online"
     },
     "google/gemma-4-26b-a4b-it:free": {
@@ -31,8 +31,8 @@ export const MODEL_MAPPING = {
         desc_en: "Lightweight model via OpenRouter free tier.",
         desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.8%",
-        latency: "2.6s",
+        uptime: "99.0%",
+        latency: "0.9s",
         status: "online"
     },
     "google/gemma-4-31b-it:free": {
@@ -42,8 +42,8 @@ export const MODEL_MAPPING = {
         desc_en: "Lightweight model via OpenRouter free tier.",
         desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.3%",
-        latency: "0.3s",
+        uptime: "99.2%",
+        latency: "0.8s",
         status: "online"
     },
     "liquid/lfm-2.5-1.2b-instruct:free": {
@@ -53,9 +53,9 @@ export const MODEL_MAPPING = {
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.2%",
-        latency: "0.8s",
-        status: "online"
+        uptime: "99.3%",
+        latency: "2.6s",
+        status: "degraded"
     },
     "liquid/lfm-2.5-1.2b-thinking:free": {
         role: "General",
@@ -64,8 +64,8 @@ export const MODEL_MAPPING = {
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.8%",
-        latency: "1.7s",
+        uptime: "100.0%",
+        latency: "0.5s",
         status: "online"
     },
     "meta-llama/llama-3.2-3b-instruct:free": {
@@ -75,8 +75,8 @@ export const MODEL_MAPPING = {
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.5%",
-        latency: "1.5s",
+        uptime: "99.1%",
+        latency: "0.9s",
         status: "online"
     },
     "meta-llama/llama-3.3-70b-instruct:free": {
@@ -86,8 +86,8 @@ export const MODEL_MAPPING = {
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.6%",
-        latency: "1.4s",
+        uptime: "99.1%",
+        latency: "0.3s",
         status: "online"
     },
     "minimax/minimax-m2.5:free": {
@@ -98,8 +98,8 @@ export const MODEL_MAPPING = {
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
         uptime: "99.9%",
-        latency: "1.4s",
-        status: "online"
+        latency: "1.0s",
+        status: "degraded"
     },
     "nousresearch/hermes-3-llama-3.1-405b:free": {
         role: "Assistant",
@@ -108,8 +108,8 @@ export const MODEL_MAPPING = {
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.9%",
-        latency: "2.6s",
+        uptime: "99.4%",
+        latency: "2.8s",
         status: "online"
     },
     "nvidia/nemotron-3-nano-30b-a3b:free": {
@@ -119,8 +119,8 @@ export const MODEL_MAPPING = {
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.3%",
-        latency: "2.2s",
+        uptime: "99.8%",
+        latency: "2.5s",
         status: "online"
     },
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
@@ -130,7 +130,7 @@ export const MODEL_MAPPING = {
         desc_en: "Reasoning model via OpenRouter free tier.",
         desc_de: "Logik-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.2%",
+        uptime: "99.3%",
         latency: "2.3s",
         status: "online"
     },
@@ -142,7 +142,7 @@ export const MODEL_MAPPING = {
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
         uptime: "99.1%",
-        latency: "1.7s",
+        latency: "0.9s",
         status: "online"
     },
     "nvidia/nemotron-nano-12b-v2-vl:free": {
@@ -153,8 +153,8 @@ export const MODEL_MAPPING = {
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
         uptime: "99.5%",
-        latency: "1.2s",
-        status: "degraded"
+        latency: "0.6s",
+        status: "online"
     },
     "nvidia/nemotron-nano-9b-v2:free": {
         role: "General",
@@ -164,7 +164,7 @@ export const MODEL_MAPPING = {
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
         uptime: "99.2%",
-        latency: "0.9s",
+        latency: "2.7s",
         status: "online"
     },
     "openai/gpt-oss-120b:free": {
@@ -174,8 +174,8 @@ export const MODEL_MAPPING = {
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.2%",
-        latency: "1.7s",
+        uptime: "100.0%",
+        latency: "0.8s",
         status: "online"
     },
     "openai/gpt-oss-20b:free": {
@@ -186,7 +186,7 @@ export const MODEL_MAPPING = {
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
         uptime: "99.3%",
-        latency: "2.6s",
+        latency: "2.0s",
         status: "online"
     },
     "poolside/laguna-m.1:free": {
@@ -196,8 +196,8 @@ export const MODEL_MAPPING = {
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.1%",
-        latency: "1.4s",
+        uptime: "99.8%",
+        latency: "2.3s",
         status: "online"
     },
     "poolside/laguna-xs.2:free": {
@@ -207,8 +207,8 @@ export const MODEL_MAPPING = {
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.5%",
-        latency: "1.6s",
+        uptime: "99.0%",
+        latency: "1.1s",
         status: "online"
     },
     "qwen/qwen3-coder:free": {
@@ -218,8 +218,8 @@ export const MODEL_MAPPING = {
         desc_en: "Code Generation model via OpenRouter free tier.",
         desc_de: "Code-Generierung-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.3%",
-        latency: "0.3s",
+        uptime: "100.0%",
+        latency: "0.4s",
         status: "online"
     },
     "qwen/qwen3-next-80b-a3b-instruct:free": {
@@ -229,8 +229,8 @@ export const MODEL_MAPPING = {
         desc_en: "Assistant model via OpenRouter free tier.",
         desc_de: "Assistent-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.5%",
-        latency: "1.0s",
+        uptime: "99.6%",
+        latency: "1.1s",
         status: "online"
     },
     "z-ai/glm-4.5-air:free": {
@@ -240,8 +240,168 @@ export const MODEL_MAPPING = {
         desc_en: "General model via OpenRouter free tier.",
         desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
         languages: ["python","javascript","typescript","go"],
-        uptime: "99.8%",
-        latency: "2.3s",
+        uptime: "99.3%",
+        latency: "0.6s",
         status: "online"
     }
 };
+
+export function getBestModels(lang, category) {
+    const models = Object.entries(MODEL_MAPPING);
+    if (lang === 'python') {
+        return models.filter(([id, d]) => d.languages.includes('python'));
+    }
+    if (lang === 'javascript') {
+        return models.filter(([id, d]) => d.languages.includes('javascript'));
+    }
+    return models.slice(0, 10);
+}
+
+// Models that were once free but are no longer available as free
+export const MODEL_HISTORY = [
+    {
+        id: "openai/gpt-3.5-turbo",
+        role: "Chat Completion",
+        role_de: "Chat-Vervollst├ñndigung",
+        context: "16k",
+        desc_en: "Former flagship OpenAI chat model.",
+        desc_de: "Ehemaliges Flaggschiff von OpenAI.",
+        available: "2023-06 ÔÇô 2024-07",
+        languages: ["python", "javascript", "typescript", "go", "java"],
+        reason: "moved to paid",
+        reason_de: "auf Bezahlung umgestellt"
+    },
+    {
+        id: "openai/gpt-4o-mini",
+        role: "Multimodal",
+        role_de: "Multimodal",
+        context: "128k",
+        desc_en: "Lightning-fast multimodal model.",
+        desc_de: "Schnelles multimodales Modell.",
+        available: "2024-05 ÔÇô 2025-03",
+        languages: ["python", "javascript", "typescript", "go", "java"],
+        reason: "moved to paid",
+        reason_de: "auf Bezahlung umgestellt"
+    },
+    {
+        id: "anthropic/claude-3-haiku",
+        role: "Fast Chat",
+        role_de: "Schneller Chat",
+        context: "200k",
+        desc_en: "Anthropic's fastest and most compact model.",
+        desc_de: "Anthropics schnellstes und kompaktestes Modell.",
+        available: "2024-03 ÔÇô 2025-02",
+        languages: ["python", "javascript", "typescript", "go"],
+        reason: "moved to paid",
+        reason_de: "auf Bezahlung umgestellt"
+    },
+    {
+        id: "google/gemini-1.5-flash",
+        role: "Fast Multimodal",
+        role_de: "Schnell Multimodal",
+        context: "1M",
+        desc_en: "Google's fastest multimodal model.",
+        desc_de: "Googles schnellstes multimodales Modell.",
+        available: "2024-05 ÔÇô 2025-04",
+        languages: ["python", "javascript", "typescript", "go", "java"],
+        reason: "moved to paid",
+        reason_de: "auf Bezahlung umgestellt"
+    },
+    {
+        id: "google/gemini-1.5-pro",
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "2M",
+        desc_en: "Google's most powerful reasoning model.",
+        desc_de: "Googles st├ñrkstes Logik-Modell.",
+        available: "2024-02 ÔÇô 2025-01",
+        languages: ["python", "javascript", "typescript", "go", "java", "rust"],
+        reason: "moved to paid",
+        reason_de: "auf Bezahlung umgestellt"
+    },
+    {
+        id: "mistralai/mistral-7b-instruct",
+        role: "Instruct",
+        role_de: "Instruktion",
+        context: "32k",
+        desc_en: "Mistral's original open-source model.",
+        desc_de: "Mistrals urspr├╝ngliches Open-Source-Modell.",
+        available: "2023-09 ÔÇô 2024-12",
+        languages: ["python", "javascript", "typescript", "go", "java"],
+        reason: "deprecated",
+        reason_de: "eingestellt"
+    },
+    {
+        id: "meta-llama/llama-2-70b-chat",
+        role: "Chat",
+        role_de: "Chat",
+        context: "4k",
+        desc_en: "Meta's large-scale chat model.",
+        desc_de: "Metas gro├ƒes Chat-Modell.",
+        available: "2023-07 ÔÇô 2024-09",
+        languages: ["python", "javascript", "typescript", "go"],
+        reason: "superseded by Llama 3",
+        reason_de: "durch Llama 3 ersetzt"
+    },
+    {
+        id: "meta-llama/llama-3-8b-instruct",
+        role: "Instruct",
+        role_de: "Instruktion",
+        context: "8k",
+        desc_en: "Metas compact Llama 3 model.",
+        desc_de: "Metas kompaktes Llama-3-Modell.",
+        available: "2024-04 ÔÇô 2024-12",
+        languages: ["python", "javascript", "typescript", "go"],
+        reason: "superseded by Llama 3.1/3.2",
+        reason_de: "durch Llama 3.1/3.2 ersetzt"
+    },
+    {
+        id: "meta-llama/llama-3-70b-instruct",
+        role: "Large Instruct",
+        role_de: "Gro├ƒ Instruktion",
+        context: "8k",
+        desc_en: "Metas large Llama 3 model.",
+        desc_de: "Metas gro├ƒes Llama-3-Modell.",
+        available: "2024-04 ÔÇô 2024-12",
+        languages: ["python", "javascript", "typescript", "go", "java"],
+        reason: "superseded by Llama 3.1",
+        reason_de: "durch Llama 3.1 ersetzt"
+    },
+    {
+        id: "cohere/command-r",
+        role: "RAG",
+        role_de: "RAG",
+        context: "128k",
+        desc_en: "Cohere's retrieval-augmented model.",
+        desc_de: "Coheres Retrieval-Modell.",
+        available: "2024-03 ÔÇô 2025-01",
+        languages: ["python", "javascript", "typescript"],
+        reason: "moved to paid",
+        reason_de: "auf Bezahlung umgestellt"
+    },
+    {
+        id: "qwen/qwen-2-72b-instruct",
+        role: "Large Instruct",
+        role_de: "Gro├ƒ Instruktion",
+        context: "32k",
+        desc_en: "Alibaba's large instruction model.",
+        desc_de: "Alibabas gro├ƒes Instruktions-Modell.",
+        available: "2024-06 ÔÇô 2025-03",
+        languages: ["python", "javascript", "typescript", "go", "java"],
+        reason: "superseded by Qwen 2.5",
+        reason_de: "durch Qwen 2.5 ersetzt"
+    },
+    {
+        id: "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",
+        role: "DPO",
+        role_de: "DPO",
+        context: "32k",
+        desc_en: "Nous Research's optimized Mixtral.",
+        desc_de: "Nous Researchs optimierter Mixtral.",
+        available: "2024-01 ÔÇô 2024-11",
+        languages: ["python", "javascript", "typescript", "go"],
+        reason: "superseded by Hermes 3",
+        reason_de: "durch Hermes 3 ersetzt"
+    }
+];
+
