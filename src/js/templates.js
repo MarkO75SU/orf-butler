@@ -11,8 +11,8 @@ export const TOOL_TEMPLATES = {
     },
     "opencode": { 
         name: "OpenCode CLI", 
-        config_file: "opencode.json", 
-        type: "json_global", 
+        config_file: ".opencode.json", 
+        type: "opencode", 
         status: "stable",
         desc: "Hochperformante Terminal-AI." 
     },
@@ -92,6 +92,21 @@ export const TOOL_TEMPLATES = {
 export function generateConfig(toolId, models, tier, apiKey) {
     const tool = TOOL_TEMPLATES[toolId] || { type: "json_global" };
     const [id, data] = models[0];
+
+    if (tool.type === "opencode") {
+        return JSON.stringify({
+            providers: {
+                openrouter: {
+                    apiKey: apiKey || 'DEIN_API_KEY_HERE'
+                }
+            },
+            agents: {
+                coder: { model: id, maxTokens: 5000 },
+                task: { model: id, maxTokens: 5000 },
+                title: { model: id, maxTokens: 80 }
+            }
+        }, null, 2);
+    }
 
     if (tool.type === "json_global" || tool.type === "json_merge") {
         return JSON.stringify({

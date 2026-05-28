@@ -182,10 +182,10 @@ runTestGroup("Templates Tests", () => {
         assert(tool.status, `Templates: ${id} has status`);
         assert(tool.desc, `Templates: ${id} has desc`);
         assert(["stable", "partial"].includes(tool.status), `Templates: ${id} status valid`);
-        assert(["json_global", "json_merge", "yaml_config", "instruction_paste"].includes(tool.type), `Templates: ${id} type valid`);
+        assert(["json_global", "json_merge", "yaml_config", "instruction_paste", "opencode"].includes(tool.type), `Templates: ${id} type valid`);
     });
 
-    assert(TOOL_TEMPLATES["opencode"].type === "json_global", "Templates: OpenCode type json_global");
+    assert(TOOL_TEMPLATES["opencode"].type === "opencode", "Templates: OpenCode type opencode");
     assert(TOOL_TEMPLATES["aider"].type === "yaml_config", "Templates: Aider type yaml_config");
     assert(TOOL_TEMPLATES["cursor"].type === "instruction_paste", "Templates: Cursor type instruction_paste");
     assert(TOOL_TEMPLATES["antigravity"].status === "partial", "Templates: Antigravity status partial");
@@ -198,16 +198,22 @@ runTestGroup("Templates Tests", () => {
 runTestGroup("Config Generation Tests", () => {
     const testModels = [["qwen/qwen3-coder:free", MODEL_MAPPING["qwen/qwen3-coder:free"]]];
 
-    // JSON type (opencode)
-    const jsonConfig = generateConfig("opencode", testModels, "basic");
+    // JSON type (continue)
+    const jsonConfig = generateConfig("continue", testModels, "basic");
     const parsedJson = JSON.parse(jsonConfig);
     assert(parsedJson.models[0].model === "qwen/qwen3-coder:free", "generateConfig: JSON model correct");
     assert(parsedJson.models[0].provider === "openrouter", "generateConfig: JSON provider correct");
     assert(!parsedJson.models[0].system_prompt, "generateConfig: Basic no system_prompt");
 
+    // OpenCode type
+    const opencodeConfig = generateConfig("opencode", testModels, "basic");
+    const parsedOpencode = JSON.parse(opencodeConfig);
+    assert(parsedOpencode.providers.openrouter.apiKey === "DEIN_API_KEY_HERE", "generateConfig: OpenCode has apiKey");
+    assert(parsedOpencode.agents.coder.model === "qwen/qwen3-coder:free", "generateConfig: OpenCode coder model");
+
     // Premium JSON
     const pm = [{ ...MODEL_MAPPING["qwen/qwen3-coder:free"], premium_prompt: "You are an expert." }];
-    const premConfig = generateConfig("opencode", [["test/model", pm[0]]], "premium");
+    const premConfig = generateConfig("continue", [["test/model", pm[0]]], "premium");
     const parsedPrem = JSON.parse(premConfig);
     assert(parsedPrem.models[0].system_prompt === "You are an expert.", "generateConfig: Premium has system_prompt");
 
@@ -253,13 +259,13 @@ runTestGroup("CLI Commands Tests", () => {
 // 9. InstallMD Tests
 // ──────────────────────────────────────────────
 runTestGroup("InstallMD Tests", () => {
-    const md = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: "opencode.json" }, "win32", "basic", "C:\\test");
+    const md = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "win32", "basic", "C:\\test");
     assert(md.includes("Setup-Anleitung"), "InstallMD: Title");
     assert(md.includes("npm install -g opencode"), "InstallMD: Win install command");
     assert(md.includes("DEIN_API_KEY_HERE"), "InstallMD: API placeholder");
     assert(md.includes("C:\\test"), "InstallMD: Win path in body");
 
-    const mdMac = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: "opencode.json" }, "darwin", "basic", "~/.config");
+    const mdMac = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "darwin", "basic", "~/.config");
     assert(mdMac.includes("npm install -g opencode"), "InstallMD: Mac install command");
     assert(mdMac.includes("~/.config"), "InstallMD: Mac path in body");
 
@@ -330,7 +336,7 @@ runTestGroup("Integration Tests", () => {
 
     const config = generateConfig("opencode", models, "basic");
     const parsed = JSON.parse(config);
-    assert(parsed.models[0].provider === "openrouter", "Integration: Provider is openrouter");
+    assert(parsed.providers.openrouter.apiKey === "DEIN_API_KEY_HERE", "Integration: OpenCode has openrouter provider");
 
     const hasValidModel = models.some(([id]) => {
         try {
