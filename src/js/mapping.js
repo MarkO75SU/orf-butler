@@ -2,15 +2,6 @@
 // Last updated: 2026-05-28
 
 export const MODEL_MAPPING = {
-    "moonshotai/kimi-k2.6:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "262k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"],
-        new: true
-    },
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
         role: "Lightweight",
         role_de: "Leichtgewicht",
@@ -76,6 +67,14 @@ export const MODEL_MAPPING = {
         languages: ["python","javascript","typescript","go"]
     },
     "minimax/minimax-m2.5:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "262k",
+        desc_en: "General model via OpenRouter free tier.",
+        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
+        languages: ["python","javascript","typescript","go"]
+    },
+    "moonshotai/kimi-k2.6:free": {
         role: "General",
         role_de: "Allgemein",
         context: "262k",
