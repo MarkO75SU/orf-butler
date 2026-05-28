@@ -16,38 +16,38 @@ export const CLI_COMMANDS = {
     "opencode": {
         name: "OpenCode",
         install: {
-            win32: `winget install opencode`,
-            darwin: `brew install opencode`,
-            linux: `npm install -g opencode`
+            win32: `npm install -g opencode-ai`,
+            darwin: `brew install anomalyco/tap/opencode`,
+            linux: `npm install -g opencode-ai`
         },
         update: {
-            win32: `winget upgrade opencode`,
-            darwin: `brew upgrade opencode`,
-            linux: `npm update -g opencode`
+            win32: `npm update -g opencode-ai`,
+            darwin: `brew upgrade anomalyco/tap/opencode`,
+            linux: `npm update -g opencode-ai`
         }
     },
     "aider": {
         name: "Aider",
         install: {
-            win32: `pip install aider-install`,
-            darwin: `pip install aider-install`,
-            linux: `pip install aider-install`
+            win32: `pip install aider-chat`,
+            darwin: `pip install aider-chat`,
+            linux: `pip install aider-chat`
         },
         update: {
-            win32: `pip install --upgrade aider-install`,
-            darwin: `pip install --upgrade aider-install`,
-            linux: `pip install --upgrade aider-install`
+            win32: `pip install --upgrade aider-chat`,
+            darwin: `pip install --upgrade aider-chat`,
+            linux: `pip install --upgrade aider-chat`
         }
     },
     "claude_code": {
         name: "Claude Code",
         install: {
-            win32: `npm install -g @anthropic-ai/claude-code`,
-            darwin: `npm install -g @anthropic-ai/claude-code`,
-            linux: `npm install -g @anthropic-ai/claude-code`
+            win32: `winget install Anthropic.ClaudeCode`,
+            darwin: `curl -fsSL https://claude.ai/install.sh | bash`,
+            linux: `curl -fsSL https://claude.ai/install.sh | bash`
         },
         update: {
-            win32: `npm update -g @anthropic-ai/claude-code`,
+            win32: `winget upgrade Anthropic.ClaudeCode`,
             darwin: `npm update -g @anthropic-ai/claude-code`,
             linux: `npm update -g @anthropic-ai/claude-code`
         }
@@ -55,14 +55,14 @@ export const CLI_COMMANDS = {
     "cline": {
         name: "Cline",
         install: {
-            win32: `winget install cline`,
-            darwin: `brew install cline`,
-            linux: `npm install -g @cline/cline`
+            win32: `npm install -g cline`,
+            darwin: `npm install -g cline`,
+            linux: `npm install -g cline`
         },
         update: {
-            win32: `winget upgrade cline`,
-            darwin: `brew upgrade cline`,
-            linux: `npm update -g @cline/cline`
+            win32: `npm update -g cline`,
+            darwin: `npm update -g cline`,
+            linux: `npm update -g cline`
         }
     }
 };
@@ -76,7 +76,7 @@ export const OS_PATHS = {
         "aider": ".aider.conf.yml (In deinem Projektordner)",
         "copilot": ".github\\copilot-instructions.md (In deinem Projektordner)",
         "amazon_q": "Amazon Q Settings im Browser",
-        "opencode": "C:\\Users\\[YourName]\\AppData\\Roaming\\opencode\\.opencode.json",
+        "opencode": "C:\\Users\\[YourName]\\.config\\opencode\\opencode.json",
         "antigravity": "settings.yaml (In deinem Projektordner)",
         "claude_code": "CLAUDE.md (In deinem Projektordner)",
         "cline": ".clinerules (In deinem Projektordner)",
@@ -90,7 +90,7 @@ export const OS_PATHS = {
         "aider": ".aider.conf.yml",
         "copilot": ".github/copilot-instructions.md",
         "amazon_q": "Amazon Q Settings",
-        "opencode": "~/.config/opencode/.opencode.json",
+        "opencode": "~/.config/opencode/opencode.json",
         "antigravity": "settings.yaml",
         "claude_code": "CLAUDE.md (In deinem Projektordner)",
         "cline": ".clinerules (In deinem Projektordner)",
@@ -139,33 +139,33 @@ export function generateInstallMD(tool, os, tier, path) {
         aider: {
             type: 'cli',
             desc: 'Aider CLI – Terminal-basiertes Pair-Programming.',
-            needInstall: 'pip install aider-install',
-            installCmd: 'pip install aider-install',
+            needInstall: 'pip install aider-chat (Python 3.9-3.12 erforderlich). Alternativ: curl -LsSf https://aider.chat/install.sh | sh',
+            installCmd: 'pip install aider-chat',
             configAt: '.aider.conf.yml im aktuellen Projektordner.',
             howToUse: 'Terminal öffnen → in dein Projektverzeichnis wechseln → `aider --model openrouter/DEIN_MODELL` ausführen.',
             note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
         },
         amazon_q: {
-            type: 'browser',
-            desc: 'Amazon Q – Nur im Browser nutzbar (keine lokale Config).',
-            needInstall: 'Amazon Q Web unter q.amazon.com öffnen.',
-            configAt: 'n/a (Browser)',
-            howToUse: 'Amazon Q Web öffnen → Anleitung aus der Config-Datei manuell einfügen.',
-            note: 'Dieses Tool hat keine automatische Config-Installation. Folge der Anleitung in der Config-Datei.'
+            type: 'extension',
+            desc: 'Amazon Q Developer – IDE-Erweiterung für AWS-Entwicklung.',
+            needInstall: 'Amazon Q Extension im VS Code Marketplace installieren oder JetBrains Plugin.',
+            configAt: 'Amazon Q Settings im Browser (q.amazon.com)',
+            howToUse: 'VS Code öffnen → Amazon Q Icon in der Sidebar → Chat öffnen → Config-Anweisungen manuell einfügen.',
+            note: 'Amazon Q Developer wird eingestellt (End-of-Support April 2027). Neuanmeldungen seit 15. Mai 2026 blockiert. Nachfolger: Kiro.'
         },
         opencode: {
             type: 'cli',
             desc: 'OpenCode CLI – Terminal-basierte KI.',
-            needInstall: 'npm install -g opencode',
-            installCmd: 'npm install -g opencode',
-            configAt: path || home + '/.config/opencode/.opencode.json',
+            needInstall: 'npm install -g opencode-ai',
+            installCmd: 'npm install -g opencode-ai',
+            configAt: path || home + '/.config/opencode/opencode.json',
             howToUse: 'Terminal öffnen → `opencode` ausführen → Das Modell wird automatisch geladen.',
             note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
         },
         antigravity: {
             type: 'yaml',
-            desc: 'Antigravity – settings.yaml Konfiguration.',
-            needInstall: 'Antigravity installieren (siehe antigravity.dev).',
+            desc: 'Antigravity – Agentic Coding IDE (settings.yaml).',
+            needInstall: 'Antigravity IDE installieren (ag社).',
             configAt: path || 'settings.yaml im aktuellen Ordner.',
             howToUse: 'Antigravity starten → Config wird automatisch geladen.',
             note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
@@ -173,8 +173,8 @@ export function generateInstallMD(tool, os, tier, path) {
         claude_code: {
             type: 'cli',
             desc: 'Claude Code CLI – Anthropics offizielles Terminal-Tool.',
-            needInstall: 'npm install -g @anthropic-ai/claude-code',
-            installCmd: 'npm install -g @anthropic-ai/claude-code',
+            needInstall: 'Installation via curl -fsSL https://claude.ai/install.sh | bash (Mac/Linux) oder winget install Anthropic.ClaudeCode (Windows). Alternativ: npm install -g @anthropic-ai/claude-code',
+            installCmd: 'curl -fsSL https://claude.ai/install.sh | bash',
             configAt: 'CLAUDE.md in deinem Projektordner.',
             howToUse: 'Terminal öffnen → in dein Projekt wechseln → `claude` ausführen.',
             note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
@@ -189,19 +189,19 @@ export function generateInstallMD(tool, os, tier, path) {
         },
         cline: {
             type: 'extension',
-            desc: 'Cline – VS Code Extension für agentische Workflows.',
-            needInstall: 'Cline Extension im VS Code Marketplace installieren.',
+            desc: 'Cline (CLI + VS Code) – Open-Source agentischer Coding-Assistent.',
+            needInstall: 'Cline Extension im VS Code Marketplace installieren. Für CLI: npm install -g cline.',
             configAt: '.clinerules in deinem Projektordner.',
-            howToUse: 'VS Code öffnen → Cline-Symbol in der Sidebar → OpenRouter-Modell auswählen.',
+            howToUse: 'Terminal: `cline` ausführen. VS Code: Cline-Symbol in der Sidebar → OpenRouter-Modell auswählen.',
             note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
         },
         codeium: {
             type: 'rules',
-            desc: 'Codeium – .codeiumrules für Code-Vervollständigung.',
-            needInstall: 'Codeium Extension in VS Code installieren oder Windsurf nutzen.',
+            desc: 'Codeium/Windsurf – .codeiumrules für Code-Vervollständigung.',
+            needInstall: 'Windsurf Editor installieren (codeium.com/windsurf). Codeium ist in Windsurf integriert.',
             configAt: '.codeiumrules in deinem Projektordner.',
-            howToUse: 'VS Code öffnen → Codeium Chat → Modell-Einstellungen prüfen.',
-            note: 'Codeium hat eigene Modelle. Die Config passt ergänzende Einstellungen an.'
+            howToUse: 'Windsurf öffnen → Cascade-Panel → Modell-Einstellungen prüfen.',
+            note: 'Codeium wurde in Windsurf integriert. Die Config wird automatisch vom Editor gelesen.'
         }
     };
 

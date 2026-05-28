@@ -208,8 +208,8 @@ runTestGroup("Config Generation Tests", () => {
     // OpenCode type
     const opencodeConfig = generateConfig("opencode", testModels, "basic");
     const parsedOpencode = JSON.parse(opencodeConfig);
-    assert(parsedOpencode.providers.openrouter.apiKey === "DEIN_API_KEY_HERE", "generateConfig: OpenCode has apiKey");
-    assert(parsedOpencode.agents.coder.model === "qwen/qwen3-coder:free", "generateConfig: OpenCode coder model");
+    assert(parsedOpencode.provider.openrouter.options.apiKey === "DEIN_API_KEY_HERE", "generateConfig: OpenCode has apiKey");
+    assert(parsedOpencode.model === "qwen/qwen3-coder:free".replace(/:free$/, ''), "generateConfig: OpenCode model");
 
     // Premium JSON
     const pm = [{ ...MODEL_MAPPING["qwen/qwen3-coder:free"], premium_prompt: "You are an expert." }];
@@ -250,9 +250,9 @@ runTestGroup("CLI Commands Tests", () => {
 
     assert(CLI_COMMANDS["ollama"].install.win32 === "winget install Ollama.Ollama", "CLI: Ollama Win install");
     assert(CLI_COMMANDS["ollama"].install.darwin === "brew install ollama/tap/ollama", "CLI: Ollama Mac install");
-    assert(CLI_COMMANDS["opencode"].install.linux === "npm install -g opencode", "CLI: OpenCode Linux install");
-    assert(CLI_COMMANDS["claude_code"].install.win32 === "npm install -g @anthropic-ai/claude-code", "CLI: Claude Code install");
-    assert(CLI_COMMANDS["cline"].install.darwin === "brew install cline", "CLI: Cline Mac install");
+    assert(CLI_COMMANDS["opencode"].install.linux === "npm install -g opencode-ai", "CLI: OpenCode Linux install");
+    assert(CLI_COMMANDS["claude_code"].install.win32 === "winget install Anthropic.ClaudeCode", "CLI: Claude Code install");
+    assert(CLI_COMMANDS["cline"].install.darwin === "npm install -g cline", "CLI: Cline Mac install");
 });
 
 // ──────────────────────────────────────────────
@@ -261,17 +261,17 @@ runTestGroup("CLI Commands Tests", () => {
 runTestGroup("InstallMD Tests", () => {
     const md = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "win32", "basic", "C:\\test");
     assert(md.includes("Setup-Anleitung"), "InstallMD: Title");
-    assert(md.includes("npm install -g opencode"), "InstallMD: Win install command");
+    assert(md.includes("npm install -g opencode-ai"), "InstallMD: Win install command");
     assert(md.includes("DEIN_API_KEY_HERE"), "InstallMD: API placeholder");
     assert(md.includes("C:\\test"), "InstallMD: Win path in body");
 
     const mdMac = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "darwin", "basic", "~/.config");
-    assert(mdMac.includes("npm install -g opencode"), "InstallMD: Mac install command");
+    assert(mdMac.includes("npm install -g opencode-ai"), "InstallMD: Mac install command");
     assert(mdMac.includes("~/.config"), "InstallMD: Mac path in body");
 
     const mdClaude = generateInstallMD({ id: "claude_code", name: "Claude Code", config_file: "CLAUDE.md" }, "darwin", "basic", "~/CLAUDE.md");
     assert(mdClaude.includes("Claude Code"), "InstallMD: Claude Code title");
-    assert(mdClaude.includes("npm install -g @anthropic-ai/claude-code"), "InstallMD: Claude Code install command");
+    assert(mdClaude.includes("curl -fsSL https://claude.ai/install.sh | bash"), "InstallMD: Claude Code install command");
 });
 
 // ──────────────────────────────────────────────
@@ -286,7 +286,7 @@ runTestGroup("OS Paths Tests", () => {
         assert(OS_PATHS["darwin"][id], `OS_PATHS: darwin/${id} exists`);
     });
 
-    assert(OS_PATHS["win32"]["opencode"].includes("AppData"), "OS_PATHS: Win opencode contains AppData");
+    assert(OS_PATHS["win32"]["opencode"].includes(".config"), "OS_PATHS: Win opencode contains .config");
     assert(OS_PATHS["darwin"]["opencode"].includes("~/.config"), "OS_PATHS: Mac opencode contains ~/.config");
     assert(OS_PATHS["win32"]["continue"].includes(".continue"), "OS_PATHS: Win continue path");
     assert(OS_PATHS["darwin"]["zed"].includes(".config/zed"), "OS_PATHS: Mac zed path");
@@ -336,7 +336,7 @@ runTestGroup("Integration Tests", () => {
 
     const config = generateConfig("opencode", models, "basic");
     const parsed = JSON.parse(config);
-    assert(parsed.providers.openrouter.apiKey === "DEIN_API_KEY_HERE", "Integration: OpenCode has openrouter provider");
+    assert(parsed.provider.openrouter.options.apiKey === "DEIN_API_KEY_HERE", "Integration: OpenCode has openrouter provider");
 
     const hasValidModel = models.some(([id]) => {
         try {
