@@ -403,7 +403,8 @@ async function downloadZIP() {
         const tool = TOOL_TEMPLATES[toolId];
         if (!tool) return;
         
-        const configContent = generateConfig(tool, state.selectedModels, state.selectedBundle, primaryModel);
+        const modelTuples = state.selectedModels.map(id => [id, MODEL_MAPPING[id]]);
+        const configContent = generateConfig(toolId, modelTuples, state.selectedBundle);
         const path = OS_PATHS[os][toolId];
         const installMD = generateInstallMD({ id: toolId, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path);
         
