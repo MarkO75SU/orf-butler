@@ -40,3 +40,16 @@ jobs:
         run: |
           git commit -m "Auto-Update: Free models + configs $(date +'%Y-%m-%d')"
           git push
+
+      - name: Send email notification
+        if: hashFiles('model-changes.txt') != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.web.de
+          server_port: 587
+          username: ${{ secrets.MAIL_USER }}
+          password: ${{ secrets.MAIL_PASS }}
+          subject: ORF-Butler – Modell-Änderungen
+          to: learncode@web.de
+          from: ORF-Butler Bot <${{ secrets.MAIL_USER }}>
+          body: file://model-changes.txt
