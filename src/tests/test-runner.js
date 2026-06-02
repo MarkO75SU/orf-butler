@@ -82,13 +82,12 @@ runTestGroup("Mapping Tests", () => {
 
     const required = [
         "qwen/qwen3-coder:free",
-        "deepseek/deepseek-v4-flash:free",
         "google/gemma-4-26b-a4b-it:free",
         "google/gemma-4-31b-it:free",
         "liquid/lfm-2.5-1.2b-instruct:free",
         "meta-llama/llama-3.2-3b-instruct:free",
         "meta-llama/llama-3.3-70b-instruct:free",
-        "minimax/minimax-m2.5:free",
+        "moonshotai/kimi-k2.6:free",
         "nousresearch/hermes-3-llama-3.1-405b:free",
         "nvidia/nemotron-3-nano-30b-a3b:free",
         "nvidia/nemotron-3-super-120b-a12b:free",
@@ -96,7 +95,8 @@ runTestGroup("Mapping Tests", () => {
         "poolside/laguna-m.1:free",
         "nvidia/nemotron-nano-9b-v2:free",
         "z-ai/glm-4.5-air:free",
-        "nvidia/nemotron-nano-12b-v2-vl:free"
+        "nvidia/nemotron-nano-12b-v2-vl:free",
+        "poolside/laguna-xs.2:free"
     ];
     required.forEach(id => assert(MODEL_MAPPING[id], `Mapping: ${id} exists`));
 
