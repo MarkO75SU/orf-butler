@@ -1,8 +1,8 @@
-name: Daily Free Model Update
+name: Hourly Free Model Update
 
 on:
   schedule:
-    - cron: '1 0 * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
