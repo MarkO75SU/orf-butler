@@ -108,6 +108,7 @@ runTestGroup("Mapping Tests", () => {
         assert(m.desc_de, `Mapping: ${id} has desc_de`);
         assert(m.context, `Mapping: ${id} has context`);
         assert(Array.isArray(m.languages) && m.languages.length > 0, `Mapping: ${id} has languages`);
+        assert(Array.isArray(m.tags) && m.tags.length > 0, `Mapping: ${id} has tags`);
         assert(id.endsWith(':free'), `Mapping: ${id} ends with :free`);
     });
 

@@ -1,0 +1,94 @@
+{
+  "entries": [
+    {
+      "date": "2026-06-03",
+      "added": [
+        {
+          "id": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+          "tags": ["chat", "lightweight"]
+        },
+        {
+          "id": "google/gemma-4-26b-a4b-it:free",
+          "tags": ["chat", "lightweight", "moe", "multimodal", "video", "vision"]
+        },
+        {
+          "id": "google/gemma-4-31b-it:free",
+          "tags": ["chat", "multimodal", "reasoning", "video", "vision"]
+        },
+        {
+          "id": "liquid/lfm-2.5-1.2b-instruct:free",
+          "tags": ["chat", "lightweight"]
+        },
+        {
+          "id": "liquid/lfm-2.5-1.2b-thinking:free",
+          "tags": ["agent", "embedding", "lightweight", "reasoning"]
+        },
+        {
+          "id": "meta-llama/llama-3.2-3b-instruct:free",
+          "tags": ["chat", "lightweight", "multilingual", "reasoning"]
+        },
+        {
+          "id": "meta-llama/llama-3.3-70b-instruct:free",
+          "tags": ["chat", "multilingual"]
+        },
+        {
+          "id": "moonshotai/kimi-k2.6:free",
+          "tags": ["agent", "multimodal", "vision"]
+        },
+        {
+          "id": "nousresearch/hermes-3-llama-3.1-405b:free",
+          "tags": ["agent", "chat", "reasoning"]
+        },
+        {
+          "id": "nvidia/nemotron-3-nano-30b-a3b:free",
+          "tags": ["agent", "lightweight", "moe"]
+        },
+        {
+          "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+          "tags": ["multimodal", "reasoning", "video", "vision"]
+        },
+        {
+          "id": "nvidia/nemotron-3-super-120b-a12b:free",
+          "tags": ["lightweight", "moe"]
+        },
+        {
+          "id": "nvidia/nemotron-nano-12b-v2-vl:free",
+          "tags": ["lightweight", "multimodal", "reasoning", "video", "vision"]
+        },
+        {
+          "id": "nvidia/nemotron-nano-9b-v2:free",
+          "tags": ["agent", "lightweight", "moe"]
+        },
+        {
+          "id": "openai/gpt-oss-120b:free",
+          "tags": ["chat", "lightweight", "moe"]
+        },
+        {
+          "id": "openai/gpt-oss-20b:free",
+          "tags": ["chat", "lightweight", "reasoning"]
+        },
+        {
+          "id": "poolside/laguna-m.1:free",
+          "tags": ["coding"]
+        },
+        {
+          "id": "poolside/laguna-xs.2:free",
+          "tags": ["coding", "lightweight"]
+        },
+        {
+          "id": "qwen/qwen3-coder:free",
+          "tags": ["coding", "reasoning"]
+        },
+        {
+          "id": "qwen/qwen3-next-80b-a3b-instruct:free",
+          "tags": ["chat", "lightweight", "moe"]
+        },
+        {
+          "id": "z-ai/glm-4.5-air:free",
+          "tags": ["chat", "lightweight"]
+        }
+      ],
+      "removed": []
+    }
+  ]
+}

@@ -186,6 +186,24 @@ function loadModels() {
         const checkId = `model-${id.replace(/[:/.]/g, '-')}`;
         const isChecked = state.selectedModels.includes(id) ? 'checked' : '';
         const neueBadge = data.new ? '<span class="text-[9px] bg-sky-600 text-white px-1.5 py-0.5 rounded font-bold ml-1">NEU</span>' : '';
+        const tags = data.tags || [];
+        const tagColors = {
+            coding: 'bg-emerald-900/60 text-emerald-400',
+            reasoning: 'bg-violet-900/60 text-violet-400',
+            vision: 'bg-cyan-900/60 text-cyan-400',
+            multimodal: 'bg-pink-900/60 text-pink-400',
+            chat: 'bg-blue-900/60 text-blue-400',
+            lightweight: 'bg-amber-900/60 text-amber-400',
+            agent: 'bg-orange-900/60 text-orange-400',
+            moe: 'bg-slate-800 text-slate-400',
+            multilingual: 'bg-indigo-900/60 text-indigo-400',
+            embedding: 'bg-teal-900/60 text-teal-400',
+            'open-source': 'bg-green-900/60 text-green-400',
+            audio: 'bg-purple-900/60 text-purple-400',
+            video: 'bg-rose-900/60 text-rose-400'
+        };
+        const tagHtml = tags.map(t => `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${tagColors[t] || 'bg-slate-800 text-slate-500'}">${t}</span>`).join('');
+        const modIcon = data.modality_icon ? `<span class="text-[10px] ml-1">${data.modality_icon}</span>` : '';
         
         card.className = `model-card bg-[#1a1a1e] border ${isChecked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
         card.setAttribute('data-model-id', id);
@@ -200,9 +218,13 @@ function loadModels() {
                         <a href="https://openrouter.ai/models/${id}" target="_blank" rel="noopener" class="text-[9px] text-sky-600 hover:text-sky-400 shrink-0" onclick="event.stopPropagation()">↗</a>
                         ${neueBadge}
                     </div>
-                    <div class="text-[10px] text-sky-400 mt-1 truncate">${role}</div>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="text-[10px] text-sky-400 truncate">${role}</span>
+                        ${modIcon}
+                    </div>
                     <div class="text-[10px] text-slate-500 mt-1 leading-relaxed">${desc}</div>
-                    <div class="flex gap-2 mt-2 text-[9px] text-slate-600">
+                    <div class="flex flex-wrap gap-1 mt-2">${tagHtml}</div>
+                    <div class="flex gap-2 mt-1 text-[9px] text-slate-600">
                         <span>${data.context || '?'} ctx</span>
                         <span>${data.languages?.join(', ') || ''}</span>
                     </div>

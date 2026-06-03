@@ -3,172 +3,203 @@
 
 export const MODEL_MAPPING = {
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
-        role: "Lightweight",
-        role_de: "Leichtgewicht",
+        role: "Chat",
+        role_de: "Chat",
         context: "33k",
-        desc_en: "Lightweight model via OpenRouter free tier.",
-        desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Venice Uncensored Dolphin Mistral 24B Venice Edition is a fine-tuned variant of Mistral-Small-24B-Instruct-2501, developed by dphn.ai in...",
+        desc_de: "Venice Uncensored Dolphin Mistral 24B Venice Edition is a fine-tuned variant of Mistral-Small-24B-Instruct-2501, developed by dphn.ai in...",
+        tags: ["chat","lightweight"],
+        languages: ["python","javascript","typescript"]
     },
     "google/gemma-4-26b-a4b-it:free": {
-        role: "Lightweight",
-        role_de: "Leichtgewicht",
+        role: "Chat",
+        role_de: "Chat",
         context: "262k",
-        desc_en: "Lightweight model via OpenRouter free tier.",
-        desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Gemma 4 26B A4B IT is an instruction-tuned Mixture-of-Experts (MoE) model from Google DeepMind.",
+        desc_de: "Gemma 4 26B A4B IT is an instruction-tuned Mixture-of-Experts (MoE) model from Google DeepMind.",
+        modalities: ["image","text","video"],
+        modality_icon: "🖼️ 🎬",
+        tags: ["chat","lightweight","moe","multimodal","video","vision"],
+        languages: ["go"]
     },
     "google/gemma-4-31b-it:free": {
-        role: "Lightweight",
-        role_de: "Leichtgewicht",
+        role: "Reasoning",
+        role_de: "Logik",
         context: "262k",
-        desc_en: "Lightweight model via OpenRouter free tier.",
-        desc_de: "Leichtgewicht-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Gemma 4 31B Instruct is Google DeepMind's 30.7B dense multimodal model supporting text and image input with text output.",
+        desc_de: "Gemma 4 31B Instruct is Google DeepMind's 30.7B dense multimodal model supporting text and image input with text output.",
+        modalities: ["image","text","video"],
+        modality_icon: "🖼️ 🎬",
+        tags: ["chat","multimodal","reasoning","video","vision"],
+        languages: ["go"]
     },
     "liquid/lfm-2.5-1.2b-instruct:free": {
-        role: "Assistant",
-        role_de: "Assistent",
+        role: "Chat",
+        role_de: "Chat",
         context: "33k",
-        desc_en: "Assistant model via OpenRouter free tier.",
-        desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "LFM2.5-1.2B-Instruct is a compact, high-performance instruction-tuned model built for fast on-device AI.",
+        desc_de: "LFM2.5-1.2B-Instruct is a compact, high-performance instruction-tuned model built for fast on-device AI.",
+        tags: ["chat","lightweight"],
+        languages: ["python","javascript","typescript"]
     },
     "liquid/lfm-2.5-1.2b-thinking:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Reasoning",
+        role_de: "Logik",
         context: "33k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "LFM2.5-1.2B-Thinking is a lightweight reasoning-focused model optimized for agentic tasks, data extraction, and RAG—while still running...",
+        desc_de: "LFM2.5-1.2B-Thinking is a lightweight reasoning-focused model optimized for agentic tasks, data extraction, and RAG—while still running...",
+        tags: ["agent","embedding","lightweight","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "meta-llama/llama-3.2-3b-instruct:free": {
-        role: "Assistant",
-        role_de: "Assistent",
+        role: "Reasoning",
+        role_de: "Logik",
         context: "131k",
-        desc_en: "Assistant model via OpenRouter free tier.",
-        desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Llama 3.2 3B is a 3-billion-parameter multilingual large language model, optimized for advanced natural language processing tasks like...",
+        desc_de: "Llama 3.2 3B is a 3-billion-parameter multilingual large language model, optimized for advanced natural language processing tasks like...",
+        tags: ["chat","lightweight","multilingual","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "meta-llama/llama-3.3-70b-instruct:free": {
-        role: "Assistant",
-        role_de: "Assistent",
+        role: "Chat",
+        role_de: "Chat",
         context: "131k",
-        desc_en: "Assistant model via OpenRouter free tier.",
-        desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "The Meta Llama 3.3 multilingual large language model (LLM) is a pretrained and instruction tuned generative model in 70B (text in/text out).",
+        desc_de: "The Meta Llama 3.3 multilingual large language model (LLM) is a pretrained and instruction tuned generative model in 70B (text in/text out).",
+        tags: ["chat","multilingual"],
+        languages: ["python","javascript","typescript"]
     },
     "moonshotai/kimi-k2.6:free": {
         role: "General",
         role_de: "Allgemein",
         context: "262k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Kimi K2.6 is Moonshot AI's next-generation multimodal model, designed for long-horizon coding, coding-driven UI/UX generation, and...",
+        desc_de: "Kimi K2.6 is Moonshot AI's next-generation multimodal model, designed for long-horizon coding, coding-driven UI/UX generation, and...",
+        modalities: ["text","image"],
+        modality_icon: "🖼️",
+        tags: ["agent","multimodal","vision"],
+        languages: ["python","go","rust"]
     },
     "nousresearch/hermes-3-llama-3.1-405b:free": {
-        role: "Assistant",
-        role_de: "Assistent",
+        role: "Reasoning",
+        role_de: "Logik",
         context: "131k",
-        desc_en: "Assistant model via OpenRouter free tier.",
-        desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Hermes 3 is a generalist language model with many improvements over Hermes 2, including advanced agentic capabilities, much better...",
+        desc_de: "Hermes 3 is a generalist language model with many improvements over Hermes 2, including advanced agentic capabilities, much better...",
+        tags: ["agent","chat","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-3-nano-30b-a3b:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Lightweight",
+        role_de: "Leichtgewicht",
         context: "256k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "NVIDIA Nemotron 3 Nano 30B A3B is a small language MoE model with highest compute efficiency and accuracy for developers to build...",
+        desc_de: "NVIDIA Nemotron 3 Nano 30B A3B is a small language MoE model with highest compute efficiency and accuracy for developers to build...",
+        tags: ["agent","lightweight","moe"],
+        languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
         role: "Reasoning",
         role_de: "Logik",
         context: "256k",
-        desc_en: "Reasoning model via OpenRouter free tier.",
-        desc_de: "Logik-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "NVIDIA Nemotron™ 3 Nano Omni is a 30B-A3B open multimodal model designed to function as a perception and context sub-agent in enterprise...",
+        desc_de: "NVIDIA Nemotron™ 3 Nano Omni is a 30B-A3B open multimodal model designed to function as a perception and context sub-agent in enterprise...",
+        modalities: ["text","audio","image","video"],
+        modality_icon: "🎤 🖼️ 🎬",
+        tags: ["agent","audio","lightweight","multimodal","reasoning","video","vision"],
+        languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-3-super-120b-a12b:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Lightweight",
+        role_de: "Leichtgewicht",
         context: "1000k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "NVIDIA Nemotron 3 Super is a 120B-parameter open hybrid MoE model, activating just 12B parameters for maximum compute efficiency and...",
+        desc_de: "NVIDIA Nemotron 3 Super is a 120B-parameter open hybrid MoE model, activating just 12B parameters for maximum compute efficiency and...",
+        tags: ["agent","lightweight","moe"],
+        languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-nano-12b-v2-vl:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Reasoning",
+        role_de: "Logik",
         context: "128k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "NVIDIA Nemotron Nano 2 VL is a 12-billion-parameter open multimodal reasoning model designed for video understanding and document...",
+        desc_de: "NVIDIA Nemotron Nano 2 VL is a 12-billion-parameter open multimodal reasoning model designed for video understanding and document...",
+        modalities: ["image","text","video"],
+        modality_icon: "🖼️ 🎬",
+        tags: ["lightweight","multimodal","reasoning","video","vision"],
+        languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-nano-9b-v2:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Reasoning",
+        role_de: "Logik",
         context: "128k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "NVIDIA-Nemotron-Nano-9B-v2 is a large language model (LLM) trained from scratch by NVIDIA, and designed as a unified model for both...",
+        desc_de: "NVIDIA-Nemotron-Nano-9B-v2 is a large language model (LLM) trained from scratch by NVIDIA, and designed as a unified model for both...",
+        tags: ["lightweight","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "openai/gpt-oss-120b:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Reasoning",
+        role_de: "Logik",
         context: "131k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "gpt-oss-120b is an open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and...",
+        desc_de: "gpt-oss-120b is an open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and...",
+        tags: ["agent","chat","moe","open-source","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "openai/gpt-oss-20b:free": {
         role: "General",
         role_de: "Allgemein",
         context: "131k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "gpt-oss-20b is an open-weight 21B parameter model released by OpenAI under the Apache 2.0 license.",
+        desc_de: "gpt-oss-20b is an open-weight 21B parameter model released by OpenAI under the Apache 2.0 license.",
+        tags: ["moe","open-source"],
+        languages: ["python","javascript","typescript"]
     },
     "poolside/laguna-m.1:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Code",
+        role_de: "Code",
         context: "262k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai), optimized for complex software engineering tasks.",
+        desc_de: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai), optimized for complex software engineering tasks.",
+        tags: ["agent","coding","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "poolside/laguna-xs.2:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Code",
+        role_de: "Code",
         context: "262k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Laguna XS.2 is the second-generation model in the XS size class from [Poolside](https://poolside.ai), their efficient coding agent series.",
+        desc_de: "Laguna XS.2 is the second-generation model in the XS size class from [Poolside](https://poolside.ai), their efficient coding agent series.",
+        tags: ["agent","coding","lightweight","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "qwen/qwen3-coder:free": {
-        role: "Code Generation",
-        role_de: "Code-Generierung",
+        role: "Code",
+        role_de: "Code",
         context: "1049k",
-        desc_en: "Code Generation model via OpenRouter free tier.",
-        desc_de: "Code-Generierung-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team.",
+        desc_de: "Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team.",
+        tags: ["agent","chat","coding","moe","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "qwen/qwen3-next-80b-a3b-instruct:free": {
-        role: "Assistant",
-        role_de: "Assistent",
+        role: "Code",
+        role_de: "Code",
         context: "262k",
-        desc_en: "Assistant model via OpenRouter free tier.",
-        desc_de: "Assistent-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "Qwen3-Next-80B-A3B-Instruct is an instruction-tuned chat model in the Qwen3-Next series optimized for fast, stable responses without...",
+        desc_de: "Qwen3-Next-80B-A3B-Instruct is an instruction-tuned chat model in the Qwen3-Next series optimized for fast, stable responses without...",
+        tags: ["chat","coding","lightweight","multilingual","reasoning"],
+        languages: ["python","javascript","typescript"]
     },
     "z-ai/glm-4.5-air:free": {
-        role: "General",
-        role_de: "Allgemein",
+        role: "Lightweight",
+        role_de: "Leichtgewicht",
         context: "131k",
-        desc_en: "General model via OpenRouter free tier.",
-        desc_de: "Allgemein-Modell über OpenRouter kostenlos.",
-        languages: ["python","javascript","typescript","go"]
+        desc_en: "GLM-4.5-Air is the lightweight variant of our latest flagship model family, also purpose-built for agent-centric applications.",
+        desc_de: "GLM-4.5-Air is the lightweight variant of our latest flagship model family, also purpose-built for agent-centric applications.",
+        tags: ["agent","lightweight","moe"],
+        languages: ["python","javascript","typescript"]
     }
 };
 
