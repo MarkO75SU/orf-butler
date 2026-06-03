@@ -10,7 +10,7 @@
         :root { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
         .gradient-text { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     </style>
-    <script>if(location.hash==='#login'||sessionStorage.getItem('orf_redirect')){sessionStorage.removeItem('orf_redirect');}</script>
+    <script>if(sessionStorage.getItem('orf_redirect')){sessionStorage.removeItem('orf_redirect');}</script>
 </head>
 <body class="bg-[#0a0a0c] text-slate-300 min-h-screen">
 
@@ -24,7 +24,7 @@
                 <a href="#features" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Features</a>
                 <a href="#pricing" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Preise</a>
                 <a href="#tools" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Tools</a>
-                <a href="#login" class="bg-sky-600 text-white text-[10px] font-bold px-6 py-3 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Login</a>
+                <button onclick="openLoginModal()" class="bg-sky-600 text-white text-[10px] font-bold px-6 py-3 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Login</button>
             </div>
         </div>
     </nav>
@@ -39,7 +39,7 @@
             fertige Konfigurationen für VS Code, Zed, Aider, Cursor und mehr – in <strong class="text-white">4 Klicks</strong>.
         </p>
         <div class="flex justify-center gap-4">
-            <a href="#login" class="bg-sky-600 text-white text-sm font-bold px-10 py-4 rounded hover:bg-sky-500 transition uppercase tracking-wider">Jetzt Konfigurieren</a>
+            <button onclick="openLoginModal()" class="bg-sky-600 text-white text-sm font-bold px-10 py-4 rounded hover:bg-sky-500 transition uppercase tracking-wider">Jetzt Konfigurieren</button>
             <a href="#features" class="border border-slate-700 text-slate-400 text-sm font-bold px-10 py-4 rounded hover:border-slate-500 transition uppercase tracking-wider">Mehr Erfahren</a>
         </div>
     </header>
@@ -110,23 +110,24 @@
                 <h4 class="text-sm font-bold text-white uppercase mb-2">Standard Bundle</h4>
                 <p class="text-3xl font-bold text-sky-500 mb-4">5€</p>
                 <p class="text-xs text-slate-500 mb-6">Basic Config + Installationsanleitung</p>
-                <a href="login.html" class="block w-full border border-sky-600 text-sky-500 text-xs font-bold py-3 rounded hover:bg-sky-600 hover:text-white transition uppercase tracking-wider">Auswählen</a>
+                <button onclick="openLoginModal()" class="block w-full border border-sky-600 text-sky-500 text-xs font-bold py-3 rounded hover:bg-sky-600 hover:text-white transition uppercase tracking-wider">Auswählen</button>
             </div>
             <div class="bg-[#111114] border-2 border-sky-900 rounded-lg p-8 text-center relative">
                 <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-sky-600 text-white text-[10px] font-bold px-4 py-1 rounded uppercase tracking-wider">Empfohlen</span>
                 <h4 class="text-sm font-bold text-white uppercase mb-2">Premium Bundle</h4>
                 <p class="text-3xl font-bold text-sky-500 mb-4">20€</p>
                 <p class="text-xs text-slate-500 mb-6">Extended Config + Expert Prompts + Support</p>
-                <a href="login.html" class="block w-full bg-sky-600 text-white text-xs font-bold py-3 rounded hover:bg-sky-500 transition uppercase tracking-wider">Auswählen</a>
+                <button onclick="openLoginModal()" class="block w-full bg-sky-600 text-white text-xs font-bold py-3 rounded hover:bg-sky-500 transition uppercase tracking-wider">Auswählen</button>
             </div>
         </div>
     </section>
 
-    <section id="login" class="max-w-6xl mx-auto px-4 py-16 border-t border-slate-800">
-        <h3 class="text-xl font-bold text-white text-center mb-4 uppercase tracking-wider">App Login</h3>
-        <p class="text-xs text-slate-500 text-center mb-10">Keine Registrierung nötig. Code eingeben oder als Admin anmelden.</p>
-        <div class="max-w-md mx-auto bg-[#111114] border border-slate-800 rounded-lg p-8 shadow-2xl relative">
-            <div class="absolute top-0 left-0 w-full h-1 bg-sky-600"></div>
+    <div id="login-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur-sm" tabindex="-1">
+        <div class="max-w-md w-full mx-4 bg-[#111114] border border-slate-800 rounded-lg p-8 shadow-2xl relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-sky-600 rounded-t-lg"></div>
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-600 hover:text-slate-300 text-lg">&times;</button>
+            <h3 class="text-lg font-bold text-white text-center mb-2 uppercase tracking-wider">App Login</h3>
+            <p class="text-xs text-slate-500 text-center mb-8">Keine Registrierung nötig. Code eingeben oder als Admin anmelden.</p>
             <form id="login-form" class="space-y-6">
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername / Code</label>
@@ -153,13 +154,29 @@
             </form>
             <p class="mt-4 text-[10px] text-slate-600 text-center">Admin? Benutzername "generali" eingeben → Passwortfeld erscheint</p>
         </div>
-    </section>
+    </div>
 
     <footer class="border-t border-slate-800 py-8 text-center">
         <p class="text-[10px] text-slate-600 uppercase tracking-widest">&copy; 2026 Openrouter Free Butler &mdash; MIT Lizenz</p>
     </footer>
 
     <script>
+        function openLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('login-modal').classList.add('flex');
+            document.getElementById('username').focus();
+        }
+        function closeLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('flex');
+        }
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('login-modal');
+            if (e.target === modal) closeLoginModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLoginModal();
+        });
         function togglePassword() {
             const pw = document.getElementById('password');
             const btn = pw.nextElementSibling;
@@ -180,11 +197,6 @@
 
         if (isAuthenticated()) {
             window.location.href = 'index.html';
-        }
-
-        // Redirect from login.html
-        if (window.location.search.includes('redirect')) {
-            document.getElementById('login').scrollIntoView({ behavior: 'smooth' });
         }
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
