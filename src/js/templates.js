@@ -16,6 +16,13 @@ export const TOOL_TEMPLATES = {
         status: "stable",
         desc: "Hochperformante Terminal-AI." 
     },
+    "opencode_desktop": { 
+        name: "OpenCode Desktop", 
+        config_file: "opencode.json", 
+        type: "opencode", 
+        status: "partial",
+        desc: "OpenCode als Desktop-App (macOS/Win/Linux)." 
+    },
     "antigravity": { 
         name: "Antigravity", 
         config_file: "settings.yaml", 
