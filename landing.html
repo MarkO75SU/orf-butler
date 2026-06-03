@@ -170,7 +170,7 @@
                     const reason = typeof m === 'string' ? '' : (m.reason_de || m.reason || '');
                     const available = typeof m === 'string' ? '' : (m.available || '');
                     const tagHtml = (typeof m === 'object' && m.tags || []).map(t => `<span class="text-[7px] font-bold px-1 py-0.5 rounded uppercase tracking-wider ${tagColors[t] || 'bg-slate-800 text-slate-500'}">${t}</span>`).join('');
-                    return `<div class="flex items-center gap-2 text-xs"><span class="text-red-400 font-bold">−</span><span class="text-slate-500 font-mono line-through">${id}</span><span class="text-slate-600">${reason}${available ? ' (' + available + ')' : ''}</span>${tagHtml ? ' ' + tagHtml : ''}</div>`;
+                    return `<div class="flex items-center gap-2 text-xs"><span class="text-red-400 font-bold">−</span><span class="text-slate-500 font-mono">${id}</span><span class="text-slate-600">${reason}${available ? ' (' + available + ')' : ''}</span>${tagHtml ? ' ' + tagHtml : ''}</div>`;
                 }).join('');
                 return `<div class="bg-[#111114] border border-slate-800 rounded-lg p-5">
                     <div class="text-[10px] text-sky-500 font-bold uppercase tracking-wider mb-3">${entry.date}</div>
