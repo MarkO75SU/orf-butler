@@ -328,6 +328,7 @@ window.toggleModel = (id) => {
     saveState();
     updateModelCards();
     updateSummary();
+    updateSelectedCount();
 };
 
 window.toggleTool = (id) => {
@@ -355,6 +356,28 @@ function filterModels(query) {
     });
 }
 window.filterModels = filterModels;
+
+function updateSelectedCount() {
+    const countEl = document.getElementById('selected-count');
+    const checkEl = document.getElementById('select-all-models');
+    if (countEl) {
+        const total = Object.keys(MODEL_MAPPING).length;
+        const selected = state.selectedModels.length;
+        countEl.textContent = selected > 0 ? `${selected}/${total} ausgewählt` : '';
+    }
+    if (checkEl) {
+        checkEl.checked = state.selectedModels.length === Object.keys(MODEL_MAPPING).length && state.selectedModels.length > 0;
+    }
+}
+
+window.toggleAllModels = (checked) => {
+    const allIds = Object.keys(MODEL_MAPPING);
+    state.selectedModels = checked ? [...allIds] : [];
+    saveState();
+    updateModelCards();
+    updateSummary();
+    updateSelectedCount();
+};
 
 function selectBundle(type) {
     state.selectedBundle = type;
@@ -661,6 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bundleEl.classList.remove('border-slate-800');
         bundleEl.classList.add('border-sky-600');
     }
+    updateSelectedCount();
     updateUI();
     
     document.getElementById('download-btn')?.addEventListener('click', downloadZIP);

@@ -54,6 +54,13 @@
                     class="w-full bg-[#1a1a1e] border border-slate-800 p-3 rounded text-xs outline-none focus:border-sky-600 transition text-white pl-10"
                     placeholder="🔍 Suche nach ID, Tag, Rolle oder Beschreibung...">
             </div>
+            <div class="mb-3 flex items-center gap-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="select-all-models" class="w-4 h-4 accent-sky-600" onchange="toggleAllModels(this.checked)">
+                    <span class="text-xs text-slate-400 uppercase tracking-wider" id="select-all-label">Alle Auswählen</span>
+                </label>
+                <span id="selected-count" class="text-[10px] text-slate-600"></span>
+            </div>
             <div id="models-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 <!-- Models loaded via JS -->
             </div>
