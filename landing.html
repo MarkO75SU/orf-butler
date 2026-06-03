@@ -159,7 +159,7 @@
                 audio: 'bg-purple-900/60 text-purple-400',
                 video: 'bg-rose-900/60 text-rose-400'
             };
-            container.innerHTML = data.entries.toReversed().slice(0, 10).map(entry => {
+            container.innerHTML = data.entries.slice().reverse().slice(0, 10).map(entry => {
                 const descHtml = entry.description ? `<div class="text-[10px] text-slate-500 mb-3 italic">${entry.description}</div>` : '';
                 const addedHtml = (entry.added || []).map(m => {
                     const tagHtml = (m.tags || []).map(t => `<span class="text-[7px] font-bold px-1 py-0.5 rounded uppercase tracking-wider ${tagColors[t] || 'bg-slate-800 text-slate-500'}">${t}</span>`).join('');

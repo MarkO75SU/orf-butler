@@ -13,6 +13,7 @@ export default function handler(req, res) {
     }
     
     if (username === validUser && password === validPass) {
+        res.setHeader('Set-Cookie', 'orf_session=1; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000');
         return res.json({ success: true });
     }
     

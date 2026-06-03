@@ -14,18 +14,24 @@ export function isAuthenticated() {
 }
 
 export async function login(username, password, remember) {
-    if (!username || !password) {
-        return { success: false, error: 'Bitte Benutzername und Passwort eingeben.' };
+    const trimmedUser = (username || '').trim();
+    const trimmedPass = (password || '').trim();
+    
+    if (!trimmedUser) {
+        return { success: false, error: 'Bitte Benutzername oder Code eingeben.' };
     }
     
-    const cleanedUser = username.trim().toLowerCase();
+    const cleanedUser = trimmedUser.toLowerCase();
     
     if (cleanedUser === 'generali') {
+        if (!trimmedPass) {
+            return { success: false, error: 'Bitte Passwort eingeben.' };
+        }
         try {
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username.trim(), password })
+                body: JSON.stringify({ username: trimmedUser, password: trimmedPass })
             });
             
             if (response.ok) {
@@ -48,7 +54,7 @@ export async function login(username, password, remember) {
         const response = await fetch('/api/codes?action=redeem', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: password.trim().toUpperCase() })
+            body: JSON.stringify({ code: trimmedUser.toUpperCase() })
         });
         
         const data = await response.json();
@@ -73,6 +79,7 @@ export async function login(username, password, remember) {
 
 export function logout() {
     localStorage.removeItem('orf_auth');
+    fetch('/api/logout', { method: 'POST' }).catch(() => {});
 }
 
 export function getUser() {

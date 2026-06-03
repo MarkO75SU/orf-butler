@@ -13,6 +13,22 @@ let state = {
     selectedBundle: 'basic'
 };
 
+function saveState() {
+    try { sessionStorage.setItem('orf_state', JSON.stringify(state)); } catch {}
+}
+
+function loadState() {
+    try {
+        const saved = sessionStorage.getItem('orf_state');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            state.selectedModels = parsed.selectedModels || [];
+            state.selectedTools = parsed.selectedTools || [];
+            state.selectedBundle = parsed.selectedBundle || 'basic';
+        }
+    } catch {}
+}
+
 const translations = {
     de: {
         step1Title: "Wähle deine Free-LLM Modelle",
@@ -84,7 +100,8 @@ window.setLang = (lang) => {
 
 window.logout = () => {
     logout();
-    window.location.href = 'landing.html';
+    sessionStorage.removeItem('orf_state');
+    window.location.href = '/landing';
 };
 
 function updateUI() {
@@ -308,6 +325,7 @@ window.toggleModel = (id) => {
     } else {
         state.selectedModels.splice(idx, 1);
     }
+    saveState();
     updateModelCards();
     updateSummary();
 };
@@ -319,6 +337,7 @@ window.toggleTool = (id) => {
     } else {
         state.selectedTools.splice(idx, 1);
     }
+    saveState();
     updateToolCards();
     updateSummary();
 };
@@ -339,6 +358,7 @@ window.filterModels = filterModels;
 
 function selectBundle(type) {
     state.selectedBundle = type;
+    saveState();
     document.querySelectorAll('.bundle-card').forEach(c => {
         c.classList.remove('border-sky-600');
         c.classList.add('border-slate-800');
@@ -363,7 +383,14 @@ async function downloadZIP() {
         return;
     }
     
-    const zip = new JSZip();
+    const btn = document.getElementById('download-btn');
+    const origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = getLang() === 'de' ? 'Generiere ZIP...' : 'Generating ZIP...';
+    btn.classList.add('opacity-50', 'cursor-not-allowed');
+    
+    try {
+        const zip = new JSZip();
     const os = navigator.platform.toLowerCase().includes('win') ? 'win32' : 
                navigator.platform.toLowerCase().includes('mac') ? 'darwin' : 'linux';
     
@@ -449,6 +476,12 @@ Doppelklick auf **auto-install-linux.sh**
     a.download = 'orfb-configs.zip';
     a.click();
     URL.revokeObjectURL(url);
+
+    } finally {
+        btn.disabled = false;
+        btn.textContent = origText;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
 }
 window.downloadZIP = downloadZIP;
 
@@ -543,12 +576,15 @@ window.resetCode = async (code) => {
     }
 };
 
-window.copyCode = (code) => {
+function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+window.copyCode = (code, btn) => {
     const info = window.__codesData ? window.__codesData[code] : null;
     const anon = info ? info.anonId : '';
     const text = anon ? anon + ' - ' + code : code;
     navigator.clipboard.writeText(text).then(() => {
-        const btn = event.target;
         const orig = btn.textContent;
         btn.textContent = '✅';
         setTimeout(() => btn.textContent = orig, 1000);
@@ -580,21 +616,31 @@ window.refreshCodesList = async () => {
                 (getLang() === 'de' ? 'Aktiv' : 'Active') : 
                 (getLang() === 'de' ? 'Inaktiv' : 'Inactive');
             const anonUser = info.anonId || '-';
+            const safeCode = escHtml(code);
             tr.innerHTML = `
                 <td class="py-2 px-2 font-mono text-white">
-                    ${code}
-                    <button onclick="copyCode('${code}')" class="text-slate-500 hover:text-slate-300 ml-1" title="Kopieren">📋</button>
+                    ${safeCode}
+                    <button data-code="${safeCode}" class="copy-btn text-slate-500 hover:text-slate-300 ml-1" title="Kopieren">📋</button>
                 </td>
-                <td class="py-2 px-2">${info.uses}/${info.maxUses}</td>
-                <td class="py-2 px-2 text-sky-400">${anonUser}</td>
+                <td class="py-2 px-2">${escHtml(String(info.uses))}/${escHtml(String(info.maxUses))}</td>
+                <td class="py-2 px-2 text-sky-400">${escHtml(anonUser)}</td>
                 <td class="py-2 px-2 ${active}">${activeText}</td>
                 <td class="py-2 px-2 text-slate-500">${new Date(info.createdAt).toLocaleDateString()}</td>
                 <td class="py-2 px-2">
-                    <button onclick="revokeCode('${code}')" class="text-red-400 hover:text-red-300 mr-2" ${!info.active ? 'disabled' : ''}>Widerrufen</button>
-                    <button onclick="resetCode('${code}')" class="text-yellow-400 hover:text-yellow-300">Reset</button>
+                    <button data-code="${safeCode}" class="revoke-btn text-red-400 hover:text-red-300 mr-2" ${!info.active ? 'disabled' : ''}>Widerrufen</button>
+                    <button data-code="${safeCode}" class="reset-btn text-yellow-400 hover:text-yellow-300">Reset</button>
                 </td>
             `;
             tbody.appendChild(tr);
+        });
+        tbody.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => copyCode(btn.dataset.code, btn));
+        });
+        tbody.querySelectorAll('.revoke-btn').forEach(btn => {
+            btn.addEventListener('click', () => revokeCode(btn.dataset.code));
+        });
+        tbody.querySelectorAll('.reset-btn').forEach(btn => {
+            btn.addEventListener('click', () => resetCode(btn.dataset.code));
         });
     } catch (e) {
         console.error('Failed to load codes:', e);
@@ -606,9 +652,15 @@ window.refreshCodesList = async () => {
 document.addEventListener('DOMContentLoaded', () => {
     const lang = getLang() || 'de';
     setLanguage(lang);
+    loadState();
     loadModels();
     loadTools();
     initBundleSelection();
+    const bundleEl = document.getElementById('bundle-' + state.selectedBundle);
+    if (bundleEl) {
+        bundleEl.classList.remove('border-slate-800');
+        bundleEl.classList.add('border-sky-600');
+    }
     updateUI();
     
     document.getElementById('download-btn')?.addEventListener('click', downloadZIP);

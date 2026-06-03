@@ -1,0 +1,9 @@
+docs/
+scripts/
+src/tests/
+.github/
+.gitignore
+AGENTS.md
+PROJECT.md
+roadmap.md
+README.md

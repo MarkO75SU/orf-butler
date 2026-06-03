@@ -1,5 +1,21 @@
 import { readCodes, writeCodes } from '../lib/github-store.js';
 
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW = 60000;
+const RATE_LIMIT_MAX = 30;
+
+function checkRateLimit(ip) {
+    const now = Date.now();
+    const entry = rateLimitMap.get(ip);
+    if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW) {
+        rateLimitMap.set(ip, { windowStart: now, count: 1 });
+        return true;
+    }
+    if (entry.count >= RATE_LIMIT_MAX) return false;
+    entry.count++;
+    return true;
+}
+
 function generateCode(length = 8) {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = '';
@@ -24,6 +40,11 @@ export default async function handler(req, res) {
 
     if (req.method === 'OPTIONS') return res.status(200).end();
 
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+    if (!checkRateLimit(ip)) {
+        return res.status(429).json({ error: 'Zu viele Anfragen. Bitte warten.' });
+    }
+
     const { action } = req.query;
 
     try {
@@ -32,8 +53,8 @@ export default async function handler(req, res) {
                 if (!verifyAdmin(req)) {
                     return res.status(401).json({ error: 'Admin-Zugang erforderlich' });
                 }
-                const count = Math.min(parseInt(req.body?.count) || 1, 100);
-                const maxUses = parseInt(req.body?.maxUses) || 10;
+                const count = Math.max(1, Math.min(parseInt(req.body?.count) || 1, 100));
+                const maxUses = Math.max(1, parseInt(req.body?.maxUses) || 10);
                 const { codes: store, sha } = await readCodes();
                 if (!store.nextAnonId) store.nextAnonId = 1;
                 const generated = [];
@@ -63,11 +84,12 @@ export default async function handler(req, res) {
                 const cleaned = code.toUpperCase().trim();
                 const { codes: store, sha } = await readCodes();
                 const entry = store.codes[cleaned];
-                if (!entry) return res.status(404).json({ error: 'Ungültiger Code' });
-                if (!entry.active) return res.status(403).json({ error: 'Code wurde deaktiviert' });
-                if (entry.uses >= entry.maxUses) return res.status(403).json({ error: 'Code bereits aufgebraucht' });
+                if (!entry || !entry.active || entry.uses >= entry.maxUses) {
+                    return res.status(401).json({ error: 'Ungültiger oder verbrauchter Code' });
+                }
                 entry.uses += 1;
                 await writeCodes(store, sha);
+                res.setHeader('Set-Cookie', 'orf_session=1; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800');
                 return res.json({
                     success: true,
                     code: cleaned,
@@ -82,9 +104,8 @@ export default async function handler(req, res) {
                 const checkCode = (req.query.code || '').toUpperCase().trim();
                 const { codes: store } = await readCodes();
                 const entry = store.codes[checkCode];
-                if (!entry) return res.json({ valid: false, reason: 'not_found' });
-                if (!entry.active) return res.json({ valid: false, reason: 'deactivated' });
-                if (entry.uses >= entry.maxUses) return res.json({ valid: false, reason: 'exhausted' });
+                const valid = entry && entry.active && entry.uses < entry.maxUses;
+                if (!valid) return res.json({ valid: false });
                 return res.json({
                     valid: true,
                     uses: entry.uses,
@@ -133,6 +154,6 @@ export default async function handler(req, res) {
         }
     } catch (e) {
         console.error('Codes API error:', e);
-        return res.status(500).json({ error: e.message });
+        return res.status(500).json({ error: 'Interner Serverfehler' });
     }
 }
