@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Openrouter Free Butler | Login</title>
+    <title>Weiterleitung...</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -11,100 +11,10 @@
     </style>
 </head>
 <body class="bg-[#0a0a0c] text-slate-300 min-h-screen flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-[#111114] border border-slate-800 rounded-lg p-8 shadow-2xl relative">
-        <div class="absolute top-0 left-0 w-full h-1 bg-sky-600"></div>
-        
-        <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-white tracking-tight uppercase">Openrouter Free Butler</h1>
-            <p class="text-slate-500 text-xs uppercase tracking-[0.2em] mt-1">Login</p>
-        </div>
-
-        <form id="login-form" class="space-y-6">
-            <div>
-                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername</label>
-                <input type="text" id="username" name="username" required autocomplete="username"
-                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
-                    placeholder="Benutzername">
-            </div>
-            
-            <div class="relative">
-                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
-                <div class="relative">
-                    <input type="password" id="password" name="password" required autocomplete="current-password"
-                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white pr-12"
-                        placeholder="Passwort">
-                    <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
-                        👁
-                    </button>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600" checked>
-                <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
-            </div>
-
-            <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">
-                Einloggen
-            </button>
-            
-            <p id="error-msg" class="text-red-500 text-[10px] text-center hidden"></p>
-            <p id="success-msg" class="text-green-500 text-[10px] text-center hidden"></p>
-        </form>
-
-        <div class="mt-6 text-center">
-            <a href="landing.html" class="text-[10px] text-slate-600 hover:text-slate-400 uppercase tracking-widest">← Zurück</a>
-        </div>
+    <div class="text-center">
+        <p class="text-xs text-slate-500">Weiterleitung zur Anmeldung...</p>
+        <a href="/landing#login" class="text-sky-500 text-xs hover:text-sky-400 underline mt-4 inline-block">Jetzt anmelden</a>
     </div>
-
-    <script>
-        function togglePassword() {
-            const pw = document.getElementById('password');
-            const btn = pw.nextElementSibling;
-            if (pw.type === 'password') {
-                pw.type = 'text';
-                btn.textContent = '🙈';
-            } else {
-                pw.type = 'password';
-                btn.textContent = '👁';
-            }
-        }
-    </script>
-
-    <script type="module">
-        import { isAuthenticated, login } from './src/js/auth.js';
-        
-        if (isAuthenticated()) {
-            window.location.href = 'index.html';
-        }
-
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const remember = document.getElementById('remember').checked;
-            const errorEl = document.getElementById('error-msg');
-            const successEl = document.getElementById('success-msg');
-            errorEl.classList.add('hidden');
-            successEl.classList.add('hidden');
-
-            if (!username || !password) {
-                errorEl.textContent = 'Bitte Benutzername und Passwort eingeben.';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            const result = await login(username, password, remember);
-            
-            if (result.success) {
-                successEl.textContent = 'Login erfolgreich! Weiterleitung...';
-                successEl.classList.remove('hidden');
-                setTimeout(() => { window.location.href = 'index.html'; }, 500);
-            } else {
-                errorEl.textContent = result.error || 'Login fehlgeschlagen.';
-                errorEl.classList.remove('hidden');
-            }
-        });
-    </script>
+    <script>window.location.href = '/landing#login';</script>
 </body>
 </html>
