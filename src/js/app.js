@@ -3,7 +3,7 @@ import { TOOL_TEMPLATES } from './templates.js';
 import { generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
 import { isAuthenticated, logout, getUser } from './auth.js';
-import { MODEL_MAPPING, MODEL_HISTORY } from './mapping.js';
+import { MODEL_MAPPING } from './mapping.js';
 
 const ADMIN_USER = 'generali';
 const isAdmin = () => getUser() === ADMIN_USER;
@@ -114,31 +114,22 @@ function updateUI() {
     document.getElementById('summary-tool-label').textContent = texts.summaryTool;
     document.getElementById('summary-bundle-label').textContent = texts.summaryBundle;
     document.getElementById('download-btn').textContent = texts.downloadBtn;
-    document.getElementById('history-title').textContent = texts.historyTitle;
-    document.getElementById('history-toggle-text').textContent = texts.historyToggleShow;
-    
     const badge = document.getElementById('admin-badge');
-    if (badge) {
+    const adminBtn = document.getElementById('admin-btn');
+    if (badge && adminBtn) {
         if (isAdmin()) {
             badge.classList.remove('hidden');
             badge.textContent = texts.adminBadge;
+            adminBtn.classList.remove('hidden');
         } else {
             badge.classList.add('hidden');
+            adminBtn.classList.add('hidden');
         }
     }
     
     const admin = isAdmin();
     document.getElementById('bundle-basic-price').textContent = admin ? texts.bundleFree : '5€';
     document.getElementById('bundle-premium-price').textContent = admin ? texts.bundleFree : '20€';
-    
-    const codesPanel = document.getElementById('codes-panel');
-    if (codesPanel) {
-        if (isAdmin()) {
-            codesPanel.classList.remove('hidden');
-        } else {
-            codesPanel.classList.add('hidden');
-        }
-    }
     
     updateSummary();
 }
@@ -343,48 +334,19 @@ window.toggleTool = (id) => {
     updateSummary();
 };
 
-function toggleHistory() {
-    const content = document.getElementById('history-content');
-    const text = document.getElementById('history-toggle-text');
-    const lang = getLang();
-    if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        text.textContent = translations[lang]?.historyToggleHide || '▲ Hide';
-        renderHistory();
-    } else {
-        content.classList.add('hidden');
-        text.textContent = translations[lang]?.historyToggleShow || '▼ Show';
-    }
-}
-window.toggleHistory = toggleHistory;
-
-function renderHistory() {
-    const grid = document.getElementById('history-grid');
-    if (!grid || grid.children.length > 0) return;
-    const lang = getLang();
-    
-    MODEL_HISTORY.forEach(model => {
-        const card = document.createElement('div');
-        const role = lang === 'de' ? model.role_de : model.role;
-        const desc = lang === 'de' ? model.desc_de : model.desc_en;
-        const reason = lang === 'de' ? model.reason_de : model.reason;
-        card.className = 'bg-[#1a1a1e] border border-slate-800 rounded p-3';
-        card.innerHTML = `
-            <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-white truncate">${model.id}</span>
-                <a href="https://openrouter.ai/models/${model.id}" target="_blank" rel="noopener" class="text-[9px] text-sky-600 hover:text-sky-400 shrink-0">↗</a>
-            </div>
-            <div class="text-[10px] text-sky-400 mt-1 truncate">${role}</div>
-            <div class="text-[10px] text-slate-500 mt-1">${desc}</div>
-            <div class="flex gap-2 mt-2 text-[9px] text-slate-600">
-                <span>${model.available || ''}</span>
-                <span>${model.context || ''}</span>
-            </div>
-            <div class="text-[9px] text-red-400 mt-1">${reason}</div>
-        `;
-        grid.appendChild(card);
+function filterModels(query) {
+    const q = query.toLowerCase().trim();
+    const cards = document.querySelectorAll('#models-grid .model-card');
+    let visibleCount = 0;
+    cards.forEach(card => {
+        const id = (card.getAttribute('data-model-id') || '').toLowerCase();
+        const text = (card.textContent || '').toLowerCase();
+        const match = !q || id.includes(q) || text.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
     });
 }
+window.filterModels = filterModels;
 
 function selectBundle(type) {
     state.selectedBundle = type;

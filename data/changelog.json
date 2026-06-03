@@ -1,7 +1,140 @@
 {
   "entries": [
     {
+      "date": "2025-04",
+      "added": [],
+      "removed": [
+        {
+          "id": "google/gemini-1.5-flash",
+          "reason": "moved to paid",
+          "reason_de": "auf Bezahlung umgestellt",
+          "available": "2024-05 – 2025-04",
+          "tags": ["vision", "multimodal", "chat"]
+        }
+      ]
+    },
+    {
+      "date": "2025-03",
+      "added": [],
+      "removed": [
+        {
+          "id": "openai/gpt-4o-mini",
+          "reason": "moved to paid",
+          "reason_de": "auf Bezahlung umgestellt",
+          "available": "2024-05 – 2025-03",
+          "tags": ["vision", "multimodal", "chat"]
+        },
+        {
+          "id": "qwen/qwen-2-72b-instruct",
+          "reason": "superseded by Qwen 2.5",
+          "reason_de": "durch Qwen 2.5 ersetzt",
+          "available": "2024-06 – 2025-03",
+          "tags": ["chat", "lightweight"]
+        }
+      ]
+    },
+    {
+      "date": "2025-02",
+      "added": [],
+      "removed": [
+        {
+          "id": "anthropic/claude-3-haiku",
+          "reason": "moved to paid",
+          "reason_de": "auf Bezahlung umgestellt",
+          "available": "2024-03 – 2025-02",
+          "tags": ["chat", "lightweight"]
+        }
+      ]
+    },
+    {
+      "date": "2025-01",
+      "added": [],
+      "removed": [
+        {
+          "id": "google/gemini-1.5-pro",
+          "reason": "moved to paid",
+          "reason_de": "auf Bezahlung umgestellt",
+          "available": "2024-02 – 2025-01",
+          "tags": ["reasoning", "multimodal", "vision"]
+        },
+        {
+          "id": "cohere/command-r",
+          "reason": "moved to paid",
+          "reason_de": "auf Bezahlung umgestellt",
+          "available": "2024-03 – 2025-01",
+          "tags": ["chat", "embedding"]
+        }
+      ]
+    },
+    {
+      "date": "2024-12",
+      "added": [],
+      "removed": [
+        {
+          "id": "mistralai/mistral-7b-instruct",
+          "reason": "deprecated",
+          "reason_de": "eingestellt",
+          "available": "2023-09 – 2024-12",
+          "tags": ["chat", "lightweight"]
+        },
+        {
+          "id": "meta-llama/llama-3-8b-instruct",
+          "reason": "superseded by Llama 3.1/3.2",
+          "reason_de": "durch Llama 3.1/3.2 ersetzt",
+          "available": "2024-04 – 2024-12",
+          "tags": ["chat", "multilingual"]
+        },
+        {
+          "id": "meta-llama/llama-3-70b-instruct",
+          "reason": "superseded by Llama 3.1",
+          "reason_de": "durch Llama 3.1 ersetzt",
+          "available": "2024-04 – 2024-12",
+          "tags": ["chat", "multilingual"]
+        }
+      ]
+    },
+    {
+      "date": "2024-11",
+      "added": [],
+      "removed": [
+        {
+          "id": "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",
+          "reason": "superseded by Hermes 3",
+          "reason_de": "durch Hermes 3 ersetzt",
+          "available": "2024-01 – 2024-11",
+          "tags": ["chat", "moe"]
+        }
+      ]
+    },
+    {
+      "date": "2024-09",
+      "added": [],
+      "removed": [
+        {
+          "id": "meta-llama/llama-2-70b-chat",
+          "reason": "superseded by Llama 3",
+          "reason_de": "durch Llama 3 ersetzt",
+          "available": "2023-07 – 2024-09",
+          "tags": ["chat"]
+        }
+      ]
+    },
+    {
+      "date": "2024-07",
+      "added": [],
+      "removed": [
+        {
+          "id": "openai/gpt-3.5-turbo",
+          "reason": "moved to paid",
+          "reason_de": "auf Bezahlung umgestellt",
+          "available": "2023-06 – 2024-07",
+          "tags": ["chat"]
+        }
+      ]
+    },
+    {
       "date": "2026-06-03",
+      "description": "Erstmalige Erfassung aller aktuell kostenlosen OpenRouter-Modelle mit automatischen Tags (coding, reasoning, vision, ...) und API-Beschreibungen.",
       "added": [
         {
           "id": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
@@ -85,7 +218,7 @@
         },
         {
           "id": "z-ai/glm-4.5-air:free",
-          "tags": ["chat", "lightweight"]
+          "tags": ["agent", "lightweight"]
         }
       ],
       "removed": []

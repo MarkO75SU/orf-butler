@@ -35,6 +35,7 @@
             </div>
             <div class="flex gap-4 items-center">
                 <span id="admin-badge" class="text-[10px] bg-yellow-600 text-black font-bold px-2 py-1 rounded hidden uppercase tracking-wider">ADMIN</span>
+                <button id="admin-btn" onclick="openCodesPanel()" class="text-xs text-yellow-500 hover:text-yellow-400 hidden">🔑 Admin</button>
                 <button onclick="setLang('de')" class="text-xs text-slate-500 hover:text-white">DE</button>
                 <button onclick="setLang('en')" class="text-xs text-slate-500 hover:text-white">EN</button>
                 <button onclick="logout()" class="text-xs text-red-500 hover:text-red-400">Logout</button>
@@ -48,6 +49,11 @@
                 <span id="step1-title">Select your Free-LLM Models</span>
             </h2>
             <p class="text-xs text-slate-500 mb-4" id="step1-desc">Select one or more models from OpenRouter</p>
+            <div class="mb-4 relative">
+                <input type="text" id="model-search" oninput="filterModels(this.value)" 
+                    class="w-full bg-[#1a1a1e] border border-slate-800 p-3 rounded text-xs outline-none focus:border-sky-600 transition text-white pl-10"
+                    placeholder="🔍 Suche nach ID, Tag, Rolle oder Beschreibung...">
+            </div>
             <div id="models-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 <!-- Models loaded via JS -->
             </div>
@@ -117,33 +123,6 @@
                     Config Herunterladen
                 </button>
             </div>
-        </section>
-
-        <!-- HISTORY: Former free models (admin view) -->
-        <section class="mb-8">
-            <button onclick="toggleHistory()" class="w-full flex justify-between items-center p-4 bg-[#111114] border border-slate-800 rounded-lg hover:border-slate-600 transition">
-                <span class="text-sm font-bold text-slate-400 uppercase flex items-center gap-2">
-                    <span class="text-xs text-slate-600">⌛</span>
-                    <span id="history-title">Historische Free-Modelle</span>
-                </span>
-                <span class="text-slate-600 text-xs" id="history-toggle-text">▼ Einblenden</span>
-            </button>
-            <div id="history-content" class="hidden mt-4">
-                <div id="history-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- History models loaded via JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- ADMIN: Code Management -->
-        <section id="codes-panel" class="mb-8 hidden">
-            <button onclick="openCodesPanel()" class="w-full flex justify-between items-center p-4 bg-[#111114] border border-sky-900 rounded-lg hover:border-sky-700 transition">
-                <span class="text-sm font-bold text-sky-400 uppercase flex items-center gap-2">
-                    <span class="text-xs">🔑</span>
-                    <span>Code-Verwaltung</span>
-                </span>
-                <span class="text-sky-600 text-xs">Verwalten →</span>
-            </button>
         </section>
     </div>
 
