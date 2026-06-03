@@ -4,71 +4,86 @@
 
 ```bash
 npm start          # local dev @ http://localhost:3000
-npm test           # 48 tests, pure Node ESM
+npm test           # 463 tests, pure Node ESM
 ```
 
 No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
 
+## Entry Points
+
+| URL | File | Purpose |
+|-----|------|---------|
+| `/` (root) | `index.html` | **Reines Login** – NUR Anmeldeformular, kein Sales-Content |
+| `/landing` | `landing.html` | Sales-Seite mit Features/Tools/Preisen + Blog |
+| `/app` | `app.html` | 4-Schritt Wizard (Modelle → Tools → Bundle → ZIP-Download) |
+
+**Flow:** `orfb.vercel.app` → Login → `/landing` → "Zur App" → `/app` → Logout → zurück zu `/`
+
 ## Architecture
 
-- **Static SPA** (no framework): `index.html` + `login.html` + `landing.html` as entry points
+- **Static SPA** (no framework): `index.html` + `landing.html` + `app.html` as entry points
 - JS modules under `src/js/`, loaded via `<script type="module">`
-- **Vercel**: serverless API at `api/login.js` for auth; `vercel.json` rewrites to `index.html` except `/landing` and `/api/*`
+- **Vercel**: serverless API at `api/login.js` for auth; `vercel.json` rewrites
 - **Auth**: localStorage `orf_auth` token, validated server-side via `POST /api/login`
 - Credentials: env vars `LOGIN_USER` / `LOGIN_PASS` only, never hardcoded
-- **Logout** redirects to `landing.html` (sales page)
 
 ## Key Modules
 
 | File | Purpose |
 |------|---------|
-| `landing.html` | Sales landing page (public), links to `login.html` |
-| `login.html` | Login with password show/hide toggle, autocomplete, username prefilled |
-| `src/js/app.js` | Main UI: multi-select models/tools, bundle, ZIP download |
-| `src/js/mapping.js` | Curated free-model database (16 models), plus `MODEL_HISTORY` (12 archived models) |
+| `index.html` | Pure login page (root route) |
+| `landing.html` | Sales page + Blog/Changelog section |
+| `app.html` | Main app: 4-step wizard for model/tool selection |
+| `src/js/app.js` | UI logic: multi-select, bundle, ZIP download, admin codes panel |
+| `src/js/mapping.js` | Auto-generated free-model DB (21 models + tags + descriptions) |
 | `src/js/templates.js` | Config generation per tool, `TOOL_TEMPLATES` registry (12 tools) |
-| `src/js/i18n.js` | DE/EN translations, `setLanguage()`, `getLang()`, `t()` |
+| `src/js/i18n.js` | DE/EN translations, `setLanguage()`, `getLang()` |
 | `src/js/docs.js` | Install guides, OS paths, CLI commands |
-| `src/js/auth.js` | localStorage-based login state |
-| `src/tests/test-runner.js` | 48 pure Node tests (no DOM) |
+| `src/js/auth.js` | `isAuthenticated()` / `login()` / `logout()` / `getUser()` |
+| `src/tests/test-runner.js` | 463 pure Node tests (no DOM) |
+| `data/changelog.json` | Auto-generated model change history (blog content) |
+| `scripts/auto-install.js` | Auto-installer mit Merge-Logik (überschreiben/auskommentieren/mergen) |
 
-## Critical Conventions
+## Model Mapping
 
-- **Model IDs must end with `:free`** suffix for OpenRouter free tier
-- **Bilingual**: each model in `mapping.js` has `role`/`role_de` + `desc_en`/`desc_de`
-- Cards render in current language via `getLang()` check in `createModelCard()`
-- Model data is stored on card elements via `data-model-id` attribute (not index-based)
-- Tools sorted alphabetically by `name`, models sorted by ID
-- ZIP download via JSZip CDN, generates config.json + INSTALL.md per selected tool
+- **21 free models** auto-generated hourly from OpenRouter API via `scripts/update-models.js`
+- Each model has: `role`/`role_de`, `desc_en`/`desc_de` (aus API-Beschreibung), `tags` (coding, reasoning, vision, …), `context`, `languages`, optional `modalities`/`modality_icon`
+- Model IDs **must end with `:free`** suffix
+- Tags werden als farbige Badges in der Modellkarte angezeigt
+- Suchfeld filtert Modelle live nach ID, Tags, Rolle, Beschreibung
 
-## Checkbox / Selection Pattern
+## Model History / Blog
 
-- Each model/tool card stores its ID in a `data-model-id` / `data-tool-id` attribute
-- `updateModelCards()` / `updateToolCards()` reads the attribute, not array index
-- Both `onclick` on the card AND `onchange` on the checkbox trigger toggle
-- Checkbox uses `stopPropagation()` to prevent double-firing
-- State arrays: `state.selectedModels[]`, `state.selectedTools[]`
+- 12 historische Modelle (GPT-3.5, Claude 3 Haiku, Gemini 1.5, etc.) als Blog-Einträge in `data/changelog.json`
+- Wird auf der Landingpage unter "Blog / Änderungsprotokoll" angezeigt
+- `scripts/update-models.js` schreibt automatisch neue Einträge bei Modell-Änderungen
 
-## Model History
+## Auto-Installer (Premium)
 
-- `MODEL_HISTORY` in `mapping.js` tracks 12 models that were once free
-- Rendered collapsed below step 4 in `index.html`, toggled via `toggleHistory()`
-- Bilingual: `reason`/`reason_de` fields
+Der Installer in `scripts/auto-install.js` fragt bei existierenden Configs:
+
+1. **Überschreiben** – alte Config wird ersetzt
+2. **Auskommentieren + neue** – alte bleibt als Kommentar erhalten, neue wird darunter geschrieben
+3. **Mergen** (nur JSON) – beide JSON-Strukturen werden zusammengeführt
+4. **Überspringen** – nichts tun
+
+Batch/Shell-Varianten (`auto-install-win.bat`, `auto-install-mac.command`, `auto-install-linux.sh`) sichern die alte Config mit `.backup`-Suffix.
 
 ## Testing
 
 ```bash
-npm test                          # all 48 tests
+npm test                          # 463 tests
 # Tests run in plain Node.js (no browser). DOM-dependent code is not tested.
 ```
 
 ## Deployment
 
 - GitHub push → Vercel auto-deploy (no manual trigger needed)
-- `vercel.json` rewrites: API routes to `/api/*`, `/landing` to `landing.html`, everything else to `index.html`
+- `vercel.json` rewrites: `/api/*` → API functions, `/landing` → `landing.html`, `/app` → `app.html`, `/*` → `index.html`
 - `.env` vars set in Vercel project dashboard (LOGIN_USER, LOGIN_PASS)
 - `package.json` version: `"version": "12.8.0"`
-- Daily `00:01 UTC` GitHub Actions workflow auto-updates free models via `scripts/update-models.js`
+- Hourly GitHub Actions workflow auto-updates free models via `scripts/update-models.js`
+- Bei Modell-Änderungen: Email-Benachrichtigung an learncode@web.de
 
 ## Common Pitfalls
 
@@ -77,11 +92,8 @@ npm test                          # all 48 tests
 - JSZip is loaded via CDN, not npm — available as global `JSZip`
 - Tailwind CSS via CDN — cosmetic warnings are harmless
 - `models-grid` and `tools-grid` use 2-column layout with max-height 400px + custom scrollbar
-- OS paths in `docs.js` differentiate `win32` vs `darwin`; used for INSTALL.md generation
-- Login prefills "generali" as username; password uses `type="password"` with show/hide toggle
-- **Login with code**: Tab "Anonymer Code" on login page; validates via `POST /api/codes?action=redeem`; stores `orf_auth` with `user: "anon"` in localStorage
-- **Codes API** (`api/codes.js`): Actions: `generate`, `redeem`, `check`, `list`, `revoke`, `reset`. Admin auth via Basic header. Storage via `lib/github-store.js` (GitHub Content API, needs `GH_TOKEN` env var)
-- **Code Management**: Admin sees "🔑 Code-Verwaltung" panel on main page (modal with generate/list/revoke/reset). CLI: `npm run codes [generate|list|revoke|reset]` reads/writes `data/codes.json` directly
-- **Code format**: 8-char alphanumeric (uppercase, no ambiguous chars), max 10 uses by default, stored per code with `uses` counter in `data/codes.json`
+- Admin-Button "🔑 Admin" nur im Header sichtbar wenn `getUser() === 'generali'`
+- **Codes API** (`api/codes.js`): Actions: `generate`, `redeem`, `check`, `list`, `revoke`, `reset`. Admin auth via Basic header. Storage via `lib/github-store.js`
 - `GH_TOKEN` env var required on Vercel for code persistence via GitHub Content API
-
+- `OPENROUTER_API_KEY` nicht mehr in `.env` – wird nur bei Bedarf als GitHub Secret gesetzt
+- Auto-installer verwendet `readline` für interaktive Merge-Abfragen (nur Node.js-Version)

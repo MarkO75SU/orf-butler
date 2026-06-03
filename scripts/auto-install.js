@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import readline from 'readline';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -72,7 +73,91 @@ function findConfigFiles(dir) {
     });
 }
 
-function run() {
+function askQuestion(query) {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    return new Promise(resolve => rl.question(query, answer => { rl.close(); resolve(answer.trim()); }));
+}
+
+function isJsonFile(filePath) {
+    return filePath.endsWith('.json');
+}
+
+function mergeJson(existingContent, newContent) {
+    try {
+        const existing = JSON.parse(existingContent);
+        const incoming = JSON.parse(newContent);
+        const merged = { ...existing, ...incoming };
+        return JSON.stringify(merged, null, 2);
+    } catch {
+        return null;
+    }
+}
+
+function commentOutLines(content, ext) {
+    const lines = content.split('\n');
+    if (ext === '.json') {
+        return lines.map(l => '// ' + l).join('\n');
+    }
+    if (ext === '.yml' || ext === '.yaml') {
+        return lines.map(l => '# ' + l).join('\n');
+    }
+    return lines.map(l => '<!-- ' + l + ' -->').join('\n');
+}
+
+async function handleExistingFile(destPath, srcPath, label) {
+    const existingContent = fs.readFileSync(destPath, 'utf-8');
+    const newContent = fs.readFileSync(srcPath, 'utf-8');
+    const ext = path.extname(destPath);
+
+    console.log(`\n  ${YELLOW}⚠ ${label}: Config existiert bereits!${RESET}`);
+    console.log(`    Pfad: ${destPath}`);
+    console.log(`  ${BOLD}Was möchtest du tun?${RESET}`);
+    console.log(`    ${CYAN}[1]${RESET} Überschreiben (alte Config verloren)`);
+    console.log(`    ${CYAN}[2]${RESET} Auskommentieren + neue daneben schreiben`);
+    console.log(`    ${CYAN}[3]${RESET} Beide Inhalte mergen (nur bei JSON)`);
+    console.log(`    ${CYAN}[s]${RESET} Überspringen (nichts tun)`);
+
+    const answer = await askQuestion(`  → `);
+
+    if (answer === 's' || answer === 'S') {
+        console.log(`  ${YELLOW}⚠ ${label}: Übersprungen${RESET}`);
+        return 'skipped';
+    }
+
+    if (answer === '1') {
+        fs.copyFileSync(srcPath, destPath);
+        console.log(`  ${GREEN}✔ ${label}: Überschrieben${RESET}`);
+        return 'overwritten';
+    }
+
+    if (answer === '2') {
+        const commented = commentOutLines(existingContent, ext);
+        const combined = commented + '\n\n// --- ORF-Butler Config ---\n\n' + newContent;
+        fs.writeFileSync(destPath, combined);
+        console.log(`  ${GREEN}✔ ${label}: Alte Config auskommentiert + neue geschrieben${RESET}`);
+        return 'commented';
+    }
+
+    if (answer === '3') {
+        if (!isJsonFile(destPath)) {
+            console.log(`  ${YELLOW}⚠ Merge nur bei JSON-Dateien möglich – überspringe${RESET}`);
+            return 'skipped';
+        }
+        const merged = mergeJson(existingContent, newContent);
+        if (!merged) {
+            console.log(`  ${RED}✗ Merge fehlgeschlagen (ungültiges JSON) – überspringe${RESET}`);
+            return 'skipped';
+        }
+        fs.writeFileSync(destPath, merged);
+        console.log(`  ${GREEN}✔ ${label}: JSON gemerged${RESET}`);
+        return 'merged';
+    }
+
+    console.log(`  ${YELLOW}⚠ Ungültige Eingabe – übersprungen${RESET}`);
+    return 'skipped';
+}
+
+async function run() {
     console.log(`\n${BOLD}${CYAN}╔══════════════════════════════════════╗${RESET}`);
     console.log(`${BOLD}${CYAN}║   ORF-Butler Auto-Installer (Premium) ║${RESET}`);
     console.log(`${BOLD}${CYAN}╚══════════════════════════════════════╝${RESET}\n`);
@@ -127,24 +212,18 @@ function run() {
         }
 
         if (fs.existsSync(destPath)) {
-            const backupPath = destPath + '.backup-' + new Date().toISOString().replace(/[:.]/g, '-');
-            try {
-                fs.copyFileSync(destPath, backupPath);
-                console.log(`  ${YELLOW}📦 Alte Config gesichert als: ${path.basename(backupPath)}${RESET}`);
-            } catch (err) {
-                console.log(`  ${RED}✗ ${info.label}: Konnte alte Datei nicht sichern - ${err.message}${RESET}`);
-                skipped++;
-                continue;
-            }
-        }
-
-        try {
-            fs.copyFileSync(srcPath, destPath);
-            console.log(`  ${GREEN}✔ ${info.label} → Installiert${RESET}`);
+            const result = await handleExistingFile(destPath, srcPath, info.label);
+            if (result === 'skipped') { skipped++; continue; }
             installed++;
-        } catch (err) {
-            console.log(`  ${RED}✗ ${info.label}: Fehler - ${err.message}${RESET}`);
-            skipped++;
+        } else {
+            try {
+                fs.copyFileSync(srcPath, destPath);
+                console.log(`  ${GREEN}✔ ${info.label} → Installiert${RESET}`);
+                installed++;
+            } catch (err) {
+                console.log(`  ${RED}✗ ${info.label}: Fehler - ${err.message}${RESET}`);
+                skipped++;
+            }
         }
     }
 

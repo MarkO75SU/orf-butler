@@ -38,33 +38,48 @@ set installed_tools=
 
 if exist "opencode-config.json" (
   if not exist "%APPDATA%\opencode" mkdir "%APPDATA%\opencode"
-  if exist "%APPDATA%\opencode\opencode.json" copy "%APPDATA%\opencode\opencode.json" "%APPDATA%\opencode\opencode.json.backup" >nul
+  if exist "%APPDATA%\opencode\opencode.json" (
+    copy "%APPDATA%\opencode\opencode.json" "%APPDATA%\opencode\opencode.json.backup" >nul
+    echo   [BACKUP] OpenCode: alte Config gesichert
+  )
   copy "opencode-config.json" "%APPDATA%\opencode\opencode.json" >nul
   if errorlevel 1 (echo   [FEHLER] OpenCode CLI) else (echo   [OK] OpenCode CLI & set /a INSTALLED+=1 & set installed_tools=!installed_tools! opencode)
 )
 
 if exist "continue-config.json" (
   if not exist "%USERPROFILE%\.continue" mkdir "%USERPROFILE%\.continue"
-  if exist "%USERPROFILE%\.continue\config.json" copy "%USERPROFILE%\.continue\config.json" "%USERPROFILE%\.continue\config.json.backup" >nul
+  if exist "%USERPROFILE%\.continue\config.json" (
+    copy "%USERPROFILE%\.continue\config.json" "%USERPROFILE%\.continue\config.json.backup" >nul
+    echo   [BACKUP] Continue: alte Config gesichert
+  )
   copy "continue-config.json" "%USERPROFILE%\.continue\config.json" >nul
   if errorlevel 1 (echo   [FEHLER] Continue) else (echo   [OK] Continue & set /a INSTALLED+=1 & set installed_tools=!installed_tools! continue)
 )
 
 if exist "zed-config.json" (
   if not exist "%APPDATA%\Zed" mkdir "%APPDATA%\Zed"
-  if exist "%APPDATA%\Zed\settings.json" copy "%APPDATA%\Zed\settings.json" "%APPDATA%\Zed\settings.json.backup" >nul
+  if exist "%APPDATA%\Zed\settings.json" (
+    copy "%APPDATA%\Zed\settings.json" "%APPDATA%\Zed\settings.json.backup" >nul
+    echo   [BACKUP] Zed: alte Config gesichert
+  )
   copy "zed-config.json" "%APPDATA%\Zed\settings.json" >nul
   if errorlevel 1 (echo   [FEHLER] Zed Editor) else (echo   [OK] Zed Editor & set /a INSTALLED+=1 & set installed_tools=!installed_tools! zed)
 )
 
 if exist "aider-config.json" (
-  if exist ".aider.conf.yml" copy ".aider.conf.yml" ".aider.conf.yml.backup" >nul
+  if exist ".aider.conf.yml" (
+    copy ".aider.conf.yml" ".aider.conf.yml.backup" >nul
+    echo   [BACKUP] Aider: alte Config gesichert
+  )
   copy "aider-config.json" ".aider.conf.yml" >nul
   if errorlevel 1 (echo   [FEHLER] Aider CLI) else (echo   [OK] Aider CLI & set /a INSTALLED+=1 & set installed_tools=!installed_tools! aider)
 )
 
 if exist "antigravity-config.json" (
-  if exist "settings.yaml" copy "settings.yaml" "settings.yaml.backup" >nul
+  if exist "settings.yaml" (
+    copy "settings.yaml" "settings.yaml.backup" >nul
+    echo   [BACKUP] Antigravity: alte Config gesichert
+  )
   copy "antigravity-config.json" "settings.yaml" >nul
   if errorlevel 1 (echo   [FEHLER] Antigravity) else (echo   [OK] Antigravity & set /a INSTALLED+=1 & set installed_tools=!installed_tools! antigravity)
 )
@@ -72,38 +87,56 @@ if exist "antigravity-config.json" (
 echo   [SKIP] Amazon Q - Nur im Browser nutzbar
 
 if exist "cursor-config.json" (
-  if exist ".cursorrules" copy ".cursorrules" ".cursorrules.backup" >nul
+  if exist ".cursorrules" (
+    copy ".cursorrules" ".cursorrules.backup" >nul
+    echo   [BACKUP] Cursor: alte Config gesichert
+  )
   copy "cursor-config.json" ".cursorrules" >nul
   if errorlevel 1 (echo   [FEHLER] Cursor Editor) else (echo   [OK] Cursor Editor & set /a INSTALLED+=1 & set installed_tools=!installed_tools! cursor)
 )
 
 if exist "windsurf-config.json" (
-  if exist ".windsurfrules" copy ".windsurfrules" ".windsurfrules.backup" >nul
+  if exist ".windsurfrules" (
+    copy ".windsurfrules" ".windsurfrules.backup" >nul
+    echo   [BACKUP] Windsurf: alte Config gesichert
+  )
   copy "windsurf-config.json" ".windsurfrules" >nul
   if errorlevel 1 (echo   [FEHLER] Windsurf Editor) else (echo   [OK] Windsurf Editor & set /a INSTALLED+=1 & set installed_tools=!installed_tools! windsurf)
 )
 
 if exist "claude-code-config.json" (
-  if exist "CLAUDE.md" copy "CLAUDE.md" "CLAUDE.md.backup" >nul
+  if exist "CLAUDE.md" (
+    copy "CLAUDE.md" "CLAUDE.md.backup" >nul
+    echo   [BACKUP] Claude Code: alte Config gesichert
+  )
   copy "claude-code-config.json" "CLAUDE.md" >nul
   if errorlevel 1 (echo   [FEHLER] Claude Code CLI) else (echo   [OK] Claude Code CLI & set /a INSTALLED+=1 & set installed_tools=!installed_tools! claude_code)
 )
 
 if exist "github-copilot-config.json" (
   if not exist ".github" mkdir ".github"
-  if exist ".github\copilot-instructions.md" copy ".github\copilot-instructions.md" ".github\copilot-instructions.md.backup" >nul
+  if exist ".github\copilot-instructions.md" (
+    copy ".github\copilot-instructions.md" ".github\copilot-instructions.md.backup" >nul
+    echo   [BACKUP] GitHub Copilot: alte Config gesichert
+  )
   copy "github-copilot-config.json" ".github\copilot-instructions.md" >nul
   if errorlevel 1 (echo   [FEHLER] GitHub Copilot) else (echo   [OK] GitHub Copilot & set /a INSTALLED+=1 & set installed_tools=!installed_tools! github_copilot)
 )
 
 if exist "cline-config.json" (
-  if exist ".clinerules" copy ".clinerules" ".clinerules.backup" >nul
+  if exist ".clinerules" (
+    copy ".clinerules" ".clinerules.backup" >nul
+    echo   [BACKUP] Cline: alte Config gesichert
+  )
   copy "cline-config.json" ".clinerules" >nul
   if errorlevel 1 (echo   [FEHLER] Cline) else (echo   [OK] Cline & set /a INSTALLED+=1 & set installed_tools=!installed_tools! cline)
 )
 
 if exist "codeium-config.json" (
-  if exist ".codeiumrules" copy ".codeiumrules" ".codeiumrules.backup" >nul
+  if exist ".codeiumrules" (
+    copy ".codeiumrules" ".codeiumrules.backup" >nul
+    echo   [BACKUP] Codeium: alte Config gesichert
+  )
   copy "codeium-config.json" ".codeiumrules" >nul
   if errorlevel 1 (echo   [FEHLER] Codeium) else (echo   [OK] Codeium & set /a INSTALLED+=1 & set installed_tools=!installed_tools! codeium)
 )
@@ -113,9 +146,8 @@ echo ============================================
 echo   Fertig - !INSTALLED! Configs installiert
 echo ============================================
 echo.
-echo   WICHTIG: Das Modell laeuft auf OpenRouter-Servern.
-echo   Du brauchst einen kostenlosen Account auf openrouter.ai
-echo   und einen API-Key (falls nicht eingegeben).
+echo   DETAILS: Fuers Mergen und Auskommentieren
+echo   nutze "node auto-install.js" im Terminal.
 echo.
 
 for %%t in (!installed_tools!) do (

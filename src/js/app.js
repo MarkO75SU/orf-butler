@@ -1,6 +1,5 @@
-import { t, setLanguage, getLang } from './i18n.js';
-import { TOOL_TEMPLATES } from './templates.js';
-import { generateConfig } from './templates.js';
+import { setLanguage, getLang } from './i18n.js';
+import { TOOL_TEMPLATES, generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
 import { isAuthenticated, logout, getUser } from './auth.js';
 import { MODEL_MAPPING } from './mapping.js';
@@ -30,11 +29,6 @@ const translations = {
         downloadBtn: "Als ZIP Herunterladen",
         noModel: "Keine Modelle ausgewählt",
         noTool: "Keine Tools ausgewählt",
-        historyTitle: "Historische Free-Modelle",
-        historyToggleShow: "▼ Einblenden",
-        historyToggleHide: "▲ Ausblenden",
-        historyAvailable: "Verfügbar",
-        historyReason: "Grund",
         adminBadge: "ADMIN",
         bundleFree: "Kostenlos",
         codesTitle: "🔑 Code-Verwaltung",
@@ -65,11 +59,6 @@ const translations = {
         downloadBtn: "Download as ZIP",
         noModel: "No models selected",
         noTool: "No tools selected",
-        historyTitle: "Historical Free Models",
-        historyToggleShow: "▼ Show",
-        historyToggleHide: "▲ Hide",
-        historyAvailable: "Available",
-        historyReason: "Reason",
         adminBadge: "ADMIN",
         bundleFree: "Free",
         codesTitle: "🔑 Code Management",
@@ -369,9 +358,6 @@ function initBundleSelection() {
 }
 
 async function downloadZIP() {
-    const { OS_PATHS } = await import('./docs.js');
-    const { generateConfig } = await import('./templates.js');
-    
     if (state.selectedModels.length === 0 || state.selectedTools.length === 0) {
         alert(getLang() === 'de' ? 'Bitte wähle Modelle und Tools aus.' : 'Please select models and tools.');
         return;

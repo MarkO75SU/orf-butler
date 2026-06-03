@@ -1,19 +1,3 @@
-export async function checkAuth() {
-    const stored = localStorage.getItem('orf_auth');
-    if (!stored) return false;
-    
-    try {
-        const data = JSON.parse(stored);
-        if (data.expires && Date.now() > data.expires) {
-            localStorage.removeItem('orf_auth');
-            return false;
-        }
-        return true;
-    } catch {
-        return false;
-    }
-}
-
 export function isAuthenticated() {
     const stored = localStorage.getItem('orf_auth');
     if (!stored) return false;
