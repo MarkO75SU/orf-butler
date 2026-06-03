@@ -42,6 +42,7 @@ const translations = {
         summaryModel: "Ausgewählte Modelle:",
         summaryTool: "Tools:",
         summaryBundle: "Bundle:",
+        selectAll: "Alle Auswählen",
         downloadBtn: "Als ZIP Herunterladen",
         noModel: "Keine Modelle ausgewählt",
         noTool: "Keine Tools ausgewählt",
@@ -61,6 +62,7 @@ const translations = {
         codesClose: "Schließen"
     },
     en: {
+        selectAll: "Select All",
         step1Title: "Select your Free-LLM Models",
         step1Desc: "Select one or more models from OpenRouter",
         step2Title: "Select your Tools",
@@ -360,13 +362,20 @@ window.filterModels = filterModels;
 function updateSelectedCount() {
     const countEl = document.getElementById('selected-count');
     const checkEl = document.getElementById('select-all-models');
+    const labelEl = document.getElementById('select-all-label');
     if (countEl) {
         const total = Object.keys(MODEL_MAPPING).length;
         const selected = state.selectedModels.length;
-        countEl.textContent = selected > 0 ? `${selected}/${total} ausgewählt` : '';
+        const lang = getLang();
+        const countText = lang === 'en' ? `${selected}/${total} selected` : `${selected}/${total} ausgewählt`;
+        countEl.textContent = selected > 0 ? countText : '';
     }
     if (checkEl) {
         checkEl.checked = state.selectedModels.length === Object.keys(MODEL_MAPPING).length && state.selectedModels.length > 0;
+    }
+    if (labelEl) {
+        const lang = getLang();
+        labelEl.textContent = lang === 'en' ? 'Select All' : 'Alle Auswählen';
     }
 }
 
