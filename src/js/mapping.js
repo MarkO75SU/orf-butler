@@ -2,6 +2,28 @@
 // Last updated: 2026-06-04
 
 export const MODEL_MAPPING = {
+    "nvidia/nemotron-3-ultra-550b-a55b:free": {
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "1000k",
+        desc_en: "NVIDIA Nemotron 3 Ultra is an open frontier-reasoning and orchestration model from NVIDIA, with 55B active parameters out of 550B total...",
+        desc_de: "NVIDIA Nemotron 3 Ultra is an open frontier-reasoning and orchestration model from NVIDIA, with 55B active parameters out of 550B total...",
+        tags: ["moe","reasoning"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
+    "nvidia/nemotron-3.5-content-safety:free": {
+        role: "Lightweight",
+        role_de: "Leichtgewicht",
+        context: "128k",
+        desc_en: "NVIDIA Nemotron 3.5 Content Safety is a compact 4B-parameter multimodal guardrail model from NVIDIA, fine-tuned from Google Gemma-3-4B.",
+        desc_de: "NVIDIA Nemotron 3.5 Content Safety is a compact 4B-parameter multimodal guardrail model from NVIDIA, fine-tuned from Google Gemma-3-4B.",
+        modalities: ["text","image"],
+        modality_icon: "🖼️",
+        tags: ["lightweight","multimodal","vision"],
+        languages: ["go"],
+        new: true
+    },
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
         role: "Chat",
         role_de: "Chat",
