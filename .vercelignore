@@ -1,7 +1,6 @@
 docs/
-scripts/
-src/tests/
 .github/
+src/tests/
 .gitignore
 AGENTS.md
 PROJECT.md
