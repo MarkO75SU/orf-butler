@@ -442,7 +442,7 @@ async function downloadZIP() {
         zip.file(safeName + '-INSTALL.md', installMD);
     });
     
-    if (state.selectedBundle === 'premium' || isAdmin()) {
+    if (state.selectedBundle === 'premium') {
         try {
             const launchers = [
                 ['auto-install.js', 'auto-install.js'],

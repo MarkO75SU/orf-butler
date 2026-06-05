@@ -20,14 +20,14 @@
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername / Code</label>
                 <input type="text" id="username" name="username" required autocomplete="username"
                     class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
-                    placeholder="Code oder 'generali'">
+                    placeholder="Zugangscode eingeben">
             </div>
             <div class="relative">
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
                 <div class="relative">
                     <input type="password" id="password" name="password" autocomplete="current-password"
                         class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white pr-12"
-                        placeholder="Nur für Admin (generali)" disabled>
+                        placeholder="Admin-Passwort" disabled>
                     <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">👁</button>
                 </div>
             </div>
@@ -39,7 +39,7 @@
             <p id="error-msg" class="text-red-500 text-[10px] text-center hidden"></p>
             <p id="success-msg" class="text-green-500 text-[10px] text-center hidden"></p>
         </form>
-        <p class="mt-4 text-[10px] text-slate-600 text-center">Admin? Benutzername "generali" eingeben → Passwortfeld erscheint</p>
+        <p class="mt-4 text-[10px] text-slate-600 text-center">Admin? Zugangsdaten per E-Mail anfragen</p>
     </div>
 
     <script>
@@ -51,10 +51,13 @@
         }
         document.getElementById('username').addEventListener('input', function() {
             const pwField = document.getElementById('password');
-            const isGeneral = this.value.toLowerCase() === 'generali';
-            pwField.required = isGeneral;
-            pwField.disabled = !isGeneral;
-            pwField.placeholder = isGeneral ? 'Passwort' : 'Nur für Admin (generali)';
+            const adminCheckbox = document.getElementById('admin-toggle');
+            const isAdmin = adminCheckbox && adminCheckbox.checked;
+            
+            // Wenn Admin-Modus aktiv, Passwortfeld aktivieren
+            pwField.required = isAdmin;
+            pwField.disabled = !isAdmin;
+            pwField.placeholder = isAdmin ? 'Admin-Passwort' : 'Admin-Passwort';
         });
     </script>
 
