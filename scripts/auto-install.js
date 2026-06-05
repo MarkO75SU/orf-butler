@@ -128,14 +128,18 @@ async function handleExistingFile(destPath, srcPath, label) {
     const existingContent = fs.readFileSync(destPath, 'utf-8');
     const newContent = fs.readFileSync(srcPath, 'utf-8');
     const ext = path.extname(destPath);
+    const backupPath = destPath + '.backup-' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 
     console.log(`\n  ${YELLOW}⚠ ${label}: Config existiert bereits!${RESET}`);
     console.log(`    Pfad: ${destPath}`);
+    console.log(`  ${GREEN}📦 Backup wird erstellt: ${path.basename(backupPath)}${RESET}`);
+    fs.copyFileSync(destPath, backupPath);
+
     console.log(`  ${BOLD}Was möchtest du tun?${RESET}`);
-    console.log(`    ${CYAN}[1]${RESET} Überschreiben (alte Config verloren)`);
-    console.log(`    ${CYAN}[2]${RESET} Auskommentieren + neue daneben schreiben`);
-    console.log(`    ${CYAN}[3]${RESET} Beide Inhalte mergen (nur bei JSON)`);
-    console.log(`    ${CYAN}[s]${RESET} Überspringen (nichts tun)`);
+    console.log(`    ${CYAN}[1]${RESET} Überschreiben (Backup in .backup-...)`);
+    console.log(`    ${CYAN}[2]${RESET} Auskommentieren + neue daneben (Backup in .backup-...)`);
+    console.log(`    ${CYAN}[3]${RESET} Beide Inhalte mergen (nur JSON, Backup in .backup-...)`);
+    console.log(`    ${CYAN}[s]${RESET} Überspringen (Backup bleibt, nichts geändert)`);
 
     const answer = await askQuestion(`  → `);
 
