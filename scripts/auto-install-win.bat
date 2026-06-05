@@ -1,7 +1,7 @@
 @echo off
 title ORF-Butler Installation
 cd /d "%~dp0"
-cls
+
 echo ============================================
 echo    ORF-Butler Auto-Installer
 echo    OpenRouter Free Butler - Konfiguration
@@ -153,9 +153,21 @@ if exist "codeium-config.json" (
 
 echo.
 echo ============================================
-echo   Fertig - !INSTALLED! Configs installiert
+echo            ZUSAMMENFASSUNG
 echo ============================================
-echo.
+if !INSTALLED! equ 0 (
+  echo.
+  echo   Es wurden KEINE Config-Dateien gefunden.
+  echo   Lege dieses Skript in den Ordner mit den
+  echo   -config.json und -INSTALL.md Dateien.
+  echo.
+  echo   Alternativ verwalte die Configs manuell
+  echo   mit "node auto-install.js" im Terminal.
+  echo.
+) else (
+  echo   Erfolgreich installiert: !INSTALLED!
+  echo.
+)
 echo   DETAILS: Fuers Mergen und Auskommentieren
 echo   nutze "node auto-install.js" im Terminal.
 echo.

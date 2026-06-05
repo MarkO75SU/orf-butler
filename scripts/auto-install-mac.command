@@ -69,9 +69,21 @@ try_copy "codeium-config.json" "$PWD/.codeiumrules" "Codeium" "codeium"
 
 echo ""
 echo "============================================"
-echo "  Fertig - $INSTALLED Configs installiert"
+echo "            ZUSAMMENFASSUNG"
 echo "============================================"
-echo ""
+if [ "$INSTALLED" -eq 0 ]; then
+  echo ""
+  echo "  Es wurden KEINE Config-Dateien gefunden."
+  echo "  Lege dieses Skript in den Ordner mit den"
+  echo "  -config.json und -INSTALL.md Dateien."
+  echo ""
+  echo "  Oder verwalte die Configs manuell:"
+  echo "    node auto-install.js"
+  echo ""
+else
+  echo "  Erfolgreich installiert: $INSTALLED"
+  echo ""
+fi
 echo "  WICHTIG: Das Modell laeuft auf OpenRouter-Servern."
 echo "  Du brauchst einen kostenlosen Account auf openrouter.ai"
 echo "  und einen API-Key (falls nicht eingegeben)."
