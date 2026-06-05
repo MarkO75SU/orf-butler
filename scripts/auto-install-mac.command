@@ -41,23 +41,89 @@ try_copy() {
     return
   fi
   mkdir -p "$(dirname "$DEST")" 2>/dev/null
-  if [ -f "$DEST" ]; then
-    echo "  [INFO] $NAME: Config existiert bereits."
-    read -p "  Ueberschreiben? (j/n, Enter = ueberspringen): " CHOICE
-    if [ "$CHOICE" != "j" ] && [ "$CHOICE" != "J" ]; then
-      echo "  [WARN] $NAME: Uebersprungen"
-      return
+  if [ ! -f "$DEST" ]; then
+    if cp "$SRC" "$DEST" 2>/dev/null; then
+      echo "  [OK] $NAME → Installiert"
+      INSTALLED=$((INSTALLED + 1))
+      INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
+    else
+      echo "  [FEHLER] $NAME"
     fi
-    cp "$DEST" "$DEST.backup" 2>/dev/null
-    echo "  [BACKUP] $NAME: alte Config gesichert"
+    return
   fi
-  if cp "$SRC" "$DEST" 2>/dev/null; then
-    echo "  [OK] $NAME"
+
+  cp "$DEST" "$DEST.backup" 2>/dev/null
+  echo "  [BACKUP] $NAME: alte Config gesichert unter $(basename "$DEST").backup"
+
+  echo "  $NAME: Config existiert bereits unter $DEST"
+  echo "    [1] Ueberschreiben (Backup vorhanden)"
+  echo "    [2] Auskommentieren + neue daneben"
+  echo "    [3] Beide Inhalte mergen (nur JSON)"
+  echo "    [s] Ueberspringen (nichts tun)"
+  read -p "  → " CHOICE
+
+  EXT="${SRC##*.}"
+
+  if [ "$CHOICE" = "s" ] || [ "$CHOICE" = "S" ]; then
+    echo "  [WARN] $NAME: Uebersprungen"
+    return
+  fi
+
+  if [ "$CHOICE" = "1" ]; then
+    if cp "$SRC" "$DEST" 2>/dev/null; then
+      echo "  [OK] $NAME: Ueberschrieben"
+      INSTALLED=$((INSTALLED + 1))
+      INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
+    else
+      echo "  [FEHLER] $NAME"
+    fi
+    return
+  fi
+
+  if [ "$CHOICE" = "2" ]; then
+    COMMENT="// "
+    if [ "$EXT" = "yml" ] || [ "$EXT" = "yaml" ]; then
+      COMMENT="# "
+    fi
+    sed "s/^/$COMMENT/" "$DEST" > "$DEST.tmp"
+    echo "" >> "$DEST.tmp"
+    echo "// --- ORF-Butler Config ---" >> "$DEST.tmp"
+    echo "" >> "$DEST.tmp"
+    cat "$SRC" >> "$DEST.tmp"
+    mv "$DEST.tmp" "$DEST"
+    echo "  [OK] $NAME: Alte auskommentiert + neue geschrieben"
     INSTALLED=$((INSTALLED + 1))
     INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
-  else
-    echo "  [FEHLER] $NAME"
+    return
   fi
+
+  if [ "$CHOICE" = "3" ]; then
+    if [ "$EXT" != "json" ]; then
+      echo "  [WARN] $NAME: Merge nur bei JSON – uebersprungen"
+      return
+    fi
+    if command -v jq &> /dev/null; then
+      jq -s '.[0] * .[1]' "$DEST" "$SRC" > "$DEST.tmp" 2>/dev/null && mv "$DEST.tmp" "$DEST" && echo "  [OK] $NAME: JSON gemerged (jq)"
+    elif command -v node &> /dev/null; then
+      node -e "const fs=require('fs'); const a=JSON.parse(fs.readFileSync('$DEST')); const b=JSON.parse(fs.readFileSync('$SRC')); fs.writeFileSync('$DEST', JSON.stringify({...a,...b},null,2))" 2>/dev/null && echo "  [OK] $NAME: JSON gemerged (node)"
+    elif command -v python3 &> /dev/null; then
+      python3 -c "
+import json, sys
+with open('$DEST') as f: a=json.load(f)
+with open('$SRC') as f: b=json.load(f)
+a.update(b)
+with open('$DEST','w') as f: json.dump(a,f,indent=2)
+" 2>/dev/null && echo "  [OK] $NAME: JSON gemerged (python3)"
+    else
+      echo "  [WARN] $NAME: Kein Tool fuer Merge (jq/node/python3) – uebersprungen"
+      return
+    fi
+    INSTALLED=$((INSTALLED + 1))
+    INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
+    return
+  fi
+
+  echo "  [WARN] $NAME: Ungueltige Eingabe – uebersprungen"
 }
 
 try_copy "opencode-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode CLI" "opencode"

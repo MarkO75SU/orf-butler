@@ -96,23 +96,51 @@ set LABEL=%~3
 set TOOLKEY=%~4
 if not exist "%SRC%" exit /b 0
 set DESTDIR=%~dp2
-if not exist "!DESTDIR!" mkdir "!DESTDIR!"
-if exist "%DEST%" (
-  echo   [INFO] %LABEL%: Config existiert bereits.
-  set /p "CHOICE=  Ueberschreiben? (j/n, Enter = ueberspringen): "
-  if /i not "!CHOICE!"=="j" (
-    echo   [WARN] %LABEL%: Uebersprungen
+if not exist "!DESTDIR!" mkdir "!DESTDIR!" 2>nul
+if not exist "%DEST%" (
+  copy "%SRC%" "%DEST%" >nul
+  if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL% & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
+  exit /b 0
+)
+
+copy "%DEST%" "%DEST%.backup" >nul
+echo   [BACKUP] %LABEL%: alte Config gesichert
+
+echo.
+echo   %LABEL%: Config existiert bereits unter %DEST%
+echo     [1] Ueberschreiben (Backup vorhanden)
+echo     [2] Auskommentieren + neue daneben
+echo     [3] Beide Inhalte mergen (nur JSON)
+echo     [s] Ueberspringen (nichts tun)
+set /p "CHOICE=  → "
+
+if /i "!CHOICE!"=="s" (
+  echo   [WARN] %LABEL%: Uebersprungen
+  exit /b 0
+)
+
+if "!CHOICE!"=="1" (
+  copy "%SRC%" "%DEST%" >nul
+  if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL%: Ueberschrieben & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
+  exit /b 0
+)
+
+if "!CHOICE!"=="2" (
+  powershell -Command "$c=Get-Content '%DEST%'; $ext=[System.IO.Path]::GetExtension('%DEST%'); $pre='// '; if($ext -eq '.yml' -or $ext -eq '.yaml'){$pre='# '}; $commented=$c -replace '^', $pre; \"$commented`n`n// --- ORF-Butler Config ---`n\"+ (Get-Content '%SRC%') | Set-Content '%DEST%'" >nul
+  if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL%: Alte auskommentiert + neue geschrieben & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
+  exit /b 0
+)
+
+if "!CHOICE!"=="3" (
+  set EXT=%SRC:~-5%
+  if /i not "!EXT!"==".json" (
+    echo   [WARN] %LABEL%: Merge nur bei JSON – uebersprungen
     exit /b 0
   )
-  copy "%DEST%" "%DEST%.backup" >nul
-  echo   [BACKUP] %LABEL%: alte Config gesichert
+  powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json|Set-Content '%DEST%'" >nul
+  if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL%: JSON gemerged & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
+  exit /b 0
 )
-copy "%SRC%" "%DEST%" >nul
-if errorlevel 1 (
-  echo   [FEHLER] %LABEL%
-) else (
-  echo   [OK] %LABEL%
-  set /a INSTALLED+=1
-  set installed_tools=!installed_tools! %TOOLKEY%
-)
+
+echo   [WARN] %LABEL%: Ungueltige Eingabe – uebersprungen
 exit /b 0

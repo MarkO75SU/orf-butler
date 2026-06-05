@@ -473,7 +473,7 @@ Kopiert alle Config-Dateien automatisch an die richtigen Pfade.
 ## Verwendung
 
 ### Windows
-Doppelklick auf **auto-install-win.bat** (erkennbar am Zahnrad-Symbol)
+Doppelklick auf **auto-install-win.bat**
 
 ### Mac
 Doppelklick auf **auto-install-mac.command**
@@ -486,15 +486,25 @@ Doppelklick auf **auto-install-linux.sh**
 
 ## Voraussetzungen
 
-- Node.js 18+ (https://nodejs.org)
-- Config-Dateien im selben Ordner
+- Node.js 18+ (https://nodejs.org) – nur für die Node-Version
+- Config-Dateien (.json/.yml/.yaml) im selben Ordner
+
+## Interaktives Menü
+
+Existiert eine Config bereits, fragt der Installer:
+
+  [1] **Überschreiben** – alte Config wird ersetzt (Backup als .backup)
+  [2] **Auskommentieren** – alte bleibt als Kommentar, neue darunter
+  [3] **Mergen** (nur JSON) – beide Strukturen werden zusammengeführt
+  [s] **Überspringen** – nichts tun, Config bleibt unverändert
 
 ## Was passiert?
 
 1. Das Skript erkennt dein Betriebssystem (Windows/Mac/Linux)
 2. Es findet die richtigen Verzeichnisse für jedes Tool
-3. Existierende Configs werden gesichert und ersetzt
-4. Fertig – starte dein Tool neu
+3. Existierende Configs werden gesichert (Endung .backup)
+4. Bei Konflikt: Du entscheidest via Menü
+5. Fertig – starte dein Tool neu
 `);
         } catch (e) {
             console.warn('Auto-installer not available:', e.message);
