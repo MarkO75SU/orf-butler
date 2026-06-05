@@ -42,7 +42,14 @@ try_copy() {
   fi
   mkdir -p "$(dirname "$DEST")" 2>/dev/null
   if [ -f "$DEST" ]; then
+    echo "  [INFO] $NAME: Config existiert bereits."
+    read -p "  Ueberschreiben? (j/n, Enter = ueberspringen): " CHOICE
+    if [ "$CHOICE" != "j" ] && [ "$CHOICE" != "J" ]; then
+      echo "  [WARN] $NAME: Uebersprungen"
+      return
+    fi
     cp "$DEST" "$DEST.backup" 2>/dev/null
+    echo "  [BACKUP] $NAME: alte Config gesichert"
   fi
   if cp "$SRC" "$DEST" 2>/dev/null; then
     echo "  [OK] $NAME"
@@ -89,80 +96,9 @@ echo "  Du brauchst einen kostenlosen Account auf openrouter.ai"
 echo "  und einen API-Key (falls nicht eingegeben)."
 echo ""
 
-print_guide() {
-  TOOLKEY="$1"
-  if [ "$TOOLKEY" = "continue" ]; then
-    echo "  VS Code (Continue Extension):"
-    echo "  1. Continue Extension installiert? (VS Code - Extensions - 'Continue')"
-    echo "  2. VS Code neu starten"
-    echo "  3. Cmd+Shift+P - 'Continue: Open Chat'"
-    echo "  4. Chat unten rechts zeigt dein Modell an"
-    echo ""
-  elif [ "$TOOLKEY" = "opencode" ]; then
-    echo "  OpenCode CLI:"
-    echo "  1. npm install -g opencode"
-    echo "  2. Terminal: opencode"
-    echo ""
-  elif [ "$TOOLKEY" = "opencode_desktop" ]; then
-    echo "  OpenCode Desktop:"
-    echo "  1. Download: opencode.ai/download"
-    echo "  2. App starten - Modell in Einstellungen waehlen"
-    echo ""
-  elif [ "$TOOLKEY" = "cursor" ]; then
-    echo "  Cursor Editor:"
-    echo "  1. Cursor Editor installieren (cursor.com)"
-    echo "  2. Cursor Chat oeffnen (Cmd+I)"
-    echo "  3. Modell auf OpenRouter umstellen"
-    echo ""
-  elif [ "$TOOLKEY" = "windsurf" ]; then
-    echo "  Windsurf Editor:"
-    echo "  1. Windsurf installieren (codeium.com/windsurf)"
-    echo "  2. Cascade oeffnen - Modell auf OpenRouter"
-    echo ""
-  elif [ "$TOOLKEY" = "zed" ]; then
-    echo "  Zed Editor:"
-    echo "  1. Zed oeffnen"
-    echo "  2. Assistant-Panel (Cmd+R)"
-    echo "  3. Modell sollte als 'ORF' erscheinen"
-    echo ""
-  elif [ "$TOOLKEY" = "aider" ]; then
-    echo "  Aider CLI:"
-    echo "  1. pip install aider-install"
-    echo "  2. Terminal: aider --model openrouter/DEIN_MODELL"
-    echo ""
-  elif [ "$TOOLKEY" = "claude_code" ]; then
-    echo "  Claude Code CLI:"
-    echo "  1. npm install -g @anthropic-ai/claude-code"
-    echo "  2. Terminal im Projekt: claude"
-    echo ""
-  elif [ "$TOOLKEY" = "github_copilot" ]; then
-    echo "  GitHub Copilot:"
-    echo "  1. GitHub Copilot in VS Code installiert + Abo?"
-    echo "  2. VS Code neu starten"
-    echo ""
-  elif [ "$TOOLKEY" = "cline" ]; then
-    echo "  Cline (VS Code Extension):"
-    echo "  1. Cline Extension installieren"
-    echo "  2. VS Code - Cline-Symbol in Sidebar"
-    echo "  3. OpenRouter-Modell auswaehlen"
-    echo ""
-  elif [ "$TOOLKEY" = "codeium" ]; then
-    echo "  Codeium:"
-    echo "  1. Codeium Extension installieren"
-    echo "  2. .codeiumrules im Projekt wird gelesen"
-    echo ""
-  elif [ "$TOOLKEY" = "antigravity" ]; then
-    echo "  Antigravity:"
-    echo "  1. Antigravity starten"
-    echo "  2. Config wird automatisch geladen"
-    echo ""
-  fi
-}
-
-for t in $INSTALLED_TOOLS; do
-  print_guide "$t"
-done
-
+echo "  Die Schritt-fuer-Schritt Anleitungen stehen"
+echo "  in den *_INSTALL.md Dateien im ZIP-Ordner."
+echo ""
 echo "  Starte dein Tool neu."
 echo ""
 echo "  WICHTIG: Enthaelt eine Config noch 'DEIN_API_KEY_HERE'?"
