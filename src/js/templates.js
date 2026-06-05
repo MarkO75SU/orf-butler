@@ -100,6 +100,12 @@ export function generateConfig(toolId, models, tier, apiKey) {
     const tool = TOOL_TEMPLATES[toolId] || { type: "json_global" };
     const [id, data] = models[0];
 
+    const premiumExtras = tier === "premium" ? {
+        instructions: [data?.premium_prompt || 'Act as an expert software engineer. Think step-by-step, write clean maintainable code, add error handling and tests.'],
+        temperature: 0.3,
+        max_tokens: 4096
+    } : {};
+
     if (tool.type === "opencode") {
         const modelId = id.replace(/:free$/, '');
         const cfg = {
@@ -112,11 +118,9 @@ export function generateConfig(toolId, models, tier, apiKey) {
                         apiKey: apiKey || 'DEIN_API_KEY_HERE'
                     }
                 }
-            }
+            },
+            ...premiumExtras
         };
-        if (tier === "premium" && data && data.premium_prompt) {
-            cfg.instructions = [data.premium_prompt];
-        }
         return JSON.stringify(cfg, null, 2);
     }
 
@@ -127,14 +131,26 @@ export function generateConfig(toolId, models, tier, apiKey) {
                 provider: "openrouter",
                 model: id,
                 apiKey: apiKey || 'DEIN_API_KEY_HERE',
-                ...(tier === "premium" && { system_prompt: data.premium_prompt })
+                ...(tier === "premium" && { 
+                    system_prompt: data?.premium_prompt || 'Act as an expert software engineer.',
+                    temperature: 0.3,
+                    max_tokens: 4096
+                })
             }]
         }, null, 2);
     }
     
     if (tool.type === "yaml_config") {
-        return `api_key: ${apiKey || 'DEIN_API_KEY_HERE'}\nmodel: openrouter/${id}\nendpoint: https://openrouter.ai/api/v1\n# ORF-Butler ${tier} synthezised`;
+        let yaml = `api_key: ${apiKey || 'DEIN_API_KEY_HERE'}\nmodel: openrouter/${id}\nendpoint: https://openrouter.ai/api/v1\n# ORF-Butler ${tier}`;
+        if (tier === "premium") {
+            yaml += "\ntemperature: 0.3\nmax_tokens: 4096\n";
+            yaml += `pre_prompt: "${data?.premium_prompt || 'Act as an expert software engineer.'}"`;
+        }
+        return yaml;
     }
 
-    return `# ORF-Butler Instructions\n${tier === 'premium' ? data.premium_prompt : 'Act as a professional coder.'}`;
+    const basePrompt = tier === 'premium' 
+        ? (data?.premium_prompt || 'Act as an expert software engineer. Think step-by-step, write clean maintainable code, add error handling and tests.')
+        : 'Act as a professional coder.';
+    return `# ORF-Butler ${tier.toUpperCase()} Instructions\n${basePrompt}`;
 }

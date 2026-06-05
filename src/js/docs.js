@@ -119,6 +119,7 @@ export function generateInstallMD(tool, os, tier, path) {
     const isWin = os === "win32";
     const shell = isWin ? "PowerShell or Command Prompt" : "Terminal";
     const home = isWin ? '%USERPROFILE%' : '~';
+    const isPremium = tier === "premium";
 
     const toolGuides = {
         continue: {
@@ -270,5 +271,12 @@ ${guide.howToUse}
 - Modell erscheint nicht? → Tool neustarten
 - "Invalid API Key"? → Key in der Config prüfen
 - Weiterhin Probleme? → openrouter.ai/docs für Hilfe
+${isPremium ? `
+## 5. Premium Features
+Diese Config enthält erweiterte Einstellungen:
+- Optimierte Temperature (0.3) für konsistentere Antworten
+- Höheres Token-Limit (4096) für umfangreiche Generierungen
+- Expert System-Prompt für präzisere Code-Generierung
+    ` : ''}
     `.trim();
 }

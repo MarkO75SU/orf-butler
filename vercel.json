@@ -6,6 +6,7 @@
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/landing", "destination": "/landing.html" },
     { "source": "/app", "destination": "/app.html" },
+    { "source": "/scripts/(.*)", "destination": "/scripts/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "redirects": [
