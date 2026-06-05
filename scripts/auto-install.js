@@ -15,7 +15,8 @@ const RESET = '\x1b[0m';
 const OS_PATHS = {
     win32: {
         "continue": { path: process.env.USERPROFILE + '\\.continue\\config.json', label: 'VS Code (Continue)' },
-        "opencode": { path: process.env.USERPROFILE + '\\AppData\\Roaming\\opencode\\opencode.json', label: 'OpenCode CLI' },
+        "opencode": { path: process.env.USERPROFILE + '\\.config\\opencode\\opencode.json', label: 'OpenCode CLI' },
+        "opencode_desktop": { path: process.env.USERPROFILE + '\\.config\\opencode\\opencode.json', label: 'OpenCode Desktop' },
         "zed": { path: process.env.USERPROFILE + '\\AppData\\Roaming\\Zed\\settings.json', label: 'Zed Editor' },
         "aider": { path: process.cwd() + '\\.aider.conf.yml', label: 'Aider CLI' },
         "antigravity": { path: process.cwd() + '\\settings.yaml', label: 'Antigravity' },
@@ -30,6 +31,7 @@ const OS_PATHS = {
     darwin: {
         "continue": { path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
         "opencode": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode CLI' },
+        "opencode_desktop": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode Desktop' },
         "zed": { path: process.env.HOME + '/.config/zed/settings.json', label: 'Zed Editor' },
         "aider": { path: process.cwd() + '/.aider.conf.yml', label: 'Aider CLI' },
         "antigravity": { path: process.cwd() + '/settings.yaml', label: 'Antigravity' },
@@ -44,6 +46,7 @@ const OS_PATHS = {
     linux: {
         "continue": { path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
         "opencode": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode CLI' },
+        "opencode_desktop": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode Desktop' },
         "zed": { path: process.env.HOME + '/.config/zed/settings.json', label: 'Zed Editor' },
         "aider": { path: process.cwd() + '/.aider.conf.yml', label: 'Aider CLI' },
         "antigravity": { path: process.cwd() + '/settings.yaml', label: 'Antigravity' },
@@ -80,6 +83,23 @@ function askQuestion(query) {
 
 function isJsonFile(filePath) {
     return filePath.endsWith('.json');
+}
+
+function validateConfig(content, ext) {
+    if (ext === '.json') {
+        try { JSON.parse(content); return true; }
+        catch (e) { return `JSON ungültig: ${e.message}`; }
+    }
+    if (ext === '.yml' || ext === '.yaml') {
+        const lines = content.split('\n').filter(l => l.trim() && !l.trim().startsWith('#'));
+        const hasKeyValue = lines.some(l => l.includes(':'));
+        return hasKeyValue || true;
+    }
+    return true;
+}
+
+function checkApiKeyPlaceholder(content) {
+    return content.includes('DEIN_API_KEY_HERE');
 }
 
 function mergeJson(existingContent, newContent) {
@@ -180,7 +200,7 @@ async function run() {
     });
     console.log();
 
-    let installed = 0, skipped = 0;
+    let installed = 0, skipped = 0, warnings = [];
 
     for (const config of configs) {
         const info = OS_PATHS[os][config.toolId];
@@ -199,13 +219,26 @@ async function run() {
             continue;
         }
 
+        const newContent = fs.readFileSync(srcPath, 'utf-8');
+        const ext = path.extname(config.file);
+        const valid = validateConfig(newContent, ext);
+        if (valid !== true) {
+            console.log(`  ${RED}✗ ${info.label}: ${valid} → übersprungen${RESET}`);
+            skipped++;
+            continue;
+        }
+
+        if (checkApiKeyPlaceholder(newContent)) {
+            warnings.push(info.label);
+        }
+
         const destDir = path.dirname(destPath);
         if (!fs.existsSync(destDir)) {
             try {
                 fs.mkdirSync(destDir, { recursive: true });
                 console.log(`  ${CYAN}📁 Ordner erstellt: ${destDir}${RESET}`);
             } catch (err) {
-                console.log(`  ${RED}✗ ${info.label}: Ordner konnte nicht erstellt werden - ${err.message}${RESET}`);
+                console.log(`  ${RED}✗ ${info.label}: Ordner konnte nicht erstellt werden${RESET}`);
                 skipped++;
                 continue;
             }
@@ -228,8 +261,19 @@ async function run() {
     }
 
     console.log(`\n  ${BOLD}══════════════════════════════════════${RESET}`);
+    console.log(`  ${BOLD}  Zusammenfassung${RESET}`);
+    console.log(`  ${BOLD}══════════════════════════════════════${RESET}`);
     console.log(`  ${GREEN}✔ Erfolgreich installiert: ${installed}${RESET}`);
     console.log(`  ${YELLOW}⚠ Übersprungen: ${skipped}${RESET}`);
+
+    if (warnings.length > 0) {
+        console.log(`\n  ${YELLOW}${BOLD}⚠ ACHTUNG: API-Key erforderlich${RESET}`);
+        console.log(`  ${YELLOW}Folgende Configs enthalten noch 'DEIN_API_KEY_HERE':${RESET}`);
+        warnings.forEach(label => console.log(`    - ${label}`));
+        console.log(`  ${CYAN}→ In der Config-Datei mit Texteditor öffnen und ersetzen.${RESET}`);
+        console.log(`  ${CYAN}→ Kostenlosen Key holen: https://openrouter.ai/keys${RESET}`);
+    }
+
     console.log(`\n  ${CYAN}✅ Fertig! Starte dein Tool neu.${RESET}\n`);
 }
 

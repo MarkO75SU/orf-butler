@@ -37,13 +37,23 @@ set INSTALLED=0
 set installed_tools=
 
 if exist "opencode-config.json" (
-  if not exist "%APPDATA%\opencode" mkdir "%APPDATA%\opencode"
-  if exist "%APPDATA%\opencode\opencode.json" (
-    copy "%APPDATA%\opencode\opencode.json" "%APPDATA%\opencode\opencode.json.backup" >nul
-    echo   [BACKUP] OpenCode: alte Config gesichert
+  if not exist "%USERPROFILE%\.config\opencode" mkdir "%USERPROFILE%\.config\opencode"
+  if exist "%USERPROFILE%\.config\opencode\opencode.json" (
+    copy "%USERPROFILE%\.config\opencode\opencode.json" "%USERPROFILE%\.config\opencode\opencode.json.backup" >nul
+    echo   [BACKUP] OpenCode CLI: alte Config gesichert
   )
-  copy "opencode-config.json" "%APPDATA%\opencode\opencode.json" >nul
+  copy "opencode-config.json" "%USERPROFILE%\.config\opencode\opencode.json" >nul
   if errorlevel 1 (echo   [FEHLER] OpenCode CLI) else (echo   [OK] OpenCode CLI & set /a INSTALLED+=1 & set installed_tools=!installed_tools! opencode)
+)
+
+if exist "opencode-desktop-config.json" (
+  if not exist "%USERPROFILE%\.config\opencode" mkdir "%USERPROFILE%\.config\opencode"
+  if exist "%USERPROFILE%\.config\opencode\opencode.json" (
+    copy "%USERPROFILE%\.config\opencode\opencode.json" "%USERPROFILE%\.config\opencode\opencode.json.backup" >nul
+    echo   [BACKUP] OpenCode Desktop: alte Config gesichert
+  )
+  copy "opencode-desktop-config.json" "%USERPROFILE%\.config\opencode\opencode.json" >nul
+  if errorlevel 1 (echo   [FEHLER] OpenCode Desktop) else (echo   [OK] OpenCode Desktop & set /a INSTALLED+=1 & set installed_tools=!installed_tools! opencode_desktop)
 )
 
 if exist "continue-config.json" (
@@ -165,6 +175,12 @@ for %%t in (!installed_tools!) do (
     echo   2. Terminal: opencode
     echo.
   )
+  if "%%t"=="opencode_desktop" (
+    echo   OpenCode Desktop:
+    echo   1. Download: opencode.ai/download
+    echo   2. App starten - Modell in Einstellungen waehlen
+    echo.
+  )
   if "%%t"=="cursor" (
     echo   Cursor Editor:
     echo   1. Cursor Editor installieren (cursor.com)
@@ -225,5 +241,13 @@ for %%t in (!installed_tools!) do (
   )
 )
 
+echo.
+echo   WICHTIG: Enthaelt eine Config noch DEIN_API_KEY_HERE?
+echo   Dann die Datei im Editor oeffnen und durch echten
+echo   OpenRouter-API-Key ersetzen (openrouter.ai/keys).
+echo.
+echo   Fuer Merge/Auskommentieren/Optionen:
+echo     "node auto-install.js" im Terminal ausfuehren.
+echo.
 echo   Starte dein Tool neu.
 pause

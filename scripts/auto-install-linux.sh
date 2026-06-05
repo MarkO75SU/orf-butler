@@ -55,6 +55,7 @@ try_copy() {
 }
 
 try_copy "opencode-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode CLI" "opencode"
+try_copy "opencode-desktop-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode Desktop" "opencode_desktop"
 try_copy "continue-config.json" "$HOME/.continue/config.json" "Continue" "continue"
 try_copy "zed-config.json" "$HOME/.config/zed/settings.json" "Zed Editor" "zed"
 try_copy "aider-config.json" "$PWD/.aider.conf.yml" "Aider CLI" "aider"
@@ -90,6 +91,11 @@ print_guide() {
     echo "  OpenCode CLI:"
     echo "  1. npm install -g opencode"
     echo "  2. Terminal: opencode"
+    echo ""
+  elif [ "$TOOLKEY" = "opencode_desktop" ]; then
+    echo "  OpenCode Desktop:"
+    echo "  1. Download: opencode.ai/download"
+    echo "  2. App starten - Modell in Einstellungen waehlen"
     echo ""
   elif [ "$TOOLKEY" = "cursor" ]; then
     echo "  Cursor Editor:"
@@ -147,4 +153,12 @@ for t in $INSTALLED_TOOLS; do
 done
 
 echo "  Starte dein Tool neu."
+echo ""
+echo "  WICHTIG: Enthaelt eine Config noch 'DEIN_API_KEY_HERE'?"
+echo "  Dann Datei im Editor oeffnen und mit echtem Key ersetzen."
+echo "  Kostenlosen Key holen: https://openrouter.ai/keys"
+echo ""
+echo "  Fuer Merge/Auskommentieren/Optionen:"
+echo "    node auto-install.js im Terminal ausfuehren."
+echo ""
 read -p "Druecke Enter zum Schliessen..."
