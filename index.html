@@ -6,6 +6,7 @@
     <title>ORFB - Login</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
         :root { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
     </style>
@@ -15,81 +16,185 @@
         <div class="absolute top-0 left-0 w-full h-1 bg-sky-600 rounded-t-lg"></div>
         <h1 class="text-lg font-bold text-white text-center mb-1 uppercase tracking-wider">ORF Butler</h1>
         <p class="text-[10px] text-slate-600 text-center mb-8 uppercase tracking-[0.2em]">OpenRouter Free Deployment</p>
-        <form id="login-form" class="space-y-6">
-            <div>
-                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Benutzername / Code</label>
-                <input type="text" id="username" name="username" required autocomplete="username"
-                    class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
-                    placeholder="Zugangscode eingeben">
-            </div>
-            <div class="relative">
-                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
-                <div class="relative">
-                    <input type="password" id="password" name="password" autocomplete="current-password"
-                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white pr-12"
-                        placeholder="Passwort">
-                    <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">👁</button>
+
+        <!-- Tabs -->
+        <div class="flex border-b border-slate-800 mb-6">
+            <button id="tab-code" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-sky-600 text-sky-400">Code</button>
+            <button id="tab-email" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400">E-Mail</button>
+            <button id="tab-social" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400">Social</button>
+        </div>
+
+        <!-- Tab: Code Login -->
+        <div id="panel-code" class="tab-panel">
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Zugangscode</label>
+                    <input type="text" id="username" name="username" autocomplete="off"
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
+                        placeholder="Code eingeben">
                 </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600" checked>
+                    <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
+                </div>
+                <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Einloggen</button>
+            </form>
+        </div>
+
+        <!-- Tab: Email Login / Register -->
+        <div id="panel-email" class="tab-panel hidden">
+            <div class="flex gap-2 mb-4">
+                <button id="subtab-login" class="subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-sky-800 rounded text-sky-400 bg-sky-900/20">Anmelden</button>
+                <button id="subtab-register" class="subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-slate-800 rounded text-slate-500 hover:text-slate-300">Registrieren</button>
             </div>
-            <div class="flex items-center gap-2">
-                <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600" checked>
-                <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
+            <form id="email-form" class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">E-Mail</label>
+                    <input type="email" id="email" required
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
+                        placeholder="deine@email.de">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
+                    <input type="password" id="email-password" required minlength="6"
+                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
+                        placeholder="Mind. 6 Zeichen">
+                </div>
+                <button type="submit" id="email-submit-btn" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Anmelden</button>
+                <p id="email-mode-hint" class="text-[10px] text-slate-600 text-center">
+                    Noch kein Konto? <a href="#" id="switch-to-register" class="text-sky-500 hover:text-sky-400">Registrieren</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Tab: Social Login -->
+        <div id="panel-social" class="tab-panel hidden">
+            <div class="space-y-3">
+                <button class="social-btn w-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold py-4 rounded transition flex items-center justify-center gap-3" onclick="socialLogin('google')">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    <span>Weiter mit Google</span>
+                </button>
+                <button class="social-btn w-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold py-4 rounded transition flex items-center justify-center gap-3" onclick="socialLogin('apple')">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                    <span>Weiter mit Apple</span>
+                </button>
+                <button class="social-btn w-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold py-4 rounded transition flex items-center justify-center gap-3" onclick="socialLogin('github')">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#fff" d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.05c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.08-.73.08-.73 1.2.09 1.83 1.24 1.83 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.66-.3-5.46-1.33-5.46-5.92 0-1.3.47-2.37 1.24-3.2-.13-.3-.54-1.52.12-3.18 0 0 1-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8c1.02.01 2.04.14 3 .4 2.3-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.78.83 1.24 1.9 1.24 3.2 0 4.6-2.8 5.61-5.48 5.91.42.36.82 1.1.82 2.22v3.3c0 .32.22.7.84.58A12 12 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span>Weiter mit GitHub</span>
+                </button>
             </div>
-            <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Einloggen</button>
-            <p id="error-msg" class="text-red-500 text-[10px] text-center hidden"></p>
-            <p id="success-msg" class="text-green-500 text-[10px] text-center hidden"></p>
-        </form>
+        </div>
+
+        <p id="global-msg" class="mt-4 text-[10px] text-center hidden"></p>
         <p class="mt-4 text-[10px] text-slate-600 text-center">Admin? Zugangsdaten per E-Mail anfragen</p>
     </div>
 
     <script>
-        function togglePassword() {
-            const pw = document.getElementById('password');
-            const btn = pw.nextElementSibling;
-            if (pw.type === 'password') { pw.type = 'text'; btn.textContent = '🙈'; }
-            else { pw.type = 'password'; btn.textContent = '👁'; }
+        // Tab switching
+        const tabs = ['code', 'email', 'social'];
+        function switchTab(name) {
+            tabs.forEach(t => {
+                document.getElementById('tab-' + t).className = t === name
+                    ? 'tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-sky-600 text-sky-400'
+                    : 'tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400';
+                document.getElementById('panel-' + t).classList.toggle('hidden', t !== name);
+            });
         }
-        document.getElementById('username').addEventListener('input', function() {
-            const pwField = document.getElementById('password');
-            const isAdmin = this.value.toLowerCase() === 'generali';
-            pwField.required = isAdmin;
-            pwField.disabled = !isAdmin;
-        });
+        tabs.forEach(t => document.getElementById('tab-' + t).addEventListener('click', () => switchTab(t)));
+
+        // Email sub-tabs
+        let emailMode = 'login';
+        document.getElementById('subtab-login').addEventListener('click', () => setEmailMode('login'));
+        document.getElementById('subtab-register').addEventListener('click', () => setEmailMode('register'));
+        document.getElementById('switch-to-register').addEventListener('click', e => { e.preventDefault(); setEmailMode('register'); });
+
+        function setEmailMode(mode) {
+            emailMode = mode;
+            const loginBtn = document.getElementById('subtab-login');
+            const regBtn = document.getElementById('subtab-register');
+            const submitBtn = document.getElementById('email-submit-btn');
+            const hint = document.getElementById('email-mode-hint');
+            const pwLabel = document.querySelector('[for="email-password"]');
+            if (mode === 'login') {
+                loginBtn.className = 'subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-sky-800 rounded text-sky-400 bg-sky-900/20';
+                regBtn.className = 'subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-slate-800 rounded text-slate-500 hover:text-slate-300';
+                submitBtn.textContent = 'Anmelden';
+                hint.innerHTML = 'Noch kein Konto? <a href="#" id="switch-to-register" class="text-sky-500 hover:text-sky-400">Registrieren</a>';
+                document.getElementById('switch-to-register').addEventListener('click', e => { e.preventDefault(); setEmailMode('register'); });
+            } else {
+                regBtn.className = 'subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-sky-800 rounded text-sky-400 bg-sky-900/20';
+                loginBtn.className = 'subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-slate-800 rounded text-slate-500 hover:text-slate-300';
+                submitBtn.textContent = 'Konto erstellen';
+                hint.innerHTML = 'Bereits registriert? <a href="#" id="switch-to-login" class="text-sky-500 hover:text-sky-400">Anmelden</a>';
+                document.getElementById('switch-to-login').addEventListener('click', e => { e.preventDefault(); setEmailMode('login'); });
+            }
+        }
     </script>
 
     <script type="module">
         import { isAuthenticated, login } from './src/js/auth.js';
+        import { initSupabase, register, loginEmail, socialLogin as supabaseSocial } from './src/js/auth-supabase.js';
+
+        const msgEl = document.getElementById('global-msg');
 
         if (isAuthenticated()) {
             window.location.href = '/landing';
         }
 
+        function showMsg(text, type) {
+            msgEl.textContent = text;
+            msgEl.className = 'mt-4 text-[10px] text-center ' + (type === 'error' ? 'text-red-500' : type === 'success' ? 'text-green-500' : 'text-slate-400');
+            msgEl.classList.remove('hidden');
+        }
+
+        // Code Login
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
-            const errorEl = document.getElementById('error-msg');
-            const successEl = document.getElementById('success-msg');
-            errorEl.classList.add('hidden');
-            successEl.classList.add('hidden');
-
-            if (!username) {
-                errorEl.textContent = 'Bitte Benutzername oder Code eingeben.';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            const result = await login(username, password, remember);
+            if (!username) { showMsg('Bitte Code eingeben.', 'error'); return; }
+            const result = await login(username, '', remember);
             if (result.success) {
-                successEl.textContent = 'Login erfolgreich! Weiterleitung...';
-                successEl.classList.remove('hidden');
+                showMsg('Login erfolgreich! Weiterleitung...', 'success');
                 setTimeout(() => { window.location.href = '/landing'; }, 500);
             } else {
-                errorEl.textContent = result.error || 'Login fehlgeschlagen.';
-                errorEl.classList.remove('hidden');
+                showMsg(result.error, 'error');
             }
         });
+
+        // Email Login / Register
+        document.getElementById('email-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('email-password').value;
+            if (!email || !password) { showMsg('Bitte E-Mail und Passwort eingeben.', 'error'); return; }
+
+            if (emailMode === 'register') {
+                const result = await register(email, password);
+                if (result.success) {
+                    showMsg('Registrierung erfolgreich! Prüfe dein E-Mail-Postfach (Double-Opt-In).', 'success');
+                    document.getElementById('email-form').reset();
+                } else {
+                    showMsg(result.error, 'error');
+                }
+            } else {
+                const result = await loginEmail(email, password);
+                if (result.success) {
+                    showMsg('Login erfolgreich! Weiterleitung...', 'success');
+                    setTimeout(() => { window.location.href = '/landing'; }, 500);
+                } else {
+                    showMsg(result.error, 'error');
+                }
+            }
+        });
+
+        // Social Login
+        window.socialLogin = async (provider) => {
+            const result = await supabaseSocial(provider);
+            if (!result.success) {
+                showMsg(result.error || 'Social Login fehlgeschlagen.', 'error');
+            }
+        };
     </script>
 </body>
 </html>
