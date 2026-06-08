@@ -44,7 +44,7 @@ try_copy() {
   mkdir -p "$(dirname "$DEST")" 2>/dev/null
   if [ ! -f "$DEST" ]; then
     if cp "$SRC" "$DEST" 2>/dev/null; then
-      echo "  [OK] $NAME → Installiert"
+      echo "  [OK] $NAME > Installiert"
       INSTALLED=$((INSTALLED + 1))
       INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
     else
@@ -100,7 +100,7 @@ try_copy() {
 
   if [ "$CHOICE" = "3" ]; then
     if [ "$EXT" != "json" ]; then
-      echo "  [WARN] $NAME: Merge nur bei JSON – uebersprungen"
+      echo "  [WARN] $NAME: Merge nur bei JSON - uebersprungen"
       return
     fi
     if command -v jq &> /dev/null; then
@@ -116,7 +116,7 @@ a.update(b)
 with open('$DEST','w') as f: json.dump(a,f,indent=2)
 " 2>/dev/null && echo "  [OK] $NAME: JSON gemerged (python3)"
     else
-      echo "  [WARN] $NAME: Kein Tool fuer Merge (jq/node/python3) – uebersprungen"
+      echo "  [WARN] $NAME: Kein Tool fuer Merge (jq/node/python3) - uebersprungen"
       return
     fi
     INSTALLED=$((INSTALLED + 1))
@@ -124,7 +124,7 @@ with open('$DEST','w') as f: json.dump(a,f,indent=2)
     return
   fi
 
-  echo "  [WARN] $NAME: Ungueltige Eingabe – uebersprungen"
+  echo "  [WARN] $NAME: Ungueltige Eingabe - uebersprungen"
 }
 
 try_copy "opencode-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode CLI" "opencode"

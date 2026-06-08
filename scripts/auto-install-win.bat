@@ -130,7 +130,7 @@ if "!CHOICE!"=="2" (
 if "!CHOICE!"=="3" (
   set EXT=%SRC:~-5%
   if /i not "!EXT!"==".json" (
-    echo   [WARN] %LABEL%: Merge nur bei JSON – uebersprungen
+    echo   [WARN] %LABEL%: Merge nur bei JSON - uebersprungen
     exit /b 0
   )
   powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '%DEST%'" >nul
@@ -138,5 +138,5 @@ if "!CHOICE!"=="3" (
   exit /b 0
 )
 
-echo   [WARN] %LABEL%: Ungueltige Eingabe – uebersprungen
+echo   [WARN] %LABEL%: Ungueltige Eingabe - uebersprungen
 exit /b 0
