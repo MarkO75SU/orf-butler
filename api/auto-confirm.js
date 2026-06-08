@@ -1,13 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
-
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { userId, email } = req.body || {};
-    if (!userId && !email) {
-        return res.status(400).json({ error: 'userId oder email erforderlich' });
+    const { userId } = req.body || {};
+    if (!userId) {
+        return res.status(400).json({ error: 'userId erforderlich' });
     }
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -17,20 +15,30 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Supabase nicht konfiguriert' });
     }
 
-    const adminClient = createClient(supabaseUrl, serviceKey, {
-        auth: { autoRefreshToken: false, persistSession: false }
-    });
+    try {
+        // Direkter REST-Aufruf an Supabase Auth Admin API
+        const response = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': serviceKey,
+                'Authorization': `Bearer ${serviceKey}`
+            },
+            body: JSON.stringify({
+                email_confirm: true,
+                email_confirmed_at: new Date().toISOString()
+            })
+        });
 
-    const updateData = { email_confirm: true };
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('Supabase admin API error:', response.status, text);
+            return res.status(500).json({ error: 'Bestätigung fehlgeschlagen', detail: text });
+        }
 
-    const { data, error } = userId
-        ? await adminClient.auth.admin.updateUserById(userId, updateData)
-        : await adminClient.auth.admin.updateUserByEmail(email, updateData);
-
-    if (error) {
-        console.error('Auto-confirm error:', error);
-        return res.status(500).json({ error: 'Bestätigung fehlgeschlagen' });
+        res.json({ success: true });
+    } catch (e) {
+        console.error('Auto-confirm exception:', e);
+        res.status(500).json({ error: 'Bestätigung fehlgeschlagen' });
     }
-
-    res.json({ success: true });
 }

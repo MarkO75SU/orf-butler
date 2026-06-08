@@ -44,13 +44,15 @@ export async function register(email, password) {
     if (error) return { success: false, error: error.message };
 
     // User per Supabase Admin API automatisch bestätigen
-    try {
-        await fetch('/api/auto-confirm', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: data.user.id })
-        });
-    } catch {}
+    const confirmRes = await fetch('/api/auto-confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: data.user.id })
+    });
+    if (!confirmRes.ok) {
+        const err = await confirmRes.json().catch(() => ({}));
+        console.warn('Auto-confirm warning:', err.error || confirmRes.status);
+    }
 
     const hasSession = !!data.session;
     if (hasSession) {
