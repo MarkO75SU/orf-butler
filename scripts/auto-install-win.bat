@@ -148,6 +148,21 @@ if /i "!CHOICE!"=="s" (
   exit /b 0
 )
 
+if /i "!PREVIEW!"=="j" (
+  echo.
+  echo ============================================
+  echo   Vorschau: %LABEL%
+  echo ============================================
+  type "%SRC%"
+  echo.
+  set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
+  if /i not "!CONFIRM!"=="j" (
+    echo   [WARN] %LABEL%: Abgebrochen
+    echo   [SKIPPED] %LABEL%: Vorschau abgelehnt >> "%LOGFILE%"
+    exit /b 0
+  )
+)
+
 if "!CHOICE!"=="1" (
   copy "%SRC%" "%DEST%" >nul
   if errorlevel 1 (
