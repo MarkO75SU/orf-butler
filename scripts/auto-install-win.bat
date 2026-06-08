@@ -133,7 +133,7 @@ if "!CHOICE!"=="3" (
     echo   [WARN] %LABEL%: Merge nur bei JSON – uebersprungen
     exit /b 0
   )
-  powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json|Set-Content '%DEST%'" >nul
+  powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '%DEST%'" >nul
   if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL%: JSON gemerged & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
   exit /b 0
 )
