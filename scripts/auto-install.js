@@ -228,6 +228,15 @@ async function run() {
 
         const newContent = fs.readFileSync(srcPath, 'utf-8');
         const ext = path.extname(config.file);
+
+        // Pro Tool Bestätigung
+        const toolConfirm = await askQuestion(`  Config für ${info.label} installieren? (j/n, Enter=ja): `);
+        if (toolConfirm.toLowerCase() === 'n') {
+            console.log(`  ${YELLOW}⚠ ${info.label}: Übersprungen${RESET}`);
+            skipped++;
+            continue;
+        }
+
         const valid = validateConfig(newContent, ext);
         if (valid !== true) {
             console.log(`  ${RED}✗ ${info.label}: ${valid} → übersprungen${RESET}`);

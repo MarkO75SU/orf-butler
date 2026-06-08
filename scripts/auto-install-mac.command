@@ -42,6 +42,12 @@ try_copy() {
   if [ ! -f "$SRC" ]; then
     return
   fi
+  echo ""
+  read -p "  Config fuer $NAME installieren? (j/n, Enter=ja): " CONFIRM_TOOL
+  if [ "$CONFIRM_TOOL" = "n" ] || [ "$CONFIRM_TOOL" = "N" ]; then
+    echo "  [SKIPPED] $NAME"
+    return
+  fi
   mkdir -p "$(dirname "$DEST")" 2>/dev/null
   if [ ! -f "$DEST" ]; then
     if [ "$PREVIEW" = "j" ] || [ "$PREVIEW" = "J" ]; then
