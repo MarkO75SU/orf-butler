@@ -195,6 +195,8 @@
                     <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Einloggen</button>
                 </form>
             `;
+            // Event-Listener für neuen Login-Form neu binden
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
             switchTab('email');
             setEmailMode('register');
         }
@@ -207,19 +209,21 @@
         }
 
         // Code Login
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        async function handleLogin(e) {
             e.preventDefault();
             const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password')?.value || '';
             const remember = document.getElementById('remember').checked;
             if (!username) { showMsg('Bitte Code eingeben.', 'error'); return; }
-            const result = await login(username, '', remember);
+            const result = await login(username, password, remember);
             if (result.success) {
                 showMsg('Login erfolgreich! Weiterleitung...', 'success');
                 setTimeout(() => { window.location.href = '/landing'; }, 500);
             } else {
                 showMsg(result.error, 'error');
             }
-        });
+        }
+        document.getElementById('login-form').addEventListener('submit', handleLogin);
 
         // Email Login / Register
         document.getElementById('email-form').addEventListener('submit', async (e) => {
