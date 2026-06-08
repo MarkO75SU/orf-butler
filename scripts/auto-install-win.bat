@@ -231,7 +231,11 @@ if "!CHOICE!"=="3" (
   if errorlevel 1 (
     powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '!MERGE_TMP!'"
   ) else (
-    node -e "var a=JSON.parse(require('fs').readFileSync('!DEST!'));var b=JSON.parse(require('fs').readFileSync('!SRC!'));var m={};Object.keys(a).forEach(function(k){m[k]=a[k]});Object.keys(b).forEach(function(k){m[k]=b[k]});require('fs').writeFileSync('!MERGE_TMP!',JSON.stringify(m,null,2))"
+    >"%TEMP%\orf-merge.js" echo var a=JSON.parse(require("fs").readFileSync(process.argv[2]));
+    >>"%TEMP%\orf-merge.js" echo var b=JSON.parse(require("fs").readFileSync(process.argv[3]));
+    >>"%TEMP%\orf-merge.js" echo var m={};Object.keys(a).forEach(function(k){m[k]=a[k]});Object.keys(b).forEach(function(k){m[k]=b[k]});
+    >>"%TEMP%\orf-merge.js" echo require("fs").writeFileSync(process.argv[4],JSON.stringify(m,null,2))
+    node "%TEMP%\orf-merge.js" "!DEST!" "!SRC!" "!MERGE_TMP!"
   )
   if errorlevel 1 (
     echo   [FEHLER] %LABEL%
