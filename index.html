@@ -235,8 +235,28 @@
             if (emailMode === 'register') {
                 const result = await register(email, password);
                 if (result.success) {
-                    showMsg('Registrierung erfolgreich! Prüfe dein E-Mail-Postfach (Double-Opt-In).', 'success');
-                    document.getElementById('email-form').reset();
+                    if (result.autoLogin) {
+                        showMsg('Registrierung erfolgreich! Weiterleitung...', 'success');
+                        setTimeout(() => { window.location.href = '/landing'; }, 500);
+                    } else {
+                        showMsg('Registrierung erfolgreich! Prüfe dein E-Mail-Postfach (Double-Opt-In).', 'success');
+                        document.getElementById('email-form').reset();
+                        // Test-Bypass: Direkt anmelden (falls Supabase kein Confirm benötigt)
+                        const bypass = document.createElement('p');
+                        bypass.className = 'text-[10px] text-center mt-2';
+                        bypass.innerHTML = '<a href="#" id="bypass-confirm" class="text-sky-500 hover:text-sky-400 underline">E-Mail bereits bestätigt? Hier direkt anmelden</a>';
+                        document.getElementById('email-form').after(bypass);
+                        document.getElementById('bypass-confirm').addEventListener('click', async (e) => {
+                            e.preventDefault();
+                            const r = await loginEmail(email, password);
+                            if (r.success) {
+                                showMsg('Anmeldung erfolgreich! Weiterleitung...', 'success');
+                                setTimeout(() => { window.location.href = '/landing'; }, 500);
+                            } else {
+                                showMsg(r.error, 'error');
+                            }
+                        });
+                    }
                 } else {
                     showMsg(result.error, 'error');
                 }

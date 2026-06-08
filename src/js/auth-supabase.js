@@ -42,7 +42,11 @@ export async function register(email, password) {
     });
 
     if (error) return { success: false, error: error.message };
-    return { success: true, user: data.user, needConfirm: true };
+    const hasSession = !!data.session;
+    if (hasSession) {
+        await setSessionCookie();
+    }
+    return { success: true, user: data.user, needConfirm: !hasSession, autoLogin: hasSession };
 }
 
 export async function loginEmail(email, password) {
