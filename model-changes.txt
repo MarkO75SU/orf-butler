@@ -1,4 +1,6 @@
 ### 2026-06-08
 **Neu hinzugefügt:**
-- nex-agi/Nex-N2-Pro:free (agent, moe, multimodal, vision)
+- nex-agi/nex-n2-pro:free (agent, moe, multimodal, vision)
+**Entfernt:**
+- nex-agi/Nex-N2-Pro:free
 

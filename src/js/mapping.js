@@ -2,7 +2,7 @@
 // Last updated: 2026-06-08
 
 export const MODEL_MAPPING = {
-    "nex-agi/Nex-N2-Pro:free": {
+    "nex-agi/nex-n2-pro:free": {
         role: "General",
         role_de: "Allgemein",
         context: "262k",

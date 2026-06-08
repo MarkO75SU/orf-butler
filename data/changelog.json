@@ -4,6 +4,23 @@
       "date": "2026-06-08",
       "added": [
         {
+          "id": "nex-agi/nex-n2-pro:free",
+          "tags": [
+            "agent",
+            "moe",
+            "multimodal",
+            "vision"
+          ]
+        }
+      ],
+      "removed": [
+        "nex-agi/Nex-N2-Pro:free"
+      ]
+    },
+    {
+      "date": "2026-06-08",
+      "added": [
+        {
           "id": "nex-agi/Nex-N2-Pro:free",
           "tags": [
             "agent",
