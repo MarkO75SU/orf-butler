@@ -218,11 +218,11 @@ if "!CHOICE!"=="3" (
     exit /b 0
   )
   set MERGE_TMP=%TEMP%\orf-merge-%RANDOM%.json
-  powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '%MERGE_TMP%'"
+  powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '!MERGE_TMP!'"
   if errorlevel 1 (
     echo   [FEHLER] %LABEL%
     echo   [FEHLER] %LABEL%: Merge fehlgeschlagen >> "%LOGFILE%"
-    del "%MERGE_TMP%" 2>nul
+    del "!MERGE_TMP!" 2>nul
     echo.
     echo   FEHLER bei %LABEL%. Druecke eine Taste...
     pause >nul
@@ -233,18 +233,18 @@ if "!CHOICE!"=="3" (
     echo ============================================
     echo   Gemergte Vorschau: %LABEL%
     echo ============================================
-    type "%MERGE_TMP%"
+    type "!MERGE_TMP!"
     echo.
     set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
     if /i not "!CONFIRM!"=="j" (
-      del "%MERGE_TMP%" 2>nul
+      del "!MERGE_TMP!" 2>nul
       echo   [WARN] %LABEL%: Abgebrochen
       echo   [SKIPPED] %LABEL%: Merge abgelehnt >> "%LOGFILE%"
       exit /b 0
     )
   )
-  copy "%MERGE_TMP%" "%DEST%" >nul
-  del "%MERGE_TMP%" 2>nul
+  copy "!MERGE_TMP!" "%DEST%" >nul
+  del "!MERGE_TMP!" 2>nul
   echo   [OK] %LABEL%: JSON gemerged
   echo   [MERGED] %LABEL%: %DEST% >> "%LOGFILE%"
   set /a INSTALLED+=1
