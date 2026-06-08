@@ -98,10 +98,10 @@ export const TOOL_TEMPLATES = {
 
 export function generateConfig(toolId, models, tier, apiKey) {
     const tool = TOOL_TEMPLATES[toolId] || { type: "json_global" };
-    const [id, data] = models[0];
+    const [firstId, firstData] = models[0];
 
     const premiumExtras = tier === "premium" ? {
-        instructions: [data?.premium_prompt || 'Act as an expert software engineer. Think step-by-step, write clean maintainable code, add error handling and tests.']
+        instructions: [firstData?.premium_prompt || 'Act as an expert software engineer. Think step-by-step, write clean maintainable code, add error handling and tests.']
     } : {};
 
     const premiumProviderOptions = tier === "premium" ? {
@@ -110,11 +110,10 @@ export function generateConfig(toolId, models, tier, apiKey) {
     } : {};
 
     if (tool.type === "opencode") {
-        const modelId = id;
         const cfg = {
             $schema: "https://opencode.ai/config.json",
-            model: modelId,
-            small_model: modelId,
+            model: firstId,
+            small_model: firstId,
             provider: {
                 openrouter: {
                     options: {
@@ -129,32 +128,31 @@ export function generateConfig(toolId, models, tier, apiKey) {
     }
 
     if (tool.type === "json_global" || tool.type === "json_merge") {
-        return JSON.stringify({
-            models: [{
-                title: `ORF-${tier.toUpperCase()}`,
-                provider: "openrouter",
-                model: id,
-                apiKey: apiKey || 'DEIN_API_KEY_HERE',
-                ...(tier === "premium" && { 
-                    system_prompt: data?.premium_prompt || 'Act as an expert software engineer.',
-                    temperature: 0.3,
-                    max_tokens: 4096
-                })
-            }]
-        }, null, 2);
+        const allModels = models.map(([id, data]) => ({
+            title: `ORF-${id.split('/')[1] || id}`,
+            provider: "openrouter",
+            model: id,
+            apiKey: apiKey || 'DEIN_API_KEY_HERE',
+            ...(tier === "premium" && { 
+                system_prompt: firstData?.premium_prompt || 'Act as an expert software engineer.',
+                temperature: 0.3,
+                max_tokens: 4096
+            })
+        }));
+        return JSON.stringify({ models: allModels }, null, 2);
     }
     
     if (tool.type === "yaml_config") {
-        let yaml = `api_key: ${apiKey || 'DEIN_API_KEY_HERE'}\nmodel: openrouter/${id}\nendpoint: https://openrouter.ai/api/v1\n# ORF-Butler ${tier}`;
+        let yaml = `api_key: ${apiKey || 'DEIN_API_KEY_HERE'}\nmodel: openrouter/${firstId}\nendpoint: https://openrouter.ai/api/v1\n# ORF-Butler ${tier}`;
         if (tier === "premium") {
             yaml += "\ntemperature: 0.3\nmax_tokens: 4096\n";
-            yaml += `pre_prompt: "${data?.premium_prompt || 'Act as an expert software engineer.'}"`;
+            yaml += `pre_prompt: "${firstData?.premium_prompt || 'Act as an expert software engineer.'}"`;
         }
         return yaml;
     }
 
     const basePrompt = tier === 'premium' 
-        ? (data?.premium_prompt || 'Act as an expert software engineer. Think step-by-step, write clean maintainable code, add error handling and tests.')
+        ? (firstData?.premium_prompt || 'Act as an expert software engineer. Think step-by-step, write clean maintainable code, add error handling and tests.')
         : 'Act as a professional coder.';
     return `# ORF-Butler ${tier.toUpperCase()} Instructions\n${basePrompt}`;
 }
