@@ -2,6 +2,11 @@
 title ORF-Butler Installation
 cd /d "%~dp0"
 
+set LOGFILE=install-log.txt
+echo ORF-Butler Auto-Installer Log > "%LOGFILE%"
+echo Datum: %DATE% %TIME% >> "%LOGFILE%"
+echo ---------------------------------------- >> "%LOGFILE%"
+
 echo ============================================
 echo    ORF-Butler Auto-Installer
 echo    OpenRouter Free Butler - Konfiguration
@@ -81,6 +86,8 @@ echo.
 echo.
 echo   Starte dein Tool neu.
 echo.
+echo   Log: %LOGFILE%
+echo.
 echo   ============================================
 echo   Druecke eine beliebige Taste zum Schliessen.
 echo   ============================================
@@ -108,12 +115,24 @@ if not exist "%DEST%" (
     if /i "!CONFIRM!"=="n" set "DEST=%USERPROFILE%\Downloads\%~nx1"
   )
   copy "%SRC%" "%DEST%" >nul
-  if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL% & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
+  if errorlevel 1 (
+    echo   [FEHLER] %LABEL%
+    echo   [FEHLER] %LABEL%: %SRC% -^> %DEST% >> "%LOGFILE%"
+    echo.
+    echo   FEHLER bei %LABEL%. Druecke eine Taste...
+    pause >nul
+  ) else (
+    echo   [OK] %LABEL%
+    echo   [OK] %LABEL%: %DEST% >> "%LOGFILE%"
+    set /a INSTALLED+=1
+    set installed_tools=!installed_tools! %TOOLKEY%
+  )
   exit /b 0
 )
 
 copy "%DEST%" "%DEST%.backup" >nul
 echo   [BACKUP] %LABEL%: alte Config gesichert
+echo   [BACKUP] %DEST%.backup >> "%LOGFILE%"
 
 echo.
 echo   %LABEL%: Config existiert bereits unter %DEST%
@@ -125,18 +144,41 @@ set /p "CHOICE=  > "
 
 if /i "!CHOICE!"=="s" (
   echo   [WARN] %LABEL%: Uebersprungen
+  echo   [SKIPPED] %LABEL% >> "%LOGFILE%"
   exit /b 0
 )
 
 if "!CHOICE!"=="1" (
   copy "%SRC%" "%DEST%" >nul
-  if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL%: Ueberschrieben & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
+  if errorlevel 1 (
+    echo   [FEHLER] %LABEL%
+    echo   [FEHLER] %LABEL%: Ueberschreiben fehlgeschlagen >> "%LOGFILE%"
+    echo.
+    echo   FEHLER bei %LABEL%. Druecke eine Taste...
+    pause >nul
+  ) else (
+    echo   [OK] %LABEL%: Ueberschrieben
+    echo   [OVERWRITTEN] %LABEL%: %DEST% >> "%LOGFILE%"
+    set /a INSTALLED+=1
+    set installed_tools=!installed_tools! %TOOLKEY%
+  )
   exit /b 0
 )
 
 if "!CHOICE!"=="2" (
   powershell -Command "$c=Get-Content '%DEST%'; $ext=[System.IO.Path]::GetExtension('%DEST%'); $pre='// '; if($ext -eq '.yml' -or $ext -eq '.yaml'){$pre='# '}; $commented=$c -replace '^', $pre; \"$commented`n`n// --- ORF-Butler Config ---`n\"+ (Get-Content '%SRC%') | Set-Content '%DEST%'"
-  if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL%: Alte auskommentiert + neue geschrieben & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
+  if errorlevel 1 (
+    echo   [FEHLER] %LABEL%
+    echo   [FEHLER] %LABEL%: Auskommentieren fehlgeschlagen >> "%LOGFILE%"
+    echo.
+    echo   FEHLER bei %LABEL%. Druecke eine Taste...
+    pause >nul
+  ) else (
+    echo   [OK] %LABEL%: Alte auskommentiert + neue geschrieben
+    echo   [COMMENTED] %LABEL%: %DEST% >> "%LOGFILE%"
+    set /a INSTALLED+=1
+    set installed_tools=!installed_tools! %TOOLKEY%
+  )
   exit /b 0
 )
 
@@ -144,12 +186,25 @@ if "!CHOICE!"=="3" (
   set EXT=%SRC:~-5%
   if /i not "!EXT!"==".json" (
     echo   [WARN] %LABEL%: Merge nur bei JSON - uebersprungen
+    echo   [SKIPPED] %LABEL%: kein JSON >> "%LOGFILE%"
     exit /b 0
   )
   powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '%DEST%'"
-  if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL%: JSON gemerged & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
+  if errorlevel 1 (
+    echo   [FEHLER] %LABEL%
+    echo   [FEHLER] %LABEL%: Merge fehlgeschlagen >> "%LOGFILE%"
+    echo.
+    echo   FEHLER bei %LABEL%. Druecke eine Taste...
+    pause >nul
+  ) else (
+    echo   [OK] %LABEL%: JSON gemerged
+    echo   [MERGED] %LABEL%: %DEST% >> "%LOGFILE%"
+    set /a INSTALLED+=1
+    set installed_tools=!installed_tools! %TOOLKEY%
+  )
   exit /b 0
 )
 
 echo   [WARN] %LABEL%: Ungueltige Eingabe - uebersprungen
+echo   [SKIPPED] %LABEL%: ungueltige Eingabe >> "%LOGFILE%"
 exit /b 0
