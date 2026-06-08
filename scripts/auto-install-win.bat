@@ -24,7 +24,10 @@ if errorlevel 1 (
 echo.
 
 set APIKEY=
-set /p "APIKEY=OpenRouter API Key (optional - Enter zum Ueberspringen): "
+echo   OpenRouter API-Key (optional):
+echo     Nur lokal in der Config gespeichert, kein Server-Versand.
+echo     Ohne Key: DEIN_API_KEY_HERE bleibt stehen, spaeter ersetzbar.
+set /p "APIKEY=  Key eingeben oder Enter zum Ueberspringen: "
 echo.
 
 if not "%APIKEY%"=="" (

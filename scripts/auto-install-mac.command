@@ -18,7 +18,10 @@ if ! command -v node &> /dev/null; then
 fi
 echo ""
 
-read -p "OpenRouter API Key (optional - Enter zum Ueberspringen): " APIKEY
+echo "  OpenRouter API-Key (optional):"
+echo "    Nur lokal in der Config gespeichert, kein Server-Versand."
+echo "    Ohne Key: DEIN_API_KEY_HERE bleibt stehen, spaeter ersetzbar."
+read -p "  Key eingeben oder Enter zum Ueberspringen: " APIKEY
 echo ""
 if [ -n "$APIKEY" ]; then
   echo "Setze API-Key in Configs ein..."

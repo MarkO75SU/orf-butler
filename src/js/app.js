@@ -493,6 +493,7 @@ Doppelklick auf **auto-install-linux.sh**
 
 - Node.js 18+ (https://nodejs.org) – nur für die Node-Version
 - Config-Dateien (.json/.yml/.yaml) im selben Ordner
+- OpenRouter API-Key: Wird NUR lokal in der Config gespeichert, kein Server-Versand
 
 ## Interaktives Menü
 
