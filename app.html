@@ -186,8 +186,15 @@
 
     <script type="module">
         import { isAuthenticated } from './src/js/auth.js';
+        import { getSession } from './src/js/auth-supabase.js';
+
         if (!isAuthenticated()) {
             window.location.href = '/';
+        } else {
+            const session = await getSession();
+            if (!session) {
+                window.location.href = '/?require=auth';
+            }
         }
     </script>
     <script type="module" src="./src/js/app.js"></script>

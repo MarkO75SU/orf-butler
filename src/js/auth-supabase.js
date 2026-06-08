@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 let supabaseClient = null;
 let initPromise = null;
 
+async function setSessionCookie() {
+    try { await fetch('/api/confirm-session', { method: 'POST' }); } catch {}
+}
+
 export async function initSupabase() {
     if (supabaseClient) return supabaseClient;
     if (initPromise) return initPromise;
@@ -33,7 +37,7 @@ export async function register(email, password) {
         email,
         password,
         options: {
-            emailRedirectTo: window.location.origin + '/app'
+            emailRedirectTo: window.location.origin + '/'
         }
     });
 
@@ -49,6 +53,7 @@ export async function loginEmail(email, password) {
     });
 
     if (error) return { success: false, error: error.message };
+    await setSessionCookie();
     return { success: true, user: data.user };
 }
 
@@ -57,12 +62,13 @@ export async function socialLogin(provider) {
     const { data, error } = await client.auth.signInWithOAuth({
         provider,
         options: {
-            redirectTo: window.location.origin + '/app'
+            redirectTo: window.location.origin + '/'
         }
     });
 
     if (error) return { success: false, error: error.message };
-    return { success: true, url: data.url };
+    if (data.url) window.location.href = data.url;
+    return { success: true };
 }
 
 export async function logoutSupabase() {

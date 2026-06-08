@@ -139,12 +139,24 @@
 
     <script type="module">
         import { isAuthenticated, login } from './src/js/auth.js';
-        import { initSupabase, register, loginEmail, socialLogin as supabaseSocial } from './src/js/auth-supabase.js';
+        import { initSupabase, register, loginEmail, socialLogin as supabaseSocial, getSession } from './src/js/auth-supabase.js';
 
         const msgEl = document.getElementById('global-msg');
 
-        if (isAuthenticated()) {
-            window.location.href = '/landing';
+        // OAuth/Email-Redirect: Session erkennen und Cookie setzen
+        const session = await getSession();
+        if (session) {
+            await fetch('/api/confirm-session', { method: 'POST' });
+            const params = new URLSearchParams(window.location.search);
+            window.location.href = params.get('require') === 'auth' ? '/app' : '/landing';
+            return;
+        }
+
+        // Wenn require=auth Parameter, direkt zur E-Mail-Registrierung
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('require') === 'auth') {
+            switchTab('email');
+            setEmailMode('register');
         }
 
         function showMsg(text, type) {
