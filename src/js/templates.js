@@ -80,6 +80,13 @@ export const TOOL_TEMPLATES = {
         status: "stable",
         desc: "Schnelle Code-Vervollständigung."
     },
+    "roocode": {
+        name: "RooCode",
+        config_file: ".roorules",
+        type: "instruction_paste",
+        status: "stable",
+        desc: "VS Code Extension für agentische KI-Entwicklung."
+    },
     "litellm": {
         name: "LiteLLM",
         config_file: "litellm_config.yaml",

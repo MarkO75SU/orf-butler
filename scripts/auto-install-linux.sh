@@ -171,6 +171,7 @@ try_copy "claude-code-config.json" "$PWD/CLAUDE.md" "Claude Code CLI" "claude_co
 try_copy "github-copilot-config.json" "$PWD/.github/copilot-instructions.md" "GitHub Copilot" "github_copilot"
 try_copy "cline-config.json" "$PWD/.clinerules" "Cline" "cline"
 try_copy "codeium-config.json" "$PWD/.codeiumrules" "Codeium" "codeium"
+try_copy "roocode-config.json" "$PWD/.roorules" "RooCode" "roocode"
 try_copy "litellm-config.json" "$PWD/litellm_config.yaml" "LiteLLM" "litellm"
 try_copy "cody-config.json" "$PWD/.cody/config.json" "Cody" "cody"
 try_copy "tabby-config.json" "$PWD/tabby_config.json" "Tabby" "tabby"

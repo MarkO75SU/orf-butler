@@ -80,6 +80,7 @@ export const OS_PATHS = {
         "claude_code": "CLAUDE.md (In deinem Projektordner)",
         "cline": ".clinerules (In deinem Projektordner)",
         "codeium": ".codeiumrules (In deinem Projektordner)",
+        "roocode": ".roorules (In deinem Projektordner)",
         "litellm": "litellm_config.yaml (In deinem Projektordner)",
         "cody": ".cody/config.json (In deinem Projektordner)",
         "tabby": "tabby_config.json (In deinem Projektordner)"
@@ -209,6 +210,14 @@ export function generateInstallMD(tool, os, tier, path) {
             configAt: '.codeiumrules in deinem Projektordner.',
             howToUse: 'Windsurf öffnen → Cascade-Panel → Modell-Einstellungen prüfen.',
             note: 'Codeium wurde in Windsurf integriert. Die Config wird automatisch vom Editor gelesen.'
+        },
+        roocode: {
+            type: 'extension',
+            desc: 'RooCode - VS Code Extension für agentische KI-Entwicklung mit OpenRouter.',
+            needInstall: 'RooCode Extension im VS Code Marketplace installieren.',
+            configAt: '.roorules im Projektordner',
+            howToUse: 'VS Code -> RooCode Icon in der Sidebar -> OpenRouter als Provider wählen -> Config wird automatisch gelesen.',
+            note: 'RooCode unterstützt OpenRouter-Modelle direkt. Die Config definiert das Verhalten.'
         },
         litellm: {
             type: 'config',

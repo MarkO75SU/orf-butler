@@ -25,7 +25,8 @@ const OS_PATHS = {
         "claude_code": { path: process.cwd() + '\\CLAUDE.md', label: 'Claude Code CLI' },
         "github_copilot": { path: process.cwd() + '\\.github\\copilot-instructions.md', label: 'GitHub Copilot' },
         "cline": { path: process.cwd() + '\\.clinerules', label: 'Cline' },
-        "codeium": { path: process.cwd() + '\\.codeiumrules', label: 'Codeium / Windsurf' }
+        "codeium": { path: process.cwd() + '\\.codeiumrules', label: 'Codeium / Windsurf' },
+        "roocode": { path: process.cwd() + '\\.roorules', label: 'RooCode' }
     },
     darwin: {
         "continue": { path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
@@ -39,7 +40,8 @@ const OS_PATHS = {
         "claude_code": { path: process.cwd() + '/CLAUDE.md', label: 'Claude Code CLI' },
         "github_copilot": { path: process.cwd() + '/.github/copilot-instructions.md', label: 'GitHub Copilot' },
         "cline": { path: process.cwd() + '/.clinerules', label: 'Cline' },
-        "codeium": { path: process.cwd() + '/.codeiumrules', label: 'Codeium / Windsurf' }
+        "codeium": { path: process.cwd() + '/.codeiumrules', label: 'Codeium / Windsurf' },
+        "roocode": { path: process.cwd() + '/.roorules', label: 'RooCode' }
     },
     linux: {
         "continue": { path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
