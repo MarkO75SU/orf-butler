@@ -60,7 +60,7 @@ try_copy() {
   echo "    [2] Auskommentieren + neue daneben"
   echo "    [3] Beide Inhalte mergen (nur JSON)"
   echo "    [s] Ueberspringen (nichts tun)"
-  read -p "  → " CHOICE
+  read -p "  > " CHOICE
 
   EXT="${SRC##*.}"
 

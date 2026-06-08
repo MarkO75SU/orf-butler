@@ -108,7 +108,7 @@ echo     [1] Ueberschreiben (Backup vorhanden)
 echo     [2] Auskommentieren + neue daneben
 echo     [3] Beide Inhalte mergen (nur JSON)
 echo     [s] Ueberspringen (nichts tun)
-set /p "CHOICE=  → "
+set /p "CHOICE=  > "
 
 if /i "!CHOICE!"=="s" (
   echo   [WARN] %LABEL%: Uebersprungen
