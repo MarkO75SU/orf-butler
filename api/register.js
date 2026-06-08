@@ -15,37 +15,69 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Supabase nicht konfiguriert' });
     }
 
-    try {
-        // User via Supabase Admin API erstellen (kein Rate Limit)
-        const createRes = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+    const headers = {
+        'Content-Type': 'application/json',
+        'apikey': serviceKey,
+        'Authorization': `Bearer ${serviceKey}`
+    };
+
+    async function createUser() {
+        const res = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': serviceKey,
-                'Authorization': `Bearer ${serviceKey}`
-            },
+            headers,
+            body: JSON.stringify({ email, password, email_confirm: true })
+        });
+        return res.json();
+    }
+
+    async function updateUser(userId) {
+        const res = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
+            method: 'PUT',
+            headers,
             body: JSON.stringify({
-                email,
                 password,
-                email_confirm: true
+                email_confirm: true,
+                email_confirmed_at: new Date().toISOString()
             })
         });
+        return res.json();
+    }
 
-        const data = await createRes.json();
+    async function findUser() {
+        const res = await fetch(`${supabaseUrl}/auth/v1/admin/users?email=${encodeURIComponent(email)}`, { headers });
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) return data[0];
+        if (data.users && data.users.length > 0) return data.users[0];
+        return null;
+    }
 
-        if (!createRes.ok) {
-            console.error('Register API error:', createRes.status, data);
-            const msg = data?.msg || (Array.isArray(data) ? data[0]?.msg : null) || 'Registrierung fehlgeschlagen';
-            return res.status(createRes.status).json({ error: msg });
+    try {
+        // Versuche zuerst zu erstellen
+        let result = await createUser();
+
+        // Falls User existiert, aktualisieren
+        if (result.id && result.email) {
+            // User wurde neu erstellt
+            res.setHeader('Set-Cookie', 'orf_session=1; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000');
+            return res.json({ success: true, user: { id: result.id, email: result.email }, existing: false });
         }
 
-        // Set session cookie for middleware
-        res.setHeader('Set-Cookie', 'orf_session=1; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000');
+        // User existiert bereits – suchen und updaten
+        const existing = await findUser();
+        if (!existing || !existing.id) {
+            const msg = result?.msg || (Array.isArray(result) ? result.map(d => d.msg).join(', ') : null) || 'Registrierung fehlgeschlagen';
+            return res.status(422).json({ error: msg });
+        }
 
-        res.json({
-            success: true,
-            user: { id: data.id, email: data.email }
-        });
+        result = await updateUser(existing.id);
+
+        if (!result.id) {
+            console.error('Update user failed:', JSON.stringify(result));
+            return res.status(500).json({ error: 'Benutzer konnte nicht aktualisiert werden' });
+        }
+
+        res.setHeader('Set-Cookie', 'orf_session=1; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000');
+        res.json({ success: true, user: { id: result.id, email }, existing: true });
     } catch (e) {
         console.error('Register exception:', e);
         res.status(500).json({ error: 'Serverfehler bei Registrierung' });
