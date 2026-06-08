@@ -197,30 +197,44 @@
         import { getUser } from './src/js/auth.js';
         import { getSession } from './src/js/auth-supabase.js';
 
-        const btns = document.querySelectorAll('#nav-cta-btn, #hero-cta-btn, #pricing-basic-btn, #pricing-premium-btn');
         const session = await getSession();
         const isAdmin = getUser() === 'generali';
 
-        btns.forEach(el => {
-            if (session) {
+        if (isAdmin && !session) {
+            // Admin: zwei gleichberechtigte Optionen
+            document.querySelectorAll('#nav-cta-btn, #hero-cta-btn').forEach(el => {
+                el.href = '/app';
+                el.textContent = 'Zur App';
+            });
+            document.querySelectorAll('#pricing-basic-btn, #pricing-premium-btn').forEach(el => {
+                el.href = '/app';
+                el.textContent = 'Zur App';
+            });
+            // Zweiten Button für Registrierung einfügen
+            document.querySelectorAll('.flex.justify-center.gap-4').forEach(parent => {
+                const btn = document.createElement('a');
+                btn.href = '/?require=auth';
+                btn.className = 'border border-sky-700 text-sky-500 text-sm font-bold px-10 py-4 rounded hover:bg-sky-600 hover:text-white transition uppercase tracking-wider';
+                btn.textContent = 'Registrierung testen';
+                parent.appendChild(btn);
+            });
+            // Nav: Link für Registrierung
+            document.querySelectorAll('.flex.items-center.gap-4').forEach(parent => {
+                const link = document.createElement('a');
+                link.href = '/?require=auth';
+                link.className = 'text-[10px] text-sky-500 hover:text-sky-300 uppercase tracking-widest';
+                link.textContent = 'Registrierung';
+                parent.appendChild(link);
+            });
+        } else if (session) {
+            document.querySelectorAll('#nav-cta-btn, #hero-cta-btn, #pricing-basic-btn, #pricing-premium-btn').forEach(el => {
                 el.href = '/app';
                 el.textContent = el.id === 'nav-cta-btn' || el.id === 'hero-cta-btn' ? 'Zur App' : 'Jetzt starten';
-            } else if (isAdmin) {
-                el.href = '/app';
-                el.textContent = 'Zur App (Admin)';
-            } else {
+            });
+        } else {
+            document.querySelectorAll('#nav-cta-btn, #hero-cta-btn, #pricing-basic-btn, #pricing-premium-btn').forEach(el => {
                 el.href = '/?require=auth';
                 el.textContent = 'E-Mail Registrierung';
-            }
-        });
-
-        // Admin kann Registrierung testen
-        if (isAdmin && !session) {
-            document.querySelectorAll('#nav-cta-btn, #hero-cta-btn').forEach(el => {
-                const p = document.createElement('p');
-                p.className = 'text-[9px] text-sky-600 text-center mt-2';
-                p.innerHTML = '<a href="/?require=auth" class="hover:text-sky-400 underline">Registrierung testen</a>';
-                el.parentNode.insertBefore(p, el.nextSibling);
             });
         }
     </script>
