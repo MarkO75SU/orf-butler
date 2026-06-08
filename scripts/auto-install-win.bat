@@ -148,22 +148,21 @@ if /i "!CHOICE!"=="s" (
   exit /b 0
 )
 
-if /i "!PREVIEW!"=="j" (
-  echo.
-  echo ============================================
-  echo   Vorschau: %LABEL%
-  echo ============================================
-  type "%SRC%"
-  echo.
-  set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
-  if /i not "!CONFIRM!"=="j" (
-    echo   [WARN] %LABEL%: Abgebrochen
-    echo   [SKIPPED] %LABEL%: Vorschau abgelehnt >> "%LOGFILE%"
-    exit /b 0
-  )
-)
-
 if "!CHOICE!"=="1" (
+  if /i "!PREVIEW!"=="j" (
+    echo.
+    echo ============================================
+    echo   Vorschau: %LABEL%
+    echo ============================================
+    type "%SRC%"
+    echo.
+    set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
+    if /i not "!CONFIRM!"=="j" (
+      echo   [WARN] %LABEL%: Abgebrochen
+      echo   [SKIPPED] %LABEL% >> "%LOGFILE%"
+      exit /b 0
+    )
+  )
   copy "%SRC%" "%DEST%" >nul
   if errorlevel 1 (
     echo   [FEHLER] %LABEL%
@@ -181,6 +180,20 @@ if "!CHOICE!"=="1" (
 )
 
 if "!CHOICE!"=="2" (
+  if /i "!PREVIEW!"=="j" (
+    echo.
+    echo ============================================
+    echo   Vorschau: %LABEL%
+    echo ============================================
+    type "%SRC%"
+    echo.
+    set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
+    if /i not "!CONFIRM!"=="j" (
+      echo   [WARN] %LABEL%: Abgebrochen
+      echo   [SKIPPED] %LABEL% >> "%LOGFILE%"
+      exit /b 0
+    )
+  )
   powershell -Command "$c=Get-Content '%DEST%'; $ext=[System.IO.Path]::GetExtension('%DEST%'); $pre='// '; if($ext -eq '.yml' -or $ext -eq '.yaml'){$pre='# '}; $commented=$c -replace '^', $pre; \"$commented`n`n// --- ORF-Butler Config ---`n\"+ (Get-Content '%SRC%') | Set-Content '%DEST%'"
   if errorlevel 1 (
     echo   [FEHLER] %LABEL%
