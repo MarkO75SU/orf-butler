@@ -227,19 +227,14 @@ if "!CHOICE!"=="3" (
     exit /b 0
   )
   set MERGE_TMP=%TEMP%\orf-merge-%RANDOM%.json
-  set MERGE_JS=%TEMP%\orf-merge.js
   where node >nul 2>nul
   if errorlevel 1 (
     powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '!MERGE_TMP!'"
   ) else (
-    >"!MERGE_JS!" echo var a=JSON.parse(require('fs').readFileSync(process.argv[2]));
-    >>"!MERGE_JS!" echo var b=JSON.parse(require('fs').readFileSync(process.argv[3]));
-    >>"!MERGE_JS!" echo var m={};
-    >>"!MERGE_JS!" echo Object.keys(a).forEach(function(k){m[k]=a[k]});
-    >>"!MERGE_JS!" echo Object.keys(b).forEach(function(k){m[k]=b[k]});
-    >>"!MERGE_JS!" echo require('fs').writeFileSync(process.argv[4],JSON.stringify(m,null,2));
-    node "!MERGE_JS!" "!DEST!" "!SRC!" "!MERGE_TMP!"
-    del "!MERGE_JS!" 2>nul
+    set "NODE_DEST=!DEST!"
+    set "NODE_SRC=!SRC!"
+    set "NODE_OUT=!MERGE_TMP!"
+    node -e "var a=JSON.parse(require('fs').readFileSync(process.env.NODE_DEST));var b=JSON.parse(require('fs').readFileSync(process.env.NODE_SRC));var m={};Object.keys(a).forEach(function(k){m[k]=a[k]});Object.keys(b).forEach(function(k){m[k]=b[k]});require('fs').writeFileSync(process.env.NODE_OUT,JSON.stringify(m,null,2))"
   )
   if errorlevel 1 (
     echo   [FEHLER] %LABEL%
