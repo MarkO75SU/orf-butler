@@ -76,8 +76,6 @@ echo   WICHTIG: Enthaelt eine Config noch DEIN_API_KEY_HERE?
 echo   Dann die Datei im Editor oeffnen und durch echten
 echo   OpenRouter-API-Key ersetzen (openrouter.ai/keys).
 echo.
-echo   Fuer Merge/Auskommentieren/Optionen:
-echo     "node auto-install.js" im Terminal ausfuehren.
 echo.
 echo   Starte dein Tool neu.
 echo.
