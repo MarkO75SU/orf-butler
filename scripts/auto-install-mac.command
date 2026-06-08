@@ -133,6 +133,14 @@ try_copy() {
   if [ "$CHOICE" = "3" ]; then
     if [ "$EXT" != "json" ]; then
       echo "  [WARN] $NAME: Merge nur bei JSON - uebersprungen"
+      echo "  [SKIPPED] $NAME: kein JSON" >> "$LOGFILE"
+      return
+    fi
+    # Prüfe ob Inhalt wirklich JSON ist
+    FIRST=$(head -c 1 "$SRC")
+    if [ "$FIRST" != "{" ]; then
+      echo "  [WARN] $NAME: Datei ist kein JSON (Text-Instruktion) - uebersprungen"
+      echo "  [SKIPPED] $NAME: kein JSON-Inhalt" >> "$LOGFILE"
       return
     fi
     if command -v jq &> /dev/null; then

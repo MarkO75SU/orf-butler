@@ -231,6 +231,13 @@ if "!CHOICE!"=="3" (
     echo   [SKIPPED] %LABEL%: kein JSON >> "%LOGFILE%"
     exit /b 0
   )
+  :: Prüfe ob Inhalt wirklich JSON ist
+  findstr /B "{" "%SRC%" >nul
+  if errorlevel 1 (
+    echo   [WARN] %LABEL%: Datei ist kein JSON (Text-Instruktion) - uebersprungen
+    echo   [SKIPPED] %LABEL%: kein JSON-Inhalt >> "%LOGFILE%"
+    exit /b 0
+  )
   set MERGE_TMP=%TEMP%\orf-merge-%RANDOM%.json
   where node >nul 2>nul
   if errorlevel 1 (
