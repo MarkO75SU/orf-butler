@@ -1,6 +1,21 @@
 {
   "entries": [
     {
+      "date": "2026-06-08",
+      "added": [
+        {
+          "id": "nex-agi/Nex-N2-Pro:free",
+          "tags": [
+            "agent",
+            "moe",
+            "multimodal",
+            "vision"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-06-04",
       "added": [
         {

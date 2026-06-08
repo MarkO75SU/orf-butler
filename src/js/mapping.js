@@ -2,6 +2,18 @@
 // Last updated: 2026-06-08
 
 export const MODEL_MAPPING = {
+    "nex-agi/Nex-N2-Pro:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "262k",
+        desc_en: "Nex-N2-Pro is an agentic mixture-of-experts model from Nex AGI, with 17B active parameters out of 397B total.",
+        desc_de: "Nex-N2-Pro is an agentic mixture-of-experts model from Nex AGI, with 17B active parameters out of 397B total.",
+        modalities: ["text","image"],
+        modality_icon: "🖼️",
+        tags: ["agent","moe","multimodal","vision"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
         role: "Chat",
         role_de: "Chat",
