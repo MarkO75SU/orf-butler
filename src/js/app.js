@@ -439,7 +439,9 @@ async function downloadZIP() {
         
         const safeName = toolId.replace(/_/g, '-');
         zip.file(safeName + '-config.json', configContent);
-        zip.file(safeName + '-INSTALL.md', installMD);
+        if (state.selectedBundle !== 'premium') {
+            zip.file(safeName + '-INSTALL.md', installMD);
+        }
     });
     
     if (state.selectedBundle === 'premium') {
