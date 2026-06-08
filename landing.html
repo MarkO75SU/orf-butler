@@ -194,13 +194,14 @@
     </script>
 
     <script type="module">
+        import { getUser } from './src/js/auth.js';
         import { getSession } from './src/js/auth-supabase.js';
 
         const btns = document.querySelectorAll('#nav-cta-btn, #hero-cta-btn, #pricing-basic-btn, #pricing-premium-btn');
         const session = await getSession();
 
         btns.forEach(el => {
-            if (session) {
+            if (session || getUser() === 'generali') {
                 el.href = '/app';
                 el.textContent = el.id === 'nav-cta-btn' || el.id === 'hero-cta-btn' ? 'Zur App' : 'Jetzt starten';
             } else {

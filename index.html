@@ -23,14 +23,16 @@
         <h1 class="text-lg font-bold text-white text-center mb-1 uppercase tracking-wider">ORF Butler</h1>
         <p class="text-[10px] text-slate-600 text-center mb-8 uppercase tracking-[0.2em]">OpenRouter Free Deployment</p>
 
-        <!-- Tabs -->
-        <div class="flex border-b border-slate-800 mb-6">
-            <button id="tab-code" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-sky-600 text-sky-400">Code</button>
-            <button id="tab-email" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400">E-Mail</button>
-            <button id="tab-social" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400">Social</button>
+        <!-- Tabs (nur bei require=auth sichtbar) -->
+        <div id="auth-tabs" class="hidden">
+            <div class="flex border-b border-slate-800 mb-6">
+                <button id="tab-code" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-sky-600 text-sky-400">Code</button>
+                <button id="tab-email" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400">E-Mail</button>
+                <button id="tab-social" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400">Social</button>
+            </div>
         </div>
 
-        <!-- Tab: Code Login -->
+        <!-- Default: Code Login (nur Code) -->
         <div id="panel-code" class="tab-panel">
             <form id="login-form" class="space-y-6">
                 <div>
@@ -45,6 +47,9 @@
                 </div>
                 <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Einloggen</button>
             </form>
+            <p class="mt-4 text-[10px] text-slate-600 text-center">
+                <a href="/?require=auth" class="text-sky-500 hover:text-sky-400">Für die App registrieren</a>
+            </p>
         </div>
 
         <!-- Tab: Email Login / Register -->
@@ -152,9 +157,25 @@
             return;
         }
 
-        // Wenn require=auth Parameter, direkt zur E-Mail-Registrierung
+        // Bei require=auth: Volles Auth-UI zeigen (Code/E-Mail/Social)
         const params = new URLSearchParams(window.location.search);
         if (params.get('require') === 'auth') {
+            document.getElementById('auth-tabs').classList.remove('hidden');
+            document.getElementById('panel-code').innerHTML = `
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Zugangscode</label>
+                        <input type="text" id="username" name="username" autocomplete="off"
+                            class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
+                            placeholder="Code eingeben">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="remember" class="w-4 h-4 accent-sky-600" checked>
+                        <label for="remember" class="text-[10px] text-slate-500 uppercase tracking-widest">Angemeldet bleiben</label>
+                    </div>
+                    <button type="submit" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Einloggen</button>
+                </form>
+            `;
             switchTab('email');
             setEmailMode('register');
         }
