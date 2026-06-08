@@ -100,13 +100,15 @@ set DEST=%~2
 set LABEL=%~3
 set TOOLKEY=%~4
 if not exist "%SRC%" exit /b 0
-echo.
-set /p "CONFIRM_TOOL=  Config fuer %LABEL% installieren? (j/n, Enter=ja): "
-if /i "!CONFIRM_TOOL!"=="n" (
-  echo   [SKIPPED] %LABEL%: Vom Nutzer abgelehnt
-  echo   [SKIPPED] %LABEL%: Nutzer ablehnung >> "%LOGFILE%"
-  exit /b 0
+
+if exist "manifest.txt" (
+  set /p MANIFEST=<manifest.txt
+  echo !MANIFEST! | findstr /C:"%TOOLKEY%" >nul
+  if errorlevel 1 (
+    exit /b 0
+  )
 )
+
 set DESTDIR=%~dp2
 if not exist "!DESTDIR!" mkdir "!DESTDIR!" 2>nul
 if not exist "%DEST%" (

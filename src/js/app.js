@@ -444,6 +444,9 @@ async function downloadZIP() {
         }
     });
     
+    // Manifest mit ausgewählten Tools
+    zip.file('manifest.txt', state.selectedTools.join('\n'));
+    
     if (state.selectedBundle === 'premium') {
         try {
             const launchers = [

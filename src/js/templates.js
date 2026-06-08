@@ -101,7 +101,10 @@ export function generateConfig(toolId, models, tier, apiKey) {
     const [id, data] = models[0];
 
     const premiumExtras = tier === "premium" ? {
-        instructions: [data?.premium_prompt || 'Act as an expert software engineer. Think step-by-step, write clean maintainable code, add error handling and tests.'],
+        instructions: [data?.premium_prompt || 'Act as an expert software engineer. Think step-by-step, write clean maintainable code, add error handling and tests.']
+    } : {};
+
+    const premiumProviderOptions = tier === "premium" ? {
         temperature: 0.3,
         max_tokens: 4096
     } : {};
@@ -115,7 +118,8 @@ export function generateConfig(toolId, models, tier, apiKey) {
             provider: {
                 openrouter: {
                     options: {
-                        apiKey: apiKey || 'DEIN_API_KEY_HERE'
+                        apiKey: apiKey || 'DEIN_API_KEY_HERE',
+                        ...premiumProviderOptions
                     }
                 }
             },
