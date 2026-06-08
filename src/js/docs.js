@@ -79,7 +79,10 @@ export const OS_PATHS = {
         "antigravity": "settings.yaml (In deinem Projektordner)",
         "claude_code": "CLAUDE.md (In deinem Projektordner)",
         "cline": ".clinerules (In deinem Projektordner)",
-        "codeium": ".codeiumrules (In deinem Projektordner)"
+        "codeium": ".codeiumrules (In deinem Projektordner)",
+        "litellm": "litellm_config.yaml (In deinem Projektordner)",
+        "cody": ".cody/config.json (In deinem Projektordner)",
+        "tabby": "tabby_config.json (In deinem Projektordner)"
     },
 "darwin": {
         "continue": "Users/[YourName]/.continue/config.json",
@@ -206,6 +209,32 @@ export function generateInstallMD(tool, os, tier, path) {
             configAt: '.codeiumrules in deinem Projektordner.',
             howToUse: 'Windsurf öffnen → Cascade-Panel → Modell-Einstellungen prüfen.',
             note: 'Codeium wurde in Windsurf integriert. Die Config wird automatisch vom Editor gelesen.'
+        },
+        litellm: {
+            type: 'config',
+            desc: 'LiteLLM – Universeller LLM-Proxy. Unterstützt OpenRouter, OpenAI, Anthropic & mehr.',
+            needInstall: 'pip install litellm oder npm install -g litellm-proxy',
+            installCmd: 'pip install litellm',
+            configAt: 'litellm_config.yaml im Projektordner',
+            howToUse: '`litellm --model openrouter/google/gemma-4-26b-a4b-it:free --port 8000` starten. Dann in deinem Tool als API-Endpoint localhost:8000 eintragen.',
+            note: 'LiteLLM routet Anfragen an OpenRouter. Der API-Key wird in der Config gesetzt.'
+        },
+        cody: {
+            type: 'extension',
+            desc: 'Cody (Sourcegraph) – AI Coding Assistant mit tiefem Codebase-Kontext.',
+            needInstall: 'Cody Extension im VS Code Marketplace installieren.',
+            configAt: '.cody/config.json im Projektordner',
+            howToUse: 'VS Code → Cody Icon in der Sidebar → OpenRouter als Provider auswählen.',
+            note: 'Cody unterstützt OpenRouter als Provider. Config definiert model und API-Key.'
+        },
+        tabby: {
+            type: 'config',
+            desc: 'Tabby – Self-hosted AI Coding Assistant.',
+            needInstall: 'Tabby Docker: docker run -p 8080:8080 tabbyml/tabby serve --model StarCoder-1B',
+            installCmd: 'docker run -p 8080:8080 tabbyml/tabby serve --model StarCoder-1B',
+            configAt: 'tabby_config.json im Projektordner',
+            howToUse: 'Tabby-Server starten → In VS Code Tabby Extension verbinden → Config platziert.',
+            note: 'Tabby läuft lokal. Falls kein eigener GPU-Server, OpenRouter als Fallback nutzen.'
         }
     };
 

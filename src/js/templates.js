@@ -79,6 +79,27 @@ export const TOOL_TEMPLATES = {
         type: "instruction_paste",
         status: "stable",
         desc: "Schnelle Code-Vervollständigung."
+    },
+    "litellm": {
+        name: "LiteLLM",
+        config_file: "litellm_config.yaml",
+        type: "yaml_config",
+        status: "stable",
+        desc: "Universeller LLM-Proxy (OpenRouter, OpenAI, etc.)."
+    },
+    "cody": {
+        name: "Cody (Sourcegraph)",
+        config_file: ".cody/config.json",
+        type: "json_global",
+        status: "stable",
+        desc: "AI Coding Assistant mit Codebase-Kontext."
+    },
+    "tabby": {
+        name: "Tabby",
+        config_file: "tabby.json",
+        type: "json_global",
+        status: "stable",
+        desc: "Self-hosted AI Coding Assistant."
     }
 };
 

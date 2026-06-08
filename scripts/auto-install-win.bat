@@ -56,6 +56,9 @@ call :safe_copy "claude-code-config.json" "CLAUDE.md" "Claude Code CLI" "claude_
 call :safe_copy "github-copilot-config.json" ".github\copilot-instructions.md" "GitHub Copilot" "github_copilot"
 call :safe_copy "cline-config.json" ".clinerules" "Cline" "cline"
 call :safe_copy "codeium-config.json" ".codeiumrules" "Codeium" "codeium"
+call :safe_copy "litellm-config.json" "litellm_config.yaml" "LiteLLM" "litellm"
+call :safe_copy "cody-config.json" ".cody\config.json" "Cody" "cody"
+call :safe_copy "tabby-config.json" "tabby_config.json" "Tabby" "tabby"
 
 echo.
 echo ============================================
