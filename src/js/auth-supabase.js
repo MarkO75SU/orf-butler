@@ -1,3 +1,5 @@
+import { createClient } from '@supabase/supabase-js';
+
 let supabaseClient = null;
 let initPromise = null;
 
@@ -6,15 +8,11 @@ export async function initSupabase() {
     if (initPromise) return initPromise;
 
     initPromise = (async () => {
-        if (typeof supabase === 'undefined') {
-            throw new Error('Supabase SDK nicht geladen');
-        }
-
         const res = await fetch('/api/supabase-config');
         if (!res.ok) throw new Error('Supabase-Konfiguration nicht verfügbar');
         const { url, key } = await res.json();
 
-        supabaseClient = supabase.createClient(url, key, {
+        supabaseClient = createClient(url, key, {
             auth: {
                 flowType: 'pkce',
                 detectSessionInUrl: true,
