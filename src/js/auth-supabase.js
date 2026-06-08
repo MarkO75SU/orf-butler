@@ -42,6 +42,16 @@ export async function register(email, password) {
     });
 
     if (error) return { success: false, error: error.message };
+
+    // User per Supabase Admin API automatisch bestätigen
+    try {
+        await fetch('/api/auto-confirm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: data.user.id })
+        });
+    } catch {}
+
     const hasSession = !!data.session;
     if (hasSession) {
         await setSessionCookie();
