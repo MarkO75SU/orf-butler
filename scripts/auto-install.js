@@ -16,7 +16,6 @@ const OS_PATHS = {
     win32: {
         "continue": { path: process.env.USERPROFILE + '\\.continue\\config.json', label: 'VS Code (Continue)' },
         "opencode": { path: process.env.USERPROFILE + '\\.config\\opencode\\opencode.json', label: 'OpenCode CLI' },
-        "opencode_desktop": { path: process.env.USERPROFILE + '\\.config\\opencode\\opencode.json', label: 'OpenCode Desktop' },
         "zed": { path: process.env.USERPROFILE + '\\AppData\\Roaming\\Zed\\settings.json', label: 'Zed Editor' },
         "aider": { path: process.cwd() + '\\.aider.conf.yml', label: 'Aider CLI' },
         "antigravity": { path: process.cwd() + '\\settings.yaml', label: 'Antigravity' },
@@ -31,7 +30,6 @@ const OS_PATHS = {
     darwin: {
         "continue": { path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
         "opencode": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode CLI' },
-        "opencode_desktop": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode Desktop' },
         "zed": { path: process.env.HOME + '/.config/zed/settings.json', label: 'Zed Editor' },
         "aider": { path: process.cwd() + '/.aider.conf.yml', label: 'Aider CLI' },
         "antigravity": { path: process.cwd() + '/settings.yaml', label: 'Antigravity' },
@@ -46,7 +44,6 @@ const OS_PATHS = {
     linux: {
         "continue": { path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
         "opencode": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode CLI' },
-        "opencode_desktop": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode Desktop' },
         "zed": { path: process.env.HOME + '/.config/zed/settings.json', label: 'Zed Editor' },
         "aider": { path: process.cwd() + '/.aider.conf.yml', label: 'Aider CLI' },
         "antigravity": { path: process.cwd() + '/settings.yaml', label: 'Antigravity' },

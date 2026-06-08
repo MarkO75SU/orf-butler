@@ -16,13 +16,6 @@ export const TOOL_TEMPLATES = {
         status: "stable",
         desc: "Hochperformante Terminal-AI." 
     },
-    "opencode_desktop": { 
-        name: "OpenCode Desktop", 
-        config_file: "opencode.json", 
-        type: "opencode", 
-        status: "partial",
-        desc: "OpenCode als Desktop-App (macOS/Win/Linux)." 
-    },
     "antigravity": { 
         name: "Antigravity", 
         config_file: "settings.yaml", 
@@ -44,13 +37,6 @@ export const TOOL_TEMPLATES = {
         type: "yaml_config", 
         status: "stable",
         desc: "Bestes Terminal-Pair-Programming Tool." 
-    },
-    "amazon_q": { 
-        name: "Amazon Q", 
-        config_file: "instructions.md", 
-        type: "instruction_paste", 
-        status: "stable",
-        desc: "Cloud-Spezialist für AWS-Workflows." 
     },
     "cursor": {
         name: "Cursor Editor",

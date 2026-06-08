@@ -75,9 +75,7 @@ export const OS_PATHS = {
         "zed": "C:\\Users\\[YourName]\\AppData\\Roaming\\Zed\\settings.json",
         "aider": ".aider.conf.yml (In deinem Projektordner)",
         "copilot": ".github\\copilot-instructions.md (In deinem Projektordner)",
-        "amazon_q": "Amazon Q Settings im Browser",
         "opencode": "C:\\Users\\[YourName]\\.config\\opencode\\opencode.json",
-        "opencode_desktop": "C:\\Users\\[YourName]\\.config\\opencode\\opencode.json",
         "antigravity": "settings.yaml (In deinem Projektordner)",
         "claude_code": "CLAUDE.md (In deinem Projektordner)",
         "cline": ".clinerules (In deinem Projektordner)",
@@ -90,9 +88,7 @@ export const OS_PATHS = {
         "zed": "~/.config/zed/settings.json",
         "aider": ".aider.conf.yml",
         "copilot": ".github/copilot-instructions.md",
-        "amazon_q": "Amazon Q Settings",
         "opencode": "~/.config/opencode/opencode.json",
-        "opencode_desktop": "~/.config/opencode/opencode.json",
         "antigravity": "settings.yaml (In deinem Projektordner)",
         "claude_code": "CLAUDE.md (In deinem Projektordner)",
         "cline": ".clinerules (In deinem Projektordner)",
@@ -105,9 +101,7 @@ export const OS_PATHS = {
         "zed": "~/.config/zed/settings.json",
         "aider": ".aider.conf.yml",
         "copilot": ".github/copilot-instructions.md",
-        "amazon_q": "Amazon Q Settings",
         "opencode": "~/.config/opencode/opencode.json",
-        "opencode_desktop": "~/.config/opencode/opencode.json",
         "antigravity": "settings.yaml (In deinem Projektordner)",
         "claude_code": "CLAUDE.md (In deinem Projektordner)",
         "cline": ".clinerules (In deinem Projektordner)",
@@ -163,14 +157,6 @@ export function generateInstallMD(tool, os, tier, path) {
             howToUse: 'Terminal öffnen → in dein Projektverzeichnis wechseln → `aider --model openrouter/DEIN_MODELL` ausführen.',
             note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
         },
-        amazon_q: {
-            type: 'extension',
-            desc: 'Amazon Q Developer – IDE-Erweiterung für AWS-Entwicklung.',
-            needInstall: 'Amazon Q Extension im VS Code Marketplace installieren oder JetBrains Plugin.',
-            configAt: 'Amazon Q Settings im Browser (q.amazon.com)',
-            howToUse: 'VS Code öffnen → Amazon Q Icon in der Sidebar → Chat öffnen → Config-Anweisungen manuell einfügen.',
-            note: 'Amazon Q Developer wird eingestellt (End-of-Support April 2027). Neuanmeldungen seit 15. Mai 2026 blockiert. Nachfolger: Kiro.'
-        },
         opencode: {
             type: 'cli',
             desc: 'OpenCode CLI – Terminal-basierte KI.',
@@ -179,14 +165,6 @@ export function generateInstallMD(tool, os, tier, path) {
             configAt: path || home + '/.config/opencode/opencode.json',
             howToUse: 'Terminal öffnen → `opencode` ausführen → Das Modell wird automatisch geladen.',
             note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        opencode_desktop: {
-            type: 'desktop',
-            desc: 'OpenCode Desktop – Desktop-App mit GUI (macOS/Windows/Linux Beta).',
-            needInstall: 'Von opencode.ai/download herunterladen und installieren.',
-            configAt: path || home + '/.config/opencode/opencode.json',
-            howToUse: 'OpenCode Desktop starten → Modell in den Einstellungen auswählen → Gleiche Config wie CLI.',
-            note: 'Desktop-App verwendet dieselbe Config wie die CLI. Beta-Version - ggf. Eingaben anpassen.'
         },
         antigravity: {
             type: 'yaml',

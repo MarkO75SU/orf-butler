@@ -161,12 +161,10 @@ with open('$DEST','w') as f: json.dump(a,f,indent=2)
 }
 
 try_copy "opencode-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode CLI" "opencode"
-try_copy "opencode-desktop-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode Desktop" "opencode_desktop"
 try_copy "continue-config.json" "$HOME/.continue/config.json" "Continue" "continue"
 try_copy "zed-config.json" "$HOME/.config/zed/settings.json" "Zed Editor" "zed"
 try_copy "aider-config.json" "$PWD/.aider.conf.yml" "Aider CLI" "aider"
 try_copy "antigravity-config.json" "$PWD/settings.yaml" "Antigravity" "antigravity"
-echo "  [SKIP] Amazon Q - Nur im Browser nutzbar"
 try_copy "cursor-config.json" "$PWD/.cursorrules" "Cursor Editor" "cursor"
 try_copy "windsurf-config.json" "$PWD/.windsurfrules" "Windsurf Editor" "windsurf"
 try_copy "claude-code-config.json" "$PWD/CLAUDE.md" "Claude Code CLI" "claude_code"

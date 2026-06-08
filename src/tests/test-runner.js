@@ -172,7 +172,7 @@ runTestGroup("Model History Tests", () => {
 // 6. Templates Tests
 // ──────────────────────────────────────────────
 runTestGroup("Templates Tests", () => {
-    const allTools = ["opencode", "continue", "zed", "aider", "antigravity", "amazon_q",
+    const allTools = ["opencode", "continue", "zed", "aider", "antigravity",
                       "cursor", "windsurf", "claude_code", "github_copilot", "cline", "codeium"];
     allTools.forEach(id => assert(TOOL_TEMPLATES[id], `Templates: ${id} exists`));
 
@@ -280,7 +280,7 @@ runTestGroup("InstallMD Tests", () => {
 // ──────────────────────────────────────────────
 runTestGroup("OS Paths Tests", () => {
     const allToolPaths = ["continue", "cursor", "windsurf", "zed", "aider", "copilot",
-                          "amazon_q", "opencode", "antigravity", "claude_code", "cline", "codeium"];
+                          "opencode", "antigravity", "claude_code", "cline", "codeium"];
 
     allToolPaths.forEach(id => {
         assert(OS_PATHS["win32"][id], `OS_PATHS: win32/${id} exists`);

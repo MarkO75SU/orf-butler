@@ -46,12 +46,10 @@ set INSTALLED=0
 set installed_tools=
 
 call :safe_copy "opencode-config.json" "%USERPROFILE%\.config\opencode\opencode.json" "OpenCode CLI" "opencode"
-call :safe_copy "opencode-desktop-config.json" "%USERPROFILE%\.config\opencode\opencode.json" "OpenCode Desktop" "opencode_desktop"
 call :safe_copy "continue-config.json" "%USERPROFILE%\.continue\config.json" "VS Code (Continue)" "continue"
 call :safe_copy "zed-config.json" "%APPDATA%\Zed\settings.json" "Zed Editor" "zed"
 call :safe_copy "aider-config.json" ".\aider.conf.yml" "Aider CLI" "aider"
 call :safe_copy "antigravity-config.json" "settings.yaml" "Antigravity" "antigravity"
-echo   [SKIP] Amazon Q - Nur im Browser nutzbar
 call :safe_copy "cursor-config.json" ".cursorrules" "Cursor Editor" "cursor"
 call :safe_copy "windsurf-config.json" ".windsurfrules" "Windsurf Editor" "windsurf"
 call :safe_copy "claude-code-config.json" "CLAUDE.md" "Claude Code CLI" "claude_code"
