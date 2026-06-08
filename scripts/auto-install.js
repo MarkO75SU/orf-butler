@@ -189,6 +189,9 @@ async function run() {
     const os = detectOS();
     console.log(`  Betriebssystem: ${os}\n`);
 
+    const previewAnswer = await askQuestion(`  Config vor dem Speichern prüfen? (j/n, Enter = nein): `);
+    const previewEnabled = previewAnswer.toLowerCase() === 'j';
+
     const configs = findConfigFiles(__dirname);
     if (configs.length === 0) {
         console.log(`  ${RED}Keine Config-Dateien gefunden.${RESET}`);
@@ -253,6 +256,23 @@ async function run() {
             if (result === 'skipped') { skipped++; continue; }
             installed++;
         } else {
+            if (previewEnabled) {
+                console.log(`\n  ${BOLD}═══ Vorschau: ${info.label} ═══${RESET}`);
+                console.log(fs.readFileSync(srcPath, 'utf-8'));
+                const confirm = await askQuestion(`  Speichern unter ${destPath}? (j/n): `);
+                if (confirm.toLowerCase() !== 'j') {
+                    const downloadPath = path.join(os.homedir(), 'Downloads', config.file);
+                    try {
+                        fs.copyFileSync(srcPath, downloadPath);
+                        console.log(`  ${GREEN}✔ ${info.label} → In Downloads gespeichert${RESET}`);
+                        installed++;
+                    } catch (err) {
+                        console.log(`  ${RED}✗ ${info.label}: Fehler - ${err.message}${RESET}`);
+                        skipped++;
+                    }
+                    continue;
+                }
+            }
             try {
                 fs.copyFileSync(srcPath, destPath);
                 console.log(`  ${GREEN}✔ ${info.label} → Installiert${RESET}`);

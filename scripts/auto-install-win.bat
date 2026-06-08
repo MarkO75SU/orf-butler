@@ -28,6 +28,8 @@ if not "%APIKEY%"=="" (
   echo.
 )
 
+set /p "PREVIEW=Config vor dem Speichern pruefen? (j/n, Enter=nein): "
+echo.
 echo Kopiere Config-Dateien...
 echo.
 
@@ -94,6 +96,17 @@ if not exist "%SRC%" exit /b 0
 set DESTDIR=%~dp2
 if not exist "!DESTDIR!" mkdir "!DESTDIR!" 2>nul
 if not exist "%DEST%" (
+  if /i "!PREVIEW!"=="j" (
+    echo.
+    echo ============================================
+    echo   Vorschau: %LABEL%
+    echo ============================================
+    type "%SRC%"
+    echo.
+    echo   Speichern unter %DEST%?
+    set /p "CONFIRM=  [j] Ja / [n] In Downloads: "
+    if /i "!CONFIRM!"=="n" set "DEST=%USERPROFILE%\Downloads\%~nx1"
+  )
   copy "%SRC%" "%DEST%" >nul
   if errorlevel 1 (echo   [FEHLER] %LABEL%) else (echo   [OK] %LABEL% & set /a INSTALLED+=1 & set installed_tools=!installed_tools! %TOOLKEY%)
   exit /b 0

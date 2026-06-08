@@ -26,6 +26,8 @@ if [ -n "$APIKEY" ]; then
   echo ""
 fi
 
+read -p "Config vor dem Speichern pruefen? (j/n, Enter=nein): " PREVIEW
+echo ""
 echo "Kopiere Config-Dateien..."
 echo ""
 
@@ -42,6 +44,19 @@ try_copy() {
   fi
   mkdir -p "$(dirname "$DEST")" 2>/dev/null
   if [ ! -f "$DEST" ]; then
+    if [ "$PREVIEW" = "j" ] || [ "$PREVIEW" = "J" ]; then
+      echo ""
+      echo "============================================"
+      echo "  Vorschau: $NAME"
+      echo "============================================"
+      cat "$SRC"
+      echo ""
+      echo "  Speichern unter $DEST?"
+      read -p "  [j] Ja / [n] In Downloads: " CONFIRM
+      if [ "$CONFIRM" = "n" ] || [ "$CONFIRM" = "N" ]; then
+        DEST="$HOME/Downloads/$(basename "$SRC")"
+      fi
+    fi
     if cp "$SRC" "$DEST" 2>/dev/null; then
       echo "  [OK] $NAME > Installiert"
       INSTALLED=$((INSTALLED + 1))
