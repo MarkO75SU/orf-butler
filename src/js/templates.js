@@ -110,17 +110,10 @@ export function generateConfig(toolId, models, tier, apiKey) {
     } : {};
 
     if (tool.type === "opencode") {
-        const allModels = models.map(([id]) => ({
-            model: id,
-            provider: "openrouter",
-            apiKey: apiKey || 'DEIN_API_KEY_HERE',
-            ...premiumProviderOptions
-        }));
         const cfg = {
             $schema: "https://opencode.ai/config.json",
             model: firstId,
             small_model: firstId,
-            models: allModels,
             provider: {
                 openrouter: {
                     options: {
