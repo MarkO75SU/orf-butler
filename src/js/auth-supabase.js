@@ -32,33 +32,29 @@ export async function initSupabase() {
 }
 
 export async function register(email, password) {
-    const client = await initSupabase();
-    const { data, error } = await client.auth.signUp({
-        email,
-        password,
-        options: {
-            emailRedirectTo: window.location.origin + '/'
+    try {
+        const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) return { success: false, error: data.error || 'Registrierung fehlgeschlagen' };
+
+        const client = await initSupabase();
+        const { error: signInError } = await client.auth.signInWithPassword({ email, password });
+
+        if (signInError) {
+            console.warn('Auto-login after registration failed:', signInError.message);
+            return { success: true, user: data.user, needConfirm: false, autoLogin: false };
         }
-    });
 
-    if (error) return { success: false, error: error.message };
-
-    // User per Supabase Admin API automatisch bestätigen
-    const confirmRes = await fetch('/api/auto-confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: data.user.id })
-    });
-    if (!confirmRes.ok) {
-        const err = await confirmRes.json().catch(() => ({}));
-        console.warn('Auto-confirm warning:', err.error || confirmRes.status);
+        return { success: true, user: data.user, needConfirm: false, autoLogin: true };
+    } catch (e) {
+        return { success: false, error: 'Server nicht erreichbar' };
     }
-
-    const hasSession = !!data.session;
-    if (hasSession) {
-        await setSessionCookie();
-    }
-    return { success: true, user: data.user, needConfirm: !hasSession, autoLogin: hasSession };
 }
 
 export async function loginEmail(email, password) {
