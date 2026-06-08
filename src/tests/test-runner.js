@@ -210,7 +210,7 @@ runTestGroup("Config Generation Tests", () => {
     const opencodeConfig = generateConfig("opencode", testModels, "basic");
     const parsedOpencode = JSON.parse(opencodeConfig);
     assert(parsedOpencode.provider.openrouter.options.apiKey === "DEIN_API_KEY_HERE", "generateConfig: OpenCode has apiKey");
-    assert(parsedOpencode.model === "qwen/qwen3-coder:free".replace(/:free$/, ''), "generateConfig: OpenCode model");
+    assert(parsedOpencode.model === "qwen/qwen3-coder:free", "generateConfig: OpenCode model");
 
     // Premium JSON
     const pm = [{ ...MODEL_MAPPING["qwen/qwen3-coder:free"], premium_prompt: "You are an expert." }];

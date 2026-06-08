@@ -110,7 +110,7 @@ export function generateConfig(toolId, models, tier, apiKey) {
     } : {};
 
     if (tool.type === "opencode") {
-        const modelId = id.replace(/:free$/, '');
+        const modelId = id;
         const cfg = {
             $schema: "https://opencode.ai/config.json",
             model: modelId,
