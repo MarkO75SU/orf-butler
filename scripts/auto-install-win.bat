@@ -66,8 +66,6 @@ if !INSTALLED! equ 0 (
   echo   Erfolgreich installiert: !INSTALLED!
   echo.
 )
-echo   DETAILS: Fuers Mergen und Auskommentieren
-echo   nutze "node auto-install.js" im Terminal.
 echo.
 echo   Die Schritt-fuer-Schritt Anleitungen stehen
 echo   in den *_INSTALL.md Dateien im ZIP-Ordner.
