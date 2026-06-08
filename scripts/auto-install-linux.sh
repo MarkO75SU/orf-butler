@@ -1,6 +1,10 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 clear
+LOGFILE="install-log.txt"
+echo "ORF-Butler Auto-Installer Log" > "$LOGFILE"
+echo "Datum: $(date)" >> "$LOGFILE"
+echo "----------------------------------------" >> "$LOGFILE"
 echo "============================================"
 echo "   ORF-Butler Auto-Installer"
 echo "   OpenRouter Free Butler - Konfiguration"
@@ -43,11 +47,10 @@ try_copy() {
   if [ ! -f "$SRC" ]; then
     return
   fi
-  echo ""
-  read -p "  Config fuer $NAME installieren? (j/n, Enter=ja): " CONFIRM_TOOL
-  if [ "$CONFIRM_TOOL" = "n" ] || [ "$CONFIRM_TOOL" = "N" ]; then
-    echo "  [SKIPPED] $NAME"
-    return
+  if [ -f "manifest.txt" ]; then
+    if ! grep -q "$TOOLKEY" "manifest.txt" 2>/dev/null; then
+      return
+    fi
   fi
   mkdir -p "$(dirname "$DEST")" 2>/dev/null
   if [ ! -f "$DEST" ]; then
@@ -66,10 +69,15 @@ try_copy() {
     fi
     if cp "$SRC" "$DEST" 2>/dev/null; then
       echo "  [OK] $NAME > Installiert"
+      echo "  [OK] $NAME: $DEST" >> "$LOGFILE"
       INSTALLED=$((INSTALLED + 1))
       INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
     else
       echo "  [FEHLER] $NAME"
+      echo "  [FEHLER] $NAME" >> "$LOGFILE"
+      echo ""
+      echo "  FEHLER bei $NAME. Druecke Enter..."
+      read -p ""
     fi
     return
   fi
@@ -88,6 +96,7 @@ try_copy() {
 
   if [ "$CHOICE" = "s" ] || [ "$CHOICE" = "S" ]; then
     echo "  [WARN] $NAME: Uebersprungen"
+    echo "  [SKIPPED] $NAME" >> "$LOGFILE"
     return
   fi
 
@@ -192,5 +201,8 @@ echo ""
 echo "  WICHTIG: Enthaelt eine Config noch 'DEIN_API_KEY_HERE'?"
 echo "  Dann Datei im Editor oeffnen und mit echtem Key ersetzen."
 echo "  Kostenlosen Key holen: https://openrouter.ai/keys"
+echo ""
+echo ""
+echo "  Log: $LOGFILE"
 echo ""
 read -p "Druecke Enter zum Schliessen..."

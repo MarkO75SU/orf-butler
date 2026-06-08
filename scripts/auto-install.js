@@ -192,6 +192,19 @@ async function run() {
     const previewAnswer = await askQuestion(`  Config vor dem Speichern prüfen? (j/n, Enter = nein): `);
     const previewEnabled = previewAnswer.toLowerCase() === 'j';
 
+    // Log-Datei initialisieren
+    const logPath = path.join(__dirname, 'install-log.txt');
+    const logLines = [`ORF-Butler Auto-Installer Log`, `Datum: ${new Date().toISOString()}`, `----------------------------------------`];
+    function log(msg) { logLines.push(msg); }
+    function writeLog() { try { fs.writeFileSync(logPath, logLines.join('\n')); } catch {} }
+
+    // Manifest-Prüfung
+    let manifestTools = null;
+    try {
+        const manifestContent = fs.readFileSync(path.join(__dirname, 'manifest.txt'), 'utf-8');
+        manifestTools = manifestContent.split('\n').map(l => l.trim()).filter(Boolean);
+    } catch {}
+
     const configs = findConfigFiles(__dirname);
     if (configs.length === 0) {
         console.log(`  ${RED}Keine Config-Dateien gefunden.${RESET}`);
@@ -222,6 +235,12 @@ async function run() {
 
         if (!fs.existsSync(srcPath)) {
             console.log(`  ${RED}✗ ${info.label}: Datei nicht gefunden${RESET}`);
+            skipped++;
+            continue;
+        }
+
+        // Manifest-Prüfung: nur Tools verarbeiten, die im Bundle waren
+        if (manifestTools && !manifestTools.includes(config.toolId)) {
             skipped++;
             continue;
         }
@@ -299,6 +318,8 @@ async function run() {
     console.log(`  ${GREEN}✔ Erfolgreich installiert: ${installed}${RESET}`);
     console.log(`  ${YELLOW}⚠ Übersprungen: ${skipped}${RESET}`);
 
+    writeLog();
+
     if (warnings.length > 0) {
         console.log(`\n  ${YELLOW}${BOLD}⚠ ACHTUNG: API-Key erforderlich${RESET}`);
         console.log(`  ${YELLOW}Folgende Configs enthalten noch 'DEIN_API_KEY_HERE':${RESET}`);
@@ -307,6 +328,7 @@ async function run() {
         console.log(`  ${CYAN}→ Kostenlosen Key holen: https://openrouter.ai/keys${RESET}`);
     }
 
+    console.log(`  ${CYAN}Log: ${logPath}${RESET}`);
     console.log(`\n  ${CYAN}✅ Fertig! Starte dein Tool neu.${RESET}\n`);
 }
 
