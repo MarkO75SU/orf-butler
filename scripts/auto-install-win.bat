@@ -204,19 +204,38 @@ if "!CHOICE!"=="3" (
     echo   [SKIPPED] %LABEL%: kein JSON >> "%LOGFILE%"
     exit /b 0
   )
-  powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '%DEST%'"
+  set MERGE_TMP=%TEMP%\orf-merge-%RANDOM%.json
+  powershell -Command "$a=Get-Content '%DEST%'|ConvertFrom-Json; $b=Get-Content '%SRC%'|ConvertFrom-Json; $m=@{}; $a.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $b.PSObject.Properties|%%{$m[$_.Name]=$_.Value}; $m|ConvertTo-Json -Depth 10|Set-Content '%MERGE_TMP%'"
   if errorlevel 1 (
     echo   [FEHLER] %LABEL%
     echo   [FEHLER] %LABEL%: Merge fehlgeschlagen >> "%LOGFILE%"
+    del "%MERGE_TMP%" 2>nul
     echo.
     echo   FEHLER bei %LABEL%. Druecke eine Taste...
     pause >nul
-  ) else (
-    echo   [OK] %LABEL%: JSON gemerged
-    echo   [MERGED] %LABEL%: %DEST% >> "%LOGFILE%"
-    set /a INSTALLED+=1
-    set installed_tools=!installed_tools! %TOOLKEY%
+    exit /b 0
   )
+  if /i "!PREVIEW!"=="j" (
+    echo.
+    echo ============================================
+    echo   Gemergte Vorschau: %LABEL%
+    echo ============================================
+    type "%MERGE_TMP%"
+    echo.
+    set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
+    if /i not "!CONFIRM!"=="j" (
+      del "%MERGE_TMP%" 2>nul
+      echo   [WARN] %LABEL%: Abgebrochen
+      echo   [SKIPPED] %LABEL%: Merge abgelehnt >> "%LOGFILE%"
+      exit /b 0
+    )
+  )
+  copy "%MERGE_TMP%" "%DEST%" >nul
+  del "%MERGE_TMP%" 2>nul
+  echo   [OK] %LABEL%: JSON gemerged
+  echo   [MERGED] %LABEL%: %DEST% >> "%LOGFILE%"
+  set /a INSTALLED+=1
+  set installed_tools=!installed_tools! %TOOLKEY%
   exit /b 0
 )
 
