@@ -1,4 +1,0 @@
-### 2026-06-10
-**Entfernt:**
-- moonshotai/kimi-k2.6:free
-
