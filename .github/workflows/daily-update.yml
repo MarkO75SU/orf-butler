@@ -47,9 +47,9 @@ jobs:
         with:
           server_address: smtp.web.de
           server_port: 587
-          username: ${{ secrets.MAIL_USER }}
-          password: ${{ secrets.MAIL_PASS }}
-          subject: ORF-Butler – Modell-Änderungen
-          to: learncode@web.de
-          from: ORF-Butler Bot <${{ secrets.MAIL_USER }}>
+          username: '${{ secrets.MAIL_USER }}'
+          password: '${{ secrets.MAIL_PASS }}'
+          subject: 'ORF-Butler – Modell-Änderungen'
+          to: 'learncode@web.de'
+          from: 'ORF-Butler Bot <${{ secrets.MAIL_USER }}>'
           body: file://model-changes.txt
