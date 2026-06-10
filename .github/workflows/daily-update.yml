@@ -39,6 +39,7 @@ jobs:
         if: steps.git-check.outputs.changed == 'true'
         run: |
           git commit -m "Auto-Update: Free models + configs $(date +'%Y-%m-%d')"
+          git pull --rebase origin main
           git push
 
       - name: Send email notification
