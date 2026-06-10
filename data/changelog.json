@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-06-10",
+      "added": [],
+      "removed": [
+        "z-ai/glm-4.5-air:free"
+      ]
+    },
+    {
       "date": "2026-06-08",
       "added": [
         {

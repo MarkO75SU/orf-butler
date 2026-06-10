@@ -1,0 +1,4 @@
+### 2026-06-10
+**Entfernt:**
+- z-ai/glm-4.5-air:free
+
