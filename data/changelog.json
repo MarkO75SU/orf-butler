@@ -4,6 +4,13 @@
       "date": "2026-06-10",
       "added": [],
       "removed": [
+        "moonshotai/kimi-k2.6:free"
+      ]
+    },
+    {
+      "date": "2026-06-10",
+      "added": [],
+      "removed": [
         "z-ai/glm-4.5-air:free"
       ]
     },

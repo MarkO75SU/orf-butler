@@ -69,17 +69,6 @@ export const MODEL_MAPPING = {
         tags: ["chat","multilingual"],
         languages: ["python","javascript","typescript"]
     },
-    "moonshotai/kimi-k2.6:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "262k",
-        desc_en: "Kimi K2.6 is Moonshot AI's next-generation multimodal model, designed for long-horizon coding, coding-driven UI/UX generation, and...",
-        desc_de: "Kimi K2.6 is Moonshot AI's next-generation multimodal model, designed for long-horizon coding, coding-driven UI/UX generation, and...",
-        modalities: ["text","image"],
-        modality_icon: "🖼️",
-        tags: ["agent","multimodal","vision"],
-        languages: ["python","go","rust"]
-    },
     "nex-agi/nex-n2-pro:free": {
         role: "General",
         role_de: "Allgemein",
