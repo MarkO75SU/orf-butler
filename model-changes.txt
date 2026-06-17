@@ -1,0 +1,4 @@
+### 2026-06-17
+**Neu hinzugefügt:**
+- cohere/north-mini-code:free (agent, lightweight, moe)
+

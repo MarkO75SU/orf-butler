@@ -2,6 +2,16 @@
 // Last updated: 2026-06-17
 
 export const MODEL_MAPPING = {
+    "cohere/north-mini-code:free": {
+        role: "Code",
+        role_de: "Code",
+        context: "256k",
+        desc_en: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
+        desc_de: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
+        tags: ["agent","lightweight","moe"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
         role: "Chat",
         role_de: "Chat",
