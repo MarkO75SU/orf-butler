@@ -189,8 +189,8 @@ export const MODEL_MAPPING = {
         role: "Code",
         role_de: "Code",
         context: "262k",
-        desc_en: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai), optimized for complex software engineering tasks.",
-        desc_de: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai), optimized for complex software engineering tasks.",
+        desc_en: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai/), optimized for complex software engineering tasks.",
+        desc_de: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai/), optimized for complex software engineering tasks.",
         tags: ["agent","coding","reasoning"],
         languages: ["python","javascript","typescript"]
     },
