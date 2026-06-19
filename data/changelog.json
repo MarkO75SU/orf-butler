@@ -2,6 +2,13 @@
   "entries": [
     {
       "date": "2026-06-19",
+      "added": [],
+      "removed": [
+        "moonshotai/kimi-k2.7-code:free"
+      ]
+    },
+    {
+      "date": "2026-06-19",
       "added": [
         {
           "id": "moonshotai/kimi-k2.7-code:free",

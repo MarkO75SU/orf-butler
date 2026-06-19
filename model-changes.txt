@@ -1,4 +1,4 @@
 ### 2026-06-19
-**Neu hinzugefügt:**
-- moonshotai/kimi-k2.7-code:free (coding, moe, multimodal, vision)
+**Entfernt:**
+- moonshotai/kimi-k2.7-code:free
 
