@@ -1,6 +1,21 @@
 {
   "entries": [
     {
+      "date": "2026-06-19",
+      "added": [
+        {
+          "id": "moonshotai/kimi-k2.7-code:free",
+          "tags": [
+            "coding",
+            "moe",
+            "multimodal",
+            "vision"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-06-17",
       "added": [
         {

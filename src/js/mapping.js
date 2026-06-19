@@ -2,6 +2,18 @@
 // Last updated: 2026-06-19
 
 export const MODEL_MAPPING = {
+    "moonshotai/kimi-k2.7-code:free": {
+        role: "Code",
+        role_de: "Code",
+        context: "262k",
+        desc_en: "MoonshotAI: Kimi K2.7 Code is a coding-focused model in Moonshot AI's Kimi K2 family, built to complete end-to-end programming tasks...",
+        desc_de: "MoonshotAI: Kimi K2.7 Code is a coding-focused model in Moonshot AI's Kimi K2 family, built to complete end-to-end programming tasks...",
+        modalities: ["text","image"],
+        modality_icon: "🖼️",
+        tags: ["coding","moe","multimodal","vision"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
         role: "Chat",
         role_de: "Chat",
