@@ -1,4 +1,0 @@
-### 2026-06-19
-**Entfernt:**
-- moonshotai/kimi-k2.7-code:free
-
