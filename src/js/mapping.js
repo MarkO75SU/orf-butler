@@ -78,17 +78,6 @@ export const MODEL_MAPPING = {
         tags: ["chat","multilingual"],
         languages: ["python","javascript","typescript"]
     },
-    "nex-agi/nex-n2-pro:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "262k",
-        desc_en: "Nex-N2-Pro is an agentic mixture-of-experts model from Nex AGI, with 17B active parameters out of 397B total.",
-        desc_de: "Nex-N2-Pro is an agentic mixture-of-experts model from Nex AGI, with 17B active parameters out of 397B total.",
-        modalities: ["text","image"],
-        modality_icon: "🖼️",
-        tags: ["agent","moe","multimodal","vision"],
-        languages: ["python","javascript","typescript"]
-    },
     "nousresearch/hermes-3-llama-3.1-405b:free": {
         role: "Reasoning",
         role_de: "Logik",

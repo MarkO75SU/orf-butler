@@ -1,0 +1,4 @@
+### 2026-06-22
+**Entfernt:**
+- nex-agi/nex-n2-pro:free
+

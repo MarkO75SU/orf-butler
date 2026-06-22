@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-06-22",
+      "added": [],
+      "removed": [
+        "nex-agi/nex-n2-pro:free"
+      ]
+    },
+    {
       "date": "2026-06-19",
       "added": [],
       "removed": [
