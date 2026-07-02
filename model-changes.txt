@@ -1,4 +1,0 @@
-### 2026-07-02
-**Neu hinzugefügt:**
-- poolside/laguna-xs-2.1:free (agent, coding, lightweight)
-
