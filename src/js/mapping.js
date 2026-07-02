@@ -2,6 +2,16 @@
 // Last updated: 2026-07-02
 
 export const MODEL_MAPPING = {
+    "poolside/laguna-xs-2.1:free": {
+        role: "Code",
+        role_de: "Code",
+        context: "262k",
+        desc_en: "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their...",
+        desc_de: "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their...",
+        tags: ["agent","coding","lightweight"],
+        languages: ["go"],
+        new: true
+    },
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
         role: "Chat",
         role_de: "Chat",
