@@ -1,0 +1,4 @@
+### 2026-07-06
+**Neu hinzugefügt:**
+- tencent/hy3:free (agent, moe, reasoning)
+

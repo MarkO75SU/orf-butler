@@ -1,6 +1,20 @@
 {
   "entries": [
     {
+      "date": "2026-07-06",
+      "added": [
+        {
+          "id": "tencent/hy3:free",
+          "tags": [
+            "agent",
+            "moe",
+            "reasoning"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-07-02",
       "added": [
         {

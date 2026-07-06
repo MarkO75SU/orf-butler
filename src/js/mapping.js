@@ -2,6 +2,16 @@
 // Last updated: 2026-07-06
 
 export const MODEL_MAPPING = {
+    "tencent/hy3:free": {
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "262k",
+        desc_en: "Hy3 is a 295B-parameter Mixture-of-Experts model from Tencent (21B active, 192 experts with top-8 routing) built for reasoning, agentic...",
+        desc_de: "Hy3 is a 295B-parameter Mixture-of-Experts model from Tencent (21B active, 192 experts with top-8 routing) built for reasoning, agentic...",
+        tags: ["agent","moe","reasoning"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
         role: "Chat",
         role_de: "Chat",
