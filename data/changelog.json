@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-07-09",
+      "added": [],
+      "removed": [
+        "poolside/laguna-xs.2:free"
+      ]
+    },
+    {
       "date": "2026-07-06",
       "added": [
         {

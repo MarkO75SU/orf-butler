@@ -192,15 +192,6 @@ export const MODEL_MAPPING = {
         tags: ["agent","coding","lightweight"],
         languages: ["go"]
     },
-    "poolside/laguna-xs.2:free": {
-        role: "Code",
-        role_de: "Code",
-        context: "262k",
-        desc_en: "Laguna XS.2 is the second-generation model in the XS size class from [Poolside](https://poolside.ai/), their efficient coding agent series.",
-        desc_de: "Laguna XS.2 is the second-generation model in the XS size class from [Poolside](https://poolside.ai/), their efficient coding agent series.",
-        tags: ["agent","coding","lightweight","reasoning"],
-        languages: ["python","javascript","typescript"]
-    },
     "qwen/qwen3-coder:free": {
         role: "Code",
         role_de: "Code",
