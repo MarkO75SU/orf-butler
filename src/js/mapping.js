@@ -138,15 +138,6 @@ export const MODEL_MAPPING = {
         tags: ["lightweight","reasoning"],
         languages: ["python","javascript","typescript"]
     },
-    "openai/gpt-oss-120b:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "131k",
-        desc_en: "gpt-oss-120b is an open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and...",
-        desc_de: "gpt-oss-120b is an open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and...",
-        tags: ["agent","chat","moe","open-source","reasoning"],
-        languages: ["python","javascript","typescript"]
-    },
     "openai/gpt-oss-20b:free": {
         role: "General",
         role_de: "Allgemein",
