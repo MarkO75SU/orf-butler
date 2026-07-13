@@ -42,24 +42,6 @@ export const MODEL_MAPPING = {
         tags: ["chat","multimodal","reasoning","video","vision"],
         languages: ["go"]
     },
-    "liquid/lfm-2.5-1.2b-instruct:free": {
-        role: "Chat",
-        role_de: "Chat",
-        context: "33k",
-        desc_en: "LFM2.5-1.2B-Instruct is a compact, high-performance instruction-tuned model built for fast on-device AI.",
-        desc_de: "LFM2.5-1.2B-Instruct is a compact, high-performance instruction-tuned model built for fast on-device AI.",
-        tags: ["chat","lightweight"],
-        languages: ["python","javascript","typescript"]
-    },
-    "liquid/lfm-2.5-1.2b-thinking:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "33k",
-        desc_en: "LFM2.5-1.2B-Thinking is a lightweight reasoning-focused model optimized for agentic tasks, data extraction, and RAG—while still running...",
-        desc_de: "LFM2.5-1.2B-Thinking is a lightweight reasoning-focused model optimized for agentic tasks, data extraction, and RAG—while still running...",
-        tags: ["agent","embedding","lightweight","reasoning"],
-        languages: ["python","javascript","typescript"]
-    },
     "meta-llama/llama-3.2-3b-instruct:free": {
         role: "Reasoning",
         role_de: "Logik",

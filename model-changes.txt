@@ -1,0 +1,5 @@
+### 2026-07-13
+**Entfernt:**
+- liquid/lfm-2.5-1.2b-instruct:free
+- liquid/lfm-2.5-1.2b-thinking:free
+
