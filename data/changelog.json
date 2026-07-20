@@ -1,6 +1,63 @@
 {
   "entries": [
     {
+      "date": "2026-07-20",
+      "added": [
+        {
+          "id": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+          "tags": [
+            "chat",
+            "lightweight"
+          ]
+        },
+        {
+          "id": "meta-llama/llama-3.2-3b-instruct:free",
+          "tags": [
+            "chat",
+            "lightweight",
+            "multilingual",
+            "reasoning"
+          ]
+        },
+        {
+          "id": "meta-llama/llama-3.3-70b-instruct:free",
+          "tags": [
+            "chat",
+            "multilingual"
+          ]
+        },
+        {
+          "id": "nousresearch/hermes-3-llama-3.1-405b:free",
+          "tags": [
+            "agent",
+            "chat",
+            "reasoning"
+          ]
+        },
+        {
+          "id": "qwen/qwen3-coder:free",
+          "tags": [
+            "agent",
+            "chat",
+            "coding",
+            "moe",
+            "reasoning"
+          ]
+        },
+        {
+          "id": "qwen/qwen3-next-80b-a3b-instruct:free",
+          "tags": [
+            "chat",
+            "coding",
+            "lightweight",
+            "multilingual",
+            "reasoning"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-07-19",
       "added": [],
       "removed": [
