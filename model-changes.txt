@@ -1,9 +1,9 @@
 ### 2026-07-20
-**Neu hinzugefügt:**
-- cognitivecomputations/dolphin-mistral-24b-venice-edition:free (chat, lightweight)
-- meta-llama/llama-3.2-3b-instruct:free (chat, lightweight, multilingual, reasoning)
-- meta-llama/llama-3.3-70b-instruct:free (chat, multilingual)
-- nousresearch/hermes-3-llama-3.1-405b:free (agent, chat, reasoning)
-- qwen/qwen3-coder:free (agent, chat, coding, moe, reasoning)
-- qwen/qwen3-next-80b-a3b-instruct:free (chat, coding, lightweight, multilingual, reasoning)
+**Entfernt:**
+- cognitivecomputations/dolphin-mistral-24b-venice-edition:free
+- meta-llama/llama-3.2-3b-instruct:free
+- meta-llama/llama-3.3-70b-instruct:free
+- nousresearch/hermes-3-llama-3.1-405b:free
+- qwen/qwen3-coder:free
+- qwen/qwen3-next-80b-a3b-instruct:free
 

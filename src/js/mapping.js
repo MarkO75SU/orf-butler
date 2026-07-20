@@ -2,66 +2,6 @@
 // Last updated: 2026-07-20
 
 export const MODEL_MAPPING = {
-    "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
-        role: "Chat",
-        role_de: "Chat",
-        context: "33k",
-        desc_en: "Venice Uncensored Dolphin Mistral 24B Venice Edition is a fine-tuned variant of Mistral-Small-24B-Instruct-2501, developed by dphn.ai in...",
-        desc_de: "Venice Uncensored Dolphin Mistral 24B Venice Edition is a fine-tuned variant of Mistral-Small-24B-Instruct-2501, developed by dphn.ai in...",
-        tags: ["chat","lightweight"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "meta-llama/llama-3.2-3b-instruct:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "131k",
-        desc_en: "Llama 3.2 3B is a 3-billion-parameter multilingual large language model, optimized for advanced natural language processing tasks like...",
-        desc_de: "Llama 3.2 3B is a 3-billion-parameter multilingual large language model, optimized for advanced natural language processing tasks like...",
-        tags: ["chat","lightweight","multilingual","reasoning"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "meta-llama/llama-3.3-70b-instruct:free": {
-        role: "Chat",
-        role_de: "Chat",
-        context: "131k",
-        desc_en: "The Meta Llama 3.3 multilingual large language model (LLM) is a pretrained and instruction tuned generative model in 70B (text in/text out).",
-        desc_de: "The Meta Llama 3.3 multilingual large language model (LLM) is a pretrained and instruction tuned generative model in 70B (text in/text out).",
-        tags: ["chat","multilingual"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "nousresearch/hermes-3-llama-3.1-405b:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "131k",
-        desc_en: "Hermes 3 is a generalist language model with many improvements over Hermes 2, including advanced agentic capabilities, much better...",
-        desc_de: "Hermes 3 is a generalist language model with many improvements over Hermes 2, including advanced agentic capabilities, much better...",
-        tags: ["agent","chat","reasoning"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "qwen/qwen3-coder:free": {
-        role: "Code",
-        role_de: "Code",
-        context: "1049k",
-        desc_en: "Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team.",
-        desc_de: "Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team.",
-        tags: ["agent","chat","coding","moe","reasoning"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "qwen/qwen3-next-80b-a3b-instruct:free": {
-        role: "Code",
-        role_de: "Code",
-        context: "262k",
-        desc_en: "Qwen3-Next-80B-A3B-Instruct is an instruction-tuned chat model in the Qwen3-Next series optimized for fast, stable responses without...",
-        desc_de: "Qwen3-Next-80B-A3B-Instruct is an instruction-tuned chat model in the Qwen3-Next series optimized for fast, stable responses without...",
-        tags: ["chat","coding","lightweight","multilingual","reasoning"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
