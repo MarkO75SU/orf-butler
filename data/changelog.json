@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-07-21",
+      "added": [],
+      "removed": [
+        "tencent/hy3:free"
+      ]
+    },
+    {
       "date": "2026-07-20",
       "added": [],
       "removed": [
