@@ -2,6 +2,16 @@
 // Last updated: 2026-07-21
 
 export const MODEL_MAPPING = {
+    "poolside/laguna-s-2.1:free": {
+        role: "Code",
+        role_de: "Code",
+        context: "1049k",
+        desc_en: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
+        desc_de: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
+        tags: ["agent","coding"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
