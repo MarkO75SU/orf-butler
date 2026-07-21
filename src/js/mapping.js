@@ -2,16 +2,6 @@
 // Last updated: 2026-07-21
 
 export const MODEL_MAPPING = {
-    "poolside/laguna-s-2.1:free": {
-        role: "Code",
-        role_de: "Code",
-        context: "1049k",
-        desc_en: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
-        desc_de: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
-        tags: ["agent","coding"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -66,7 +56,7 @@ export const MODEL_MAPPING = {
     "nvidia/nemotron-3-super-120b-a12b:free": {
         role: "Lightweight",
         role_de: "Leichtgewicht",
-        context: "1000k",
+        context: "262k",
         desc_en: "NVIDIA Nemotron 3 Super is a 120B-parameter open hybrid MoE model, activating just 12B parameters for maximum compute efficiency and...",
         desc_de: "NVIDIA Nemotron 3 Super is a 120B-parameter open hybrid MoE model, activating just 12B parameters for maximum compute efficiency and...",
         tags: ["agent","lightweight","moe"],
@@ -128,6 +118,15 @@ export const MODEL_MAPPING = {
         desc_en: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai/), optimized for complex software engineering tasks.",
         desc_de: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai/), optimized for complex software engineering tasks.",
         tags: ["agent","coding","reasoning"],
+        languages: ["python","javascript","typescript"]
+    },
+    "poolside/laguna-s-2.1:free": {
+        role: "Code",
+        role_de: "Code",
+        context: "262k",
+        desc_en: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
+        desc_de: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
+        tags: ["agent","coding"],
         languages: ["python","javascript","typescript"]
     },
     "poolside/laguna-xs-2.1:free": {
