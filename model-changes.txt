@@ -1,4 +1,0 @@
-### 2026-07-21
-**Entfernt:**
-- tencent/hy3:free
-
