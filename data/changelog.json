@@ -1,6 +1,19 @@
 {
   "entries": [
     {
+      "date": "2026-07-23",
+      "added": [
+        {
+          "id": "inclusionai/ling-3.0-flash:free",
+          "tags": [
+            "agent",
+            "moe"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-07-21",
       "added": [
         {
