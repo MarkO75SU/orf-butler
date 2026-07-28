@@ -1,4 +1,0 @@
-### 2026-07-28
-**Entfernt:**
-- poolside/laguna-m.1:free
-
