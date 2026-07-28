@@ -120,15 +120,6 @@ export const MODEL_MAPPING = {
         tags: ["moe","open-source"],
         languages: ["python","javascript","typescript"]
     },
-    "poolside/laguna-m.1:free": {
-        role: "Code",
-        role_de: "Code",
-        context: "262k",
-        desc_en: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai/), optimized for complex software engineering tasks.",
-        desc_de: "Laguna M.1 is the flagship coding agent model from [Poolside](https://poolside.ai/), optimized for complex software engineering tasks.",
-        tags: ["agent","coding","reasoning"],
-        languages: ["python","javascript","typescript"]
-    },
     "poolside/laguna-s-2.1:free": {
         role: "Code",
         role_de: "Code",
