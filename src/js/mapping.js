@@ -2,6 +2,16 @@
 // Last updated: 2026-08-06
 
 export const MODEL_MAPPING = {
+    "inclusionai/ling-3.0-tiny:free": {
+        role: "Chat",
+        role_de: "Chat",
+        context: "262k",
+        desc_en: "Ling 3.0 Tiny is a mixture-of-experts model from InclusionAI, with 1.3B active parameters out of 7.9B total.",
+        desc_de: "Ling 3.0 Tiny is a mixture-of-experts model from InclusionAI, with 1.3B active parameters out of 7.9B total.",
+        tags: ["chat","lightweight","moe"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -32,15 +42,6 @@ export const MODEL_MAPPING = {
         modality_icon: "🖼️ 🎬",
         tags: ["chat","multimodal","reasoning","video","vision"],
         languages: ["go"]
-    },
-    "inclusionai/ling-3.0-flash:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "262k",
-        desc_en: "*Ling-3.0-flash* is a *124B-parameter Mixture-of-Experts (MoE) model*, with approximately *5.1B parameters activated per token*.",
-        desc_de: "*Ling-3.0-flash* is a *124B-parameter Mixture-of-Experts (MoE) model*, with approximately *5.1B parameters activated per token*.",
-        tags: ["agent","moe"],
-        languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-3-nano-30b-a3b:free": {
         role: "Lightweight",

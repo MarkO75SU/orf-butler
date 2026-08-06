@@ -1,6 +1,22 @@
 {
   "entries": [
     {
+      "date": "2026-08-06",
+      "added": [
+        {
+          "id": "inclusionai/ling-3.0-tiny:free",
+          "tags": [
+            "chat",
+            "lightweight",
+            "moe"
+          ]
+        }
+      ],
+      "removed": [
+        "inclusionai/ling-3.0-flash:free"
+      ]
+    },
+    {
       "date": "2026-07-28",
       "added": [],
       "removed": [
