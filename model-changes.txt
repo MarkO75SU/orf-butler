@@ -1,6 +1,0 @@
-### 2026-08-06
-**Neu hinzugefügt:**
-- inclusionai/ling-3.0-tiny:free (chat, lightweight, moe)
-**Entfernt:**
-- inclusionai/ling-3.0-flash:free
-
