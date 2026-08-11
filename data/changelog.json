@@ -4,6 +4,21 @@
       "date": "2026-08-11",
       "added": [
         {
+          "id": "liquid/lfm-2.5-2.6b:free",
+          "tags": [
+            "agent",
+            "embedding",
+            "lightweight",
+            "reasoning"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
+      "date": "2026-08-11",
+      "added": [
+        {
           "id": "nvidia/nemotron-3.5-lightning:free",
           "tags": [
             "agent",
