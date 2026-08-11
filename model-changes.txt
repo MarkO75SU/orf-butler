@@ -1,4 +1,0 @@
-### 2026-08-11
-**Neu hinzugefügt:**
-- liquid/lfm-2.5-2.6b:free (agent, embedding, lightweight, reasoning)
-
