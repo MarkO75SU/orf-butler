@@ -2,6 +2,16 @@
 // Last updated: 2026-08-11
 
 export const MODEL_MAPPING = {
+    "nvidia/nemotron-3.5-lightning:free": {
+        role: "Lightweight",
+        role_de: "Leichtgewicht",
+        context: "1000k",
+        desc_en: "NVIDIA Nemotron 3.5 Lightning is an open mixture-of-experts model from NVIDIA, with 3B active parameters out of 30B total.",
+        desc_de: "NVIDIA Nemotron 3.5 Lightning is an open mixture-of-experts model from NVIDIA, with 3B active parameters out of 30B total.",
+        tags: ["agent","lightweight","moe"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",

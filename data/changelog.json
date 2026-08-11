@@ -1,6 +1,20 @@
 {
   "entries": [
     {
+      "date": "2026-08-11",
+      "added": [
+        {
+          "id": "nvidia/nemotron-3.5-lightning:free",
+          "tags": [
+            "agent",
+            "lightweight",
+            "moe"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-08-06",
       "added": [
         {
