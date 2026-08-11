@@ -1,4 +1,0 @@
-### 2026-08-11
-**Neu hinzugefügt:**
-- nvidia/nemotron-3.5-lightning:free (agent, lightweight, moe)
-
