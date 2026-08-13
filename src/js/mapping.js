@@ -33,15 +33,6 @@ export const MODEL_MAPPING = {
         tags: ["chat","multimodal","reasoning","video","vision"],
         languages: ["go"]
     },
-    "inclusionai/ling-3.0-tiny:free": {
-        role: "Chat",
-        role_de: "Chat",
-        context: "262k",
-        desc_en: "Ling 3.0 Tiny is a mixture-of-experts model from InclusionAI, with 1.3B active parameters out of 7.9B total.",
-        desc_de: "Ling 3.0 Tiny is a mixture-of-experts model from InclusionAI, with 1.3B active parameters out of 7.9B total.",
-        tags: ["chat","lightweight","moe"],
-        languages: ["python","javascript","typescript"]
-    },
     "liquid/lfm-2.5-2.6b:free": {
         role: "Reasoning",
         role_de: "Logik",
