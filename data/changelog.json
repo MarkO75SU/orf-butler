@@ -4,6 +4,21 @@
       "date": "2026-08-15",
       "added": [
         {
+          "id": "dots-studio/dots-3-note-preview:free",
+          "tags": [
+            "moe",
+            "multimodal",
+            "open-source",
+            "vision"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
+      "date": "2026-08-15",
+      "added": [
+        {
           "id": "openai/gpt-oss-20b:free",
           "tags": [
             "moe",

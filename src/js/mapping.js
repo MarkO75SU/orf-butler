@@ -2,6 +2,18 @@
 // Last updated: 2026-08-15
 
 export const MODEL_MAPPING = {
+    "dots-studio/dots-3-note-preview:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "512k",
+        desc_en: "Dots3-Note Preview is an open-weight mixture-of-experts model from Dots Studio, with 16B active parameters out of 280B total.",
+        desc_de: "Dots3-Note Preview is an open-weight mixture-of-experts model from Dots Studio, with 16B active parameters out of 280B total.",
+        modalities: ["text","image"],
+        modality_icon: "🖼️",
+        tags: ["moe","multimodal","open-source","vision"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
