@@ -2,6 +2,19 @@
   "entries": [
     {
       "date": "2026-08-15",
+      "added": [
+        {
+          "id": "openai/gpt-oss-20b:free",
+          "tags": [
+            "moe",
+            "open-source"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
+      "date": "2026-08-15",
       "added": [],
       "removed": [
         "openai/gpt-oss-20b:free"

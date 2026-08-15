@@ -2,6 +2,16 @@
 // Last updated: 2026-08-15
 
 export const MODEL_MAPPING = {
+    "openai/gpt-oss-20b:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "131k",
+        desc_en: "gpt-oss-20b is an open-weight 21B parameter model released by OpenAI under the Apache 2.0 license.",
+        desc_de: "gpt-oss-20b is an open-weight 21B parameter model released by OpenAI under the Apache 2.0 license.",
+        tags: ["moe","open-source"],
+        languages: ["python","javascript","typescript"],
+        new: true
+    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
