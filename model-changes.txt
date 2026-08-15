@@ -1,4 +1,0 @@
-### 2026-08-15
-**Neu hinzugefügt:**
-- openai/gpt-oss-20b:free (moe, open-source)
-

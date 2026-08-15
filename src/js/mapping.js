@@ -2,16 +2,6 @@
 // Last updated: 2026-08-15
 
 export const MODEL_MAPPING = {
-    "openai/gpt-oss-20b:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "131k",
-        desc_en: "gpt-oss-20b is an open-weight 21B parameter model released by OpenAI under the Apache 2.0 license.",
-        desc_de: "gpt-oss-20b is an open-weight 21B parameter model released by OpenAI under the Apache 2.0 license.",
-        tags: ["moe","open-source"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -128,6 +118,15 @@ export const MODEL_MAPPING = {
         desc_en: "NVIDIA-Nemotron-Nano-9B-v2 is a large language model (LLM) trained from scratch by NVIDIA, and designed as a unified model for both...",
         desc_de: "NVIDIA-Nemotron-Nano-9B-v2 is a large language model (LLM) trained from scratch by NVIDIA, and designed as a unified model for both...",
         tags: ["lightweight","reasoning"],
+        languages: ["python","javascript","typescript"]
+    },
+    "openai/gpt-oss-20b:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "131k",
+        desc_en: "gpt-oss-20b is an open-weight 21B parameter model released by OpenAI under the Apache 2.0 license.",
+        desc_de: "gpt-oss-20b is an open-weight 21B parameter model released by OpenAI under the Apache 2.0 license.",
+        tags: ["moe","open-source"],
         languages: ["python","javascript","typescript"]
     },
     "poolside/laguna-s-2.1:free": {
