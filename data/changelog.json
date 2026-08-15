@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-08-15",
+      "added": [],
+      "removed": [
+        "openai/gpt-oss-20b:free"
+      ]
+    },
+    {
       "date": "2026-08-13",
       "added": [],
       "removed": [
