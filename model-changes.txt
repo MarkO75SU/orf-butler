@@ -1,4 +1,0 @@
-### 2026-08-15
-**Neu hinzugefügt:**
-- dots-studio/dots-3-note-preview:free (moe, multimodal, open-source, vision)
-

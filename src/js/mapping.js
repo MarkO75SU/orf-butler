@@ -2,6 +2,15 @@
 // Last updated: 2026-08-15
 
 export const MODEL_MAPPING = {
+    "cohere/north-mini-code:free": {
+        role: "Code",
+        role_de: "Code",
+        context: "256k",
+        desc_en: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
+        desc_de: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
+        tags: ["agent","lightweight","moe"],
+        languages: ["python","javascript","typescript"]
+    },
     "dots-studio/dots-3-note-preview:free": {
         role: "General",
         role_de: "Allgemein",
@@ -11,16 +20,6 @@ export const MODEL_MAPPING = {
         modalities: ["text","image"],
         modality_icon: "🖼️",
         tags: ["moe","multimodal","open-source","vision"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "cohere/north-mini-code:free": {
-        role: "Code",
-        role_de: "Code",
-        context: "256k",
-        desc_en: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
-        desc_de: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
-        tags: ["agent","lightweight","moe"],
         languages: ["python","javascript","typescript"]
     },
     "google/gemma-4-26b-a4b-it:free": {
