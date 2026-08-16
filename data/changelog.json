@@ -1,6 +1,19 @@
 {
   "entries": [
     {
+      "date": "2026-08-16",
+      "added": [
+        {
+          "id": "z-ai/glm-5.2:free",
+          "tags": [
+            "agent",
+            "reasoning"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-08-15",
       "added": [
         {
