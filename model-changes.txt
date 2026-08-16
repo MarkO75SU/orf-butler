@@ -1,4 +1,4 @@
 ### 2026-08-16
-**Neu hinzugefügt:**
-- z-ai/glm-5.2:free (agent, reasoning)
+**Entfernt:**
+- z-ai/glm-5.2:free
 
