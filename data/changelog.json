@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-08-17",
+      "added": [],
+      "removed": [
+        "z-ai/glm-5.2:free"
+      ]
+    },
+    {
       "date": "2026-08-16",
       "added": [
         {
