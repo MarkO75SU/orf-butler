@@ -2,16 +2,6 @@
 // Last updated: 2026-08-17
 
 export const MODEL_MAPPING = {
-    "z-ai/glm-5.2:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "128k",
-        desc_en: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
-        desc_de: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
-        tags: ["agent","reasoning"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -167,6 +157,15 @@ export const MODEL_MAPPING = {
         desc_de: "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their...",
         tags: ["agent","coding","lightweight"],
         languages: ["go"]
+    },
+    "z-ai/glm-5.2:free": {
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "128k",
+        desc_en: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
+        desc_de: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
+        tags: ["agent","reasoning"],
+        languages: ["python","javascript","typescript"]
     }
 };
 
