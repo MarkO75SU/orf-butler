@@ -1,5 +1,0 @@
-### 2026-08-18
-**Entfernt:**
-- liquid/lfm-2.5-2.6b:free
-- z-ai/glm-5.2:free
-
