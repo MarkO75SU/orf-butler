@@ -2,6 +2,21 @@
   "entries": [
     {
       "date": "2026-08-18",
+      "added": [
+        {
+          "id": "liquid/lfm-2.5-2.6b:free",
+          "tags": [
+            "agent",
+            "embedding",
+            "lightweight",
+            "reasoning"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
+      "date": "2026-08-18",
       "added": [],
       "removed": [
         "liquid/lfm-2.5-2.6b:free"
