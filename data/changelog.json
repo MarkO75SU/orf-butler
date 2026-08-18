@@ -2,6 +2,14 @@
   "entries": [
     {
       "date": "2026-08-18",
+      "added": [],
+      "removed": [
+        "liquid/lfm-2.5-2.6b:free",
+        "z-ai/glm-5.2:free"
+      ]
+    },
+    {
+      "date": "2026-08-18",
       "added": [
         {
           "id": "liquid/lfm-2.5-2.6b:free",
