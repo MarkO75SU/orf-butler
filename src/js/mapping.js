@@ -44,15 +44,6 @@ export const MODEL_MAPPING = {
         tags: ["chat","multimodal","reasoning","video","vision"],
         languages: ["go"]
     },
-    "liquid/lfm-2.5-2.6b:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "128k",
-        desc_en: "LFM2.5-2.6B is a compact reasoning model from Liquid AI.",
-        desc_de: "LFM2.5-2.6B is a compact reasoning model from Liquid AI.",
-        tags: ["agent","embedding","lightweight","reasoning"],
-        languages: ["python","javascript","typescript"]
-    },
     "nvidia/nemotron-3-nano-30b-a3b:free": {
         role: "Lightweight",
         role_de: "Leichtgewicht",
