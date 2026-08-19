@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-08-19",
+      "added": [],
+      "removed": [
+        "liquid/lfm-2.5-2.6b:free"
+      ]
+    },
+    {
       "date": "2026-08-18",
       "added": [
         {
