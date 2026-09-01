@@ -1,6 +1,63 @@
 {
   "entries": [
     {
+      "date": "2026-09-01",
+      "added": [
+        {
+          "id": "inclusionai/ling-3.0-flash-fin:free",
+          "tags": [
+            "moe"
+          ]
+        },
+        {
+          "id": "minimax/minimax-m2.7:free",
+          "tags": [
+            "agent"
+          ]
+        },
+        {
+          "id": "minimax/minimax-m3:free",
+          "tags": [
+            "agent",
+            "multimodal",
+            "video",
+            "vision"
+          ]
+        },
+        {
+          "id": "thinkingmachines/inkling-small:free",
+          "tags": [
+            "audio",
+            "lightweight",
+            "moe",
+            "multimodal",
+            "open-source",
+            "reasoning",
+            "vision"
+          ]
+        },
+        {
+          "id": "thinkingmachines/inkling:free",
+          "tags": [
+            "agent",
+            "audio",
+            "chat",
+            "moe",
+            "multimodal",
+            "open-source",
+            "reasoning",
+            "vision"
+          ]
+        }
+      ],
+      "removed": [
+        "nvidia/nemotron-3-nano-30b-a3b:free",
+        "nvidia/nemotron-nano-12b-v2-vl:free",
+        "nvidia/nemotron-nano-9b-v2:free",
+        "openai/gpt-oss-20b:free"
+      ]
+    },
+    {
       "date": "2026-08-19",
       "added": [
         {
@@ -671,21 +728,6 @@
           "reason": "superseded by Llama 3",
           "reason_de": "durch Llama 3 ersetzt",
           "available": "2023-07 – 2024-09",
-          "tags": [
-            "chat"
-          ]
-        }
-      ]
-    },
-    {
-      "date": "2024-07",
-      "added": [],
-      "removed": [
-        {
-          "id": "openai/gpt-3.5-turbo",
-          "reason": "moved to paid",
-          "reason_de": "auf Bezahlung umgestellt",
-          "available": "2023-06 – 2024-07",
           "tags": [
             "chat"
           ]
