@@ -2,62 +2,6 @@
 // Last updated: 2026-09-01
 
 export const MODEL_MAPPING = {
-    "inclusionai/ling-3.0-flash-fin:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "262k",
-        desc_en: "Ling 3.0 Flash Fin is a finance-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active parameters out...",
-        desc_de: "Ling 3.0 Flash Fin is a finance-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active parameters out...",
-        tags: ["moe"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "minimax/minimax-m2.7:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "197k",
-        desc_en: "MiniMax-M2.7 is a next-generation large language model designed for autonomous, real-world productivity and continuous improvement.",
-        desc_de: "MiniMax-M2.7 is a next-generation large language model designed for autonomous, real-world productivity and continuous improvement.",
-        tags: ["agent"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "minimax/minimax-m3:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "1049k",
-        desc_en: "MiniMax-M3 is a multimodal foundation model from MiniMax.",
-        desc_de: "MiniMax-M3 is a multimodal foundation model from MiniMax.",
-        modalities: ["text","image","video"],
-        modality_icon: "🖼️ 🎬",
-        tags: ["agent","multimodal","video","vision"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "thinkingmachines/inkling-small:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "1049k",
-        desc_en: "Inkling Small is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 12B active parameters out of 276B total.",
-        desc_de: "Inkling Small is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 12B active parameters out of 276B total.",
-        modalities: ["text","image","audio"],
-        modality_icon: "🖼️ 🎤",
-        tags: ["audio","lightweight","moe","multimodal","open-source","reasoning","vision"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
-    "thinkingmachines/inkling:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "1049k",
-        desc_en: "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total.",
-        desc_de: "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total.",
-        modalities: ["text","image","audio"],
-        modality_icon: "🖼️ 🎤",
-        tags: ["agent","audio","chat","moe","multimodal","open-source","reasoning","vision"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -100,6 +44,15 @@ export const MODEL_MAPPING = {
         tags: ["chat","multimodal","reasoning","video","vision"],
         languages: ["go"]
     },
+    "inclusionai/ling-3.0-flash-fin:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "262k",
+        desc_en: "Ling 3.0 Flash Fin is a finance-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active parameters out...",
+        desc_de: "Ling 3.0 Flash Fin is a finance-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active parameters out...",
+        tags: ["moe"],
+        languages: ["python","javascript","typescript"]
+    },
     "liquid/lfm-2.5-2.6b:free": {
         role: "Reasoning",
         role_de: "Logik",
@@ -107,6 +60,26 @@ export const MODEL_MAPPING = {
         desc_en: "LFM2.5-2.6B is a compact reasoning model from Liquid AI.",
         desc_de: "LFM2.5-2.6B is a compact reasoning model from Liquid AI.",
         tags: ["agent","embedding","lightweight","reasoning"],
+        languages: ["python","javascript","typescript"]
+    },
+    "minimax/minimax-m2.7:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "197k",
+        desc_en: "MiniMax-M2.7 is a next-generation large language model designed for autonomous, real-world productivity and continuous improvement.",
+        desc_de: "MiniMax-M2.7 is a next-generation large language model designed for autonomous, real-world productivity and continuous improvement.",
+        tags: ["agent"],
+        languages: ["python","javascript","typescript"]
+    },
+    "minimax/minimax-m3:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "1049k",
+        desc_en: "MiniMax-M3 is a multimodal foundation model from MiniMax.",
+        desc_de: "MiniMax-M3 is a multimodal foundation model from MiniMax.",
+        modalities: ["text","image","video"],
+        modality_icon: "🖼️ 🎬",
+        tags: ["agent","multimodal","video","vision"],
         languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
@@ -175,6 +148,28 @@ export const MODEL_MAPPING = {
         desc_de: "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their...",
         tags: ["agent","coding","lightweight"],
         languages: ["go"]
+    },
+    "thinkingmachines/inkling-small:free": {
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "1049k",
+        desc_en: "Inkling Small is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 12B active parameters out of 276B total.",
+        desc_de: "Inkling Small is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 12B active parameters out of 276B total.",
+        modalities: ["text","image","audio"],
+        modality_icon: "🖼️ 🎤",
+        tags: ["audio","lightweight","moe","multimodal","open-source","reasoning","vision"],
+        languages: ["python","javascript","typescript"]
+    },
+    "thinkingmachines/inkling:free": {
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "1049k",
+        desc_en: "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total.",
+        desc_de: "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total.",
+        modalities: ["text","image","audio"],
+        modality_icon: "🖼️ 🎤",
+        tags: ["agent","audio","chat","moe","multimodal","open-source","reasoning","vision"],
+        languages: ["python","javascript","typescript"]
     },
     "z-ai/glm-5.2:free": {
         role: "Reasoning",
