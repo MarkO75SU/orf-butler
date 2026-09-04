@@ -2,16 +2,6 @@
 // Last updated: 2026-09-04
 
 export const MODEL_MAPPING = {
-    "inclusionai/ling-3.0-flash-sante:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "262k",
-        desc_en: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
-        desc_de: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
-        tags: ["moe"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -60,6 +50,15 @@ export const MODEL_MAPPING = {
         context: "262k",
         desc_en: "Ling 3.0 Flash Fin is a finance-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active parameters out...",
         desc_de: "Ling 3.0 Flash Fin is a finance-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active parameters out...",
+        tags: ["moe"],
+        languages: ["python","javascript","typescript"]
+    },
+    "inclusionai/ling-3.0-flash-sante:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "262k",
+        desc_en: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
+        desc_de: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
         tags: ["moe"],
         languages: ["python","javascript","typescript"]
     },
