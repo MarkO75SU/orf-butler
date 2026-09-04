@@ -1,6 +1,18 @@
 {
   "entries": [
     {
+      "date": "2026-09-04",
+      "added": [
+        {
+          "id": "inclusionai/ling-3.0-flash-sante:free",
+          "tags": [
+            "moe"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-09-01",
       "added": [
         {
@@ -715,21 +727,6 @@
           "tags": [
             "chat",
             "moe"
-          ]
-        }
-      ]
-    },
-    {
-      "date": "2024-09",
-      "added": [],
-      "removed": [
-        {
-          "id": "meta-llama/llama-2-70b-chat",
-          "reason": "superseded by Llama 3",
-          "reason_de": "durch Llama 3 ersetzt",
-          "available": "2023-07 – 2024-09",
-          "tags": [
-            "chat"
           ]
         }
       ]
