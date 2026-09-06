@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-09-06",
+      "added": [],
+      "removed": [
+        "z-ai/glm-5.2:free"
+      ]
+    },
+    {
       "date": "2026-09-04",
       "added": [
         {
@@ -711,22 +718,6 @@
           "tags": [
             "chat",
             "multilingual"
-          ]
-        }
-      ]
-    },
-    {
-      "date": "2024-11",
-      "added": [],
-      "removed": [
-        {
-          "id": "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",
-          "reason": "superseded by Hermes 3",
-          "reason_de": "durch Hermes 3 ersetzt",
-          "available": "2024-01 – 2024-11",
-          "tags": [
-            "chat",
-            "moe"
           ]
         }
       ]

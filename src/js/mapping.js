@@ -179,15 +179,6 @@ export const MODEL_MAPPING = {
         modality_icon: "🖼️ 🎤",
         tags: ["agent","audio","chat","moe","multimodal","open-source","reasoning","vision"],
         languages: ["python","javascript","typescript"]
-    },
-    "z-ai/glm-5.2:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "256k",
-        desc_en: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
-        desc_de: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
-        tags: ["agent","reasoning"],
-        languages: ["python","javascript","typescript"]
     }
 };
 
