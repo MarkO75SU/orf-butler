@@ -71,26 +71,6 @@ export const MODEL_MAPPING = {
         tags: ["agent","embedding","lightweight","reasoning"],
         languages: ["python","javascript","typescript"]
     },
-    "minimax/minimax-m2.7:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "197k",
-        desc_en: "MiniMax-M2.7 is a next-generation large language model designed for autonomous, real-world productivity and continuous improvement.",
-        desc_de: "MiniMax-M2.7 is a next-generation large language model designed for autonomous, real-world productivity and continuous improvement.",
-        tags: ["agent"],
-        languages: ["python","javascript","typescript"]
-    },
-    "minimax/minimax-m3:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "1049k",
-        desc_en: "MiniMax-M3 is a multimodal foundation model from MiniMax.",
-        desc_de: "MiniMax-M3 is a multimodal foundation model from MiniMax.",
-        modalities: ["text","image","video"],
-        modality_icon: "🖼️ 🎬",
-        tags: ["agent","multimodal","video","vision"],
-        languages: ["python","javascript","typescript"]
-    },
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
         role: "Reasoning",
         role_de: "Logik",
