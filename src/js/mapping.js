@@ -2,6 +2,28 @@
 // Last updated: 2026-09-08
 
 export const MODEL_MAPPING = {
+    "nex-agi/nex-n2.5-mini:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "262k",
+        desc_en: "Nex-N2.5 is an agentic model built to turn goals into working, verified outcomes.",
+        desc_de: "Nex-N2.5 is an agentic model built to turn goals into working, verified outcomes.",
+        tags: ["agent"],
+        languages: ["go"],
+        new: true
+    },
+    "nex-agi/nex-n2.5-pro:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "262k",
+        desc_en: "Nex-N2.5 is an agentic model built to turn goals into working, verified outcomes.",
+        desc_de: "Nex-N2.5 is an agentic model built to turn goals into working, verified outcomes.",
+        modalities: ["text","image"],
+        modality_icon: "🖼️",
+        tags: ["agent","multimodal","vision"],
+        languages: ["go"],
+        new: true
+    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",

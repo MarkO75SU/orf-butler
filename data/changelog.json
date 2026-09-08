@@ -1,6 +1,26 @@
 {
   "entries": [
     {
+      "date": "2026-09-08",
+      "added": [
+        {
+          "id": "nex-agi/nex-n2.5-mini:free",
+          "tags": [
+            "agent"
+          ]
+        },
+        {
+          "id": "nex-agi/nex-n2.5-pro:free",
+          "tags": [
+            "agent",
+            "multimodal",
+            "vision"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-09-07",
       "added": [],
       "removed": [
@@ -663,33 +683,6 @@
           "tags": [
             "chat",
             "lightweight"
-          ]
-        }
-      ]
-    },
-    {
-      "date": "2025-01",
-      "added": [],
-      "removed": [
-        {
-          "id": "google/gemini-1.5-pro",
-          "reason": "moved to paid",
-          "reason_de": "auf Bezahlung umgestellt",
-          "available": "2024-02 – 2025-01",
-          "tags": [
-            "reasoning",
-            "multimodal",
-            "vision"
-          ]
-        },
-        {
-          "id": "cohere/command-r",
-          "reason": "moved to paid",
-          "reason_de": "auf Bezahlung umgestellt",
-          "available": "2024-03 – 2025-01",
-          "tags": [
-            "chat",
-            "embedding"
           ]
         }
       ]
