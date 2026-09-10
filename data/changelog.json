@@ -1,6 +1,21 @@
 {
   "entries": [
     {
+      "date": "2026-09-10",
+      "added": [
+        {
+          "id": "inclusionai/ling-3.0-flash-vl:free",
+          "tags": [
+            "moe",
+            "multimodal",
+            "video",
+            "vision"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-09-08",
       "added": [
         {
@@ -664,22 +679,6 @@
           "reason": "superseded by Qwen 2.5",
           "reason_de": "durch Qwen 2.5 ersetzt",
           "available": "2024-06 – 2025-03",
-          "tags": [
-            "chat",
-            "lightweight"
-          ]
-        }
-      ]
-    },
-    {
-      "date": "2025-02",
-      "added": [],
-      "removed": [
-        {
-          "id": "anthropic/claude-3-haiku",
-          "reason": "moved to paid",
-          "reason_de": "auf Bezahlung umgestellt",
-          "available": "2024-03 – 2025-02",
           "tags": [
             "chat",
             "lightweight"
