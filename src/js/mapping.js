@@ -2,18 +2,6 @@
 // Last updated: 2026-09-10
 
 export const MODEL_MAPPING = {
-    "inclusionai/ling-3.0-flash-vl:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "262k",
-        desc_en: "Ling 3.0 Flash VL builds on Ling 3.0 Flash (124B total / 5.5B active MoE from InclusionAI), further strengthening its language capabilities...",
-        desc_de: "Ling 3.0 Flash VL builds on Ling 3.0 Flash (124B total / 5.5B active MoE from InclusionAI), further strengthening its language capabilities...",
-        modalities: ["text","image","video"],
-        modality_icon: "🖼️ 🎬",
-        tags: ["moe","multimodal","video","vision"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -72,6 +60,17 @@ export const MODEL_MAPPING = {
         desc_en: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
         desc_de: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
         tags: ["moe"],
+        languages: ["python","javascript","typescript"]
+    },
+    "inclusionai/ling-3.0-flash-vl:free": {
+        role: "General",
+        role_de: "Allgemein",
+        context: "262k",
+        desc_en: "Ling 3.0 Flash VL builds on Ling 3.0 Flash (124B total / 5.5B active MoE from InclusionAI), further strengthening its language capabilities...",
+        desc_de: "Ling 3.0 Flash VL builds on Ling 3.0 Flash (124B total / 5.5B active MoE from InclusionAI), further strengthening its language capabilities...",
+        modalities: ["text","image","video"],
+        modality_icon: "🖼️ 🎬",
+        tags: ["moe","multimodal","video","vision"],
         languages: ["python","javascript","typescript"]
     },
     "liquid/lfm-2.5-2.6b:free": {
