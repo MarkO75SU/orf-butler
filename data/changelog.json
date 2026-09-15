@@ -1,6 +1,19 @@
 {
   "entries": [
     {
+      "date": "2026-09-15",
+      "added": [
+        {
+          "id": "z-ai/glm-5.2:free",
+          "tags": [
+            "agent",
+            "reasoning"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-09-10",
       "added": [
         {
@@ -655,33 +668,6 @@
             "vision",
             "multimodal",
             "chat"
-          ]
-        }
-      ]
-    },
-    {
-      "date": "2025-03",
-      "added": [],
-      "removed": [
-        {
-          "id": "openai/gpt-4o-mini",
-          "reason": "moved to paid",
-          "reason_de": "auf Bezahlung umgestellt",
-          "available": "2024-05 – 2025-03",
-          "tags": [
-            "vision",
-            "multimodal",
-            "chat"
-          ]
-        },
-        {
-          "id": "qwen/qwen-2-72b-instruct",
-          "reason": "superseded by Qwen 2.5",
-          "reason_de": "durch Qwen 2.5 ersetzt",
-          "available": "2024-06 – 2025-03",
-          "tags": [
-            "chat",
-            "lightweight"
           ]
         }
       ]
