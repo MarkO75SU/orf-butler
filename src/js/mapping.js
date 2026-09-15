@@ -2,16 +2,6 @@
 // Last updated: 2026-09-15
 
 export const MODEL_MAPPING = {
-    "z-ai/glm-5.2:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "33k",
-        desc_en: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
-        desc_de: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
-        tags: ["agent","reasoning"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -201,6 +191,15 @@ export const MODEL_MAPPING = {
         modalities: ["text","image","audio"],
         modality_icon: "🖼️ 🎤",
         tags: ["agent","audio","chat","moe","multimodal","open-source","reasoning","vision"],
+        languages: ["python","javascript","typescript"]
+    },
+    "z-ai/glm-5.2:free": {
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "33k",
+        desc_en: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
+        desc_de: "GLM 5.2 is a large-scale reasoning model from Z.ai.",
+        tags: ["agent","reasoning"],
         languages: ["python","javascript","typescript"]
     }
 };
