@@ -2,18 +2,6 @@
 // Last updated: 2026-09-17
 
 export const MODEL_MAPPING = {
-    "qwen/qwen3.8-27b:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "262k",
-        desc_en: "Qwen3.8 27B is an open-weight dense vision-language model from Qwen.",
-        desc_de: "Qwen3.8 27B is an open-weight dense vision-language model from Qwen.",
-        modalities: ["text","image","video"],
-        modality_icon: "🖼️ 🎬",
-        tags: ["agent","multimodal","open-source","reasoning","video","vision"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -182,6 +170,17 @@ export const MODEL_MAPPING = {
         desc_de: "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their...",
         tags: ["agent","coding","lightweight"],
         languages: ["go"]
+    },
+    "qwen/qwen3.8-27b:free": {
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "262k",
+        desc_en: "Qwen3.8 27B is an open-weight dense vision-language model from Qwen.",
+        desc_de: "Qwen3.8 27B is an open-weight dense vision-language model from Qwen.",
+        modalities: ["text","image","video"],
+        modality_icon: "🖼️ 🎬",
+        tags: ["agent","multimodal","open-source","reasoning","video","vision"],
+        languages: ["python","javascript","typescript"]
     },
     "thinkingmachines/inkling-small:free": {
         role: "Reasoning",
