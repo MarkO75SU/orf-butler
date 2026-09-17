@@ -1,0 +1,4 @@
+### 2026-09-17
+**Neu hinzugefügt:**
+- qwen/qwen3.8-27b:free (agent, multimodal, open-source, reasoning, video, vision)
+

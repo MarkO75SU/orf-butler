@@ -1,6 +1,23 @@
 {
   "entries": [
     {
+      "date": "2026-09-17",
+      "added": [
+        {
+          "id": "qwen/qwen3.8-27b:free",
+          "tags": [
+            "agent",
+            "multimodal",
+            "open-source",
+            "reasoning",
+            "video",
+            "vision"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-09-15",
       "added": [
         {
@@ -654,23 +671,6 @@
         }
       ],
       "removed": []
-    },
-    {
-      "date": "2025-04",
-      "added": [],
-      "removed": [
-        {
-          "id": "google/gemini-1.5-flash",
-          "reason": "moved to paid",
-          "reason_de": "auf Bezahlung umgestellt",
-          "available": "2024-05 – 2025-04",
-          "tags": [
-            "vision",
-            "multimodal",
-            "chat"
-          ]
-        }
-      ]
     }
   ]
 }
