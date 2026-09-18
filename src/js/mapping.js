@@ -2,16 +2,6 @@
 // Last updated: 2026-09-18
 
 export const MODEL_MAPPING = {
-    "deepseek/deepseek-v4-flash-0731:free": {
-        role: "Reasoning",
-        role_de: "Logik",
-        context: "1049k",
-        desc_en: "DeepSeek V4 Flash 0731 is a sparse mixture-of-experts model from DeepSeek, with 13B active parameters out of 284B total.",
-        desc_de: "DeepSeek V4 Flash 0731 is a sparse mixture-of-experts model from DeepSeek, with 13B active parameters out of 284B total.",
-        tags: ["agent","lightweight","moe","reasoning"],
-        languages: ["python","javascript","typescript"],
-        new: true
-    },
     "cohere/north-mini-code:free": {
         role: "Code",
         role_de: "Code",
@@ -19,6 +9,15 @@ export const MODEL_MAPPING = {
         desc_en: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
         desc_de: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
         tags: ["agent","lightweight","moe"],
+        languages: ["python","javascript","typescript"]
+    },
+    "deepseek/deepseek-v4-flash-0731:free": {
+        role: "Reasoning",
+        role_de: "Logik",
+        context: "1049k",
+        desc_en: "DeepSeek V4 Flash 0731 is a sparse mixture-of-experts model from DeepSeek, with 13B active parameters out of 284B total.",
+        desc_de: "DeepSeek V4 Flash 0731 is a sparse mixture-of-experts model from DeepSeek, with 13B active parameters out of 284B total.",
+        tags: ["agent","lightweight","moe","reasoning"],
         languages: ["python","javascript","typescript"]
     },
     "dots-studio/dots-3-note-preview:free": {
