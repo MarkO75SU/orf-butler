@@ -1,6 +1,21 @@
 {
   "entries": [
     {
+      "date": "2026-09-18",
+      "added": [
+        {
+          "id": "deepseek/deepseek-v4-flash-0731:free",
+          "tags": [
+            "agent",
+            "lightweight",
+            "moe",
+            "reasoning"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-09-17",
       "added": [
         {
@@ -644,27 +659,6 @@
           "tags": [
             "agent",
             "moe",
-            "multimodal",
-            "vision"
-          ]
-        }
-      ],
-      "removed": []
-    },
-    {
-      "date": "2026-06-04",
-      "added": [
-        {
-          "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
-          "tags": [
-            "moe",
-            "reasoning"
-          ]
-        },
-        {
-          "id": "nvidia/nemotron-3.5-content-safety:free",
-          "tags": [
-            "lightweight",
             "multimodal",
             "vision"
           ]
