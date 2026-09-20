@@ -1,4 +1,0 @@
-### 2026-09-20
-**Entfernt:**
-- deepseek/deepseek-v4-flash-0731:free
-
