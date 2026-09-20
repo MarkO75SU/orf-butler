@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-09-20",
+      "added": [],
+      "removed": [
+        "deepseek/deepseek-v4-flash-0731:free"
+      ]
+    },
+    {
       "date": "2026-09-18",
       "added": [
         {
@@ -650,21 +657,6 @@
       "removed": [
         "nex-agi/Nex-N2-Pro:free"
       ]
-    },
-    {
-      "date": "2026-06-08",
-      "added": [
-        {
-          "id": "nex-agi/Nex-N2-Pro:free",
-          "tags": [
-            "agent",
-            "moe",
-            "multimodal",
-            "vision"
-          ]
-        }
-      ],
-      "removed": []
     }
   ]
 }
