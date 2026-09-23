@@ -62,17 +62,6 @@ export const MODEL_MAPPING = {
         tags: ["moe"],
         languages: ["python","javascript","typescript"]
     },
-    "inclusionai/ling-3.0-flash-vl:free": {
-        role: "General",
-        role_de: "Allgemein",
-        context: "262k",
-        desc_en: "Ling 3.0 Flash VL builds on Ling 3.0 Flash (124B total / 5.5B active MoE from InclusionAI), further strengthening its language capabilities...",
-        desc_de: "Ling 3.0 Flash VL builds on Ling 3.0 Flash (124B total / 5.5B active MoE from InclusionAI), further strengthening its language capabilities...",
-        modalities: ["text","image","video"],
-        modality_icon: "🖼️ 🎬",
-        tags: ["moe","multimodal","video","vision"],
-        languages: ["python","javascript","typescript"]
-    },
     "liquid/lfm-2.5-2.6b:free": {
         role: "Reasoning",
         role_de: "Logik",

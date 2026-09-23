@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-09-23",
+      "added": [],
+      "removed": [
+        "inclusionai/ling-3.0-flash-vl:free"
+      ]
+    },
+    {
       "date": "2026-09-20",
       "added": [],
       "removed": [
@@ -639,23 +646,6 @@
       "added": [],
       "removed": [
         "z-ai/glm-4.5-air:free"
-      ]
-    },
-    {
-      "date": "2026-06-08",
-      "added": [
-        {
-          "id": "nex-agi/nex-n2-pro:free",
-          "tags": [
-            "agent",
-            "moe",
-            "multimodal",
-            "vision"
-          ]
-        }
-      ],
-      "removed": [
-        "nex-agi/Nex-N2-Pro:free"
       ]
     }
   ]
