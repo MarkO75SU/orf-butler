@@ -1,9 +1,12 @@
-name: Hourly Free Model Update
+name: Daily Free Model Update
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 5 * * *'
   workflow_dispatch:
+
+env:
+  CRON_TZ: Europe/Berlin
 
 permissions:
   contents: write
@@ -44,6 +47,7 @@ jobs:
 
       - name: Send email notification
         if: hashFiles('model-changes.txt') != ''
+        continue-on-error: true
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.web.de

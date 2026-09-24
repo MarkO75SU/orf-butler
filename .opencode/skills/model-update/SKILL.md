@@ -1,6 +1,6 @@
 ---
 name: model-update
-description: Updates the OpenRouter free model database. Runs hourly via GitHub Actions or manually via npm run update-models.
+description: Updates the OpenRouter free model database. Runs daily at 05:00 Europe/Berlin via GitHub Actions or manually via npm run update-models.
 ---
 
 # Model Update Skill
@@ -15,7 +15,7 @@ npm run update-models
 
 ## GitHub Actions Workflow
 
-- **Schedule**: `0 * * * *` (hourly)
+- **Schedule**: `0 5 * * *` daily, `CRON_TZ: Europe/Berlin` (05:00 Uhr deutscher Zeit)
 - **Script**: `scripts/update-models.js`
 - **Output**: Updates `src/js/mapping.js` and `data/changelog.json`
 

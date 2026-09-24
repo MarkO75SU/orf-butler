@@ -46,7 +46,7 @@ No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
 
 ## Model Mapping
 
-- **21 free models** auto-generated hourly from OpenRouter API via `scripts/update-models.js`
+- **21 free models** auto-generated daily from OpenRouter API via `scripts/update-models.js`
 - Each model has: `role`/`role_de`, `desc_en`/`desc_de` (aus API-Beschreibung), `tags` (coding, reasoning, vision, …), `context`, `languages`, optional `modalities`/`modality_icon`
 - Model IDs **must end with `:free`** suffix
 - Tags werden als farbige Badges in der Modellkarte angezeigt
@@ -82,7 +82,7 @@ npm test                          # 463 tests
 - `vercel.json` rewrites: `/api/*` → API functions, `/landing` → `landing.html`, `/app` → `app.html`, `/*` → `index.html`
 - `.env` vars set in Vercel project dashboard (LOGIN_USER, LOGIN_PASS)
 - `package.json` version: `"version": "12.8.0"`
-- Hourly GitHub Actions workflow auto-updates free models via `scripts/update-models.js`
+- Daily GitHub Actions workflow auto-updates free models via `scripts/update-models.js`
 - Bei Modell-Änderungen: Email-Benachrichtigung an learncode@web.de
 
 ## Common Pitfalls
