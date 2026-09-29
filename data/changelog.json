@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-09-29",
+      "added": [],
+      "removed": [
+        "inclusionai/ling-3.0-flash-fin:free"
+      ]
+    },
+    {
       "date": "2026-09-26",
       "added": [],
       "removed": [
@@ -642,13 +649,6 @@
         }
       ],
       "removed": []
-    },
-    {
-      "date": "2026-06-10",
-      "added": [],
-      "removed": [
-        "moonshotai/kimi-k2.6:free"
-      ]
     }
   ]
 }
