@@ -1,4 +1,0 @@
-### 2026-09-29
-**Entfernt:**
-- inclusionai/ling-3.0-flash-fin:free
-
