@@ -1,0 +1,4 @@
+### 2026-10-02
+**Neu hinzugefügt:**
+- apodex/apodex-1.1-mini:free (reasoning)
+

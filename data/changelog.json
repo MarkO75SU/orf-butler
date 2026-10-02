@@ -1,6 +1,18 @@
 {
   "entries": [
     {
+      "date": "2026-10-02",
+      "added": [
+        {
+          "id": "apodex/apodex-1.1-mini:free",
+          "tags": [
+            "reasoning"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    {
       "date": "2026-09-29",
       "added": [],
       "removed": [
@@ -631,20 +643,6 @@
             "moe",
             "multimodal",
             "vision"
-          ]
-        }
-      ],
-      "removed": []
-    },
-    {
-      "date": "2026-06-17",
-      "added": [
-        {
-          "id": "cohere/north-mini-code:free",
-          "tags": [
-            "agent",
-            "lightweight",
-            "moe"
           ]
         }
       ],
