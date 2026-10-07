@@ -1,4 +1,0 @@
-### 2026-10-06
-**Entfernt:**
-- qwen/qwen3.8-27b:free
-
