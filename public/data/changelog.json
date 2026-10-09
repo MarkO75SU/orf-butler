@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "date": "2026-10-09",
+      "added": [],
+      "removed": [
+        "inclusionai/ling-3.0-flash-sante:free"
+      ]
+    },
+    {
       "date": "2026-10-06",
       "added": [],
       "removed": [
@@ -631,13 +638,6 @@
       "added": [],
       "removed": [
         "nex-agi/nex-n2-pro:free"
-      ]
-    },
-    {
-      "date": "2026-06-19",
-      "added": [],
-      "removed": [
-        "moonshotai/kimi-k2.7-code:free"
       ]
     }
   ]
