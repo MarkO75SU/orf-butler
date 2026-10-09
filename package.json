@@ -8,10 +8,10 @@
   "homepage": "https://orfb.vercel.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MarkO75SU/orfb.git"
+    "url": "https://github.com/MarkO75SU/orfb-butler.git"
   },
   "bugs": {
-    "url": "https://github.com/MarkO75SU/orfb/issues"
+    "url": "https://github.com/MarkO75SU/orfb-butler/issues"
   },
   "keywords": [
     "openrouter",

@@ -57,7 +57,7 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 - **No codes system** – no code login, no codes API, no paywall gate
 - **Website login** at `/` (social + admin password) is the only login; `/landing` + `/app` are open afterwards
 - **Tracking**: Umami placeholder in all 3 HTML files (commented out until a website ID is set); events `download` (props: models/tools/bundle/os) and `bmc_click` (prop: location) via `window.umami?.track`
-- **Open source (MIT)**: every page header/footer links to `https://github.com/MarkO75SU/orfb`; the site states it is free & open source
+- **Open source (MIT)**: every page header/footer links to `https://github.com/MarkO75SU/orfb-butler`; the site states it is free & open source
 - **Legal pages** (German, required): `/imprint` (`imprint.html`) and `/privacy` (`privacy.html`) – operator data must stay in sync with the actual controller
 
 ## Model Mapping
@@ -107,6 +107,7 @@ npm test
 
 - Do NOT remove the `:free` suffix from model IDs
 - Do NOT hardcode credentials in any source file
+- `POST /api/login` returning `500 Credentials not configured` means `LOGIN_USER`/`LOGIN_PASS` are missing in the Vercel project (common after a repo rename / re-created project) – set them in the dashboard; social login is optional and degrades gracefully when Supabase env vars are absent
 - JSZip is loaded via CDN, not npm — available as the global `JSZip`
 - Tailwind CSS via CDN — cosmetic warnings are harmless
 - `models-grid` and `tools-grid` use a 2-column layout with max-height 400px + custom scrollbar

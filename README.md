@@ -4,7 +4,7 @@
 
 ORF-Butler is a static web app that turns a curated list of free OpenRouter models into drop-in configuration files for Continue, OpenCode, Zed, Aider, Cursor, Windsurf, Claude Code, GitHub Copilot, Cline, Codeium, RooCode, LiteLLM, Cody and Tabby — packaged as a single ZIP download.
 
-![Tests](https://github.com/MarkO75SU/orfb/actions/workflows/daily-update.yml/badge.svg)
+![Tests](https://github.com/MarkO75SU/orfb-butler/actions/workflows/daily-update.yml/badge.svg)
 
 ## Features
 
@@ -21,11 +21,12 @@ ORF-Butler is a static web app that turns a curated list of free OpenRouter mode
 
 ```bash
 npm install
-npm start        # http://localhost:3000
-npm test         # pure Node ESM test suite
+cp .env.example .env   # set LOGIN_USER / LOGIN_PASS for the admin login
+npm start              # http://localhost:3000
+npm test               # pure Node ESM test suite
 ```
 
-There is no build step and no bundler. The app is plain HTML + ES modules and deploys as static files (Vercel).
+There is no build step and no bundler. The app is plain HTML + ES modules and deploys as static files (Vercel). Social login is optional — without Supabase env vars the app still works with the admin password login.
 
 ## Routes
 
@@ -79,7 +80,9 @@ vercel.json                      Rewrites + output directory
 
 ## Deployment
 
-Push to `main` — Vercel auto-deploys. Set `LOGIN_USER` and `LOGIN_PASS` in the Vercel project dashboard for the admin login. Optional Supabase env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`) enable social login.
+Push to `main` — Vercel auto-deploys. Set `LOGIN_USER` and `LOGIN_PASS` under **Vercel → Project → Settings → Environment Variables (Production)**; without them `POST /api/login` returns `500 Credentials not configured`. Optional Supabase env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`) enable social login; without them the social buttons report "Social login is not available."
+
+After renaming the GitHub repository, re-check that the Vercel project still points at the correct repo and that all environment variables are present in the (possibly re-created) project.
 
 ## Contributing
 

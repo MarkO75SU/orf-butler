@@ -6,8 +6,9 @@ export default function handler(req, res) {
     const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
     if (!url || !key) {
-        return res.status(500).json({ error: 'Supabase not configured' });
+        // Social login is optional: report it as disabled instead of erroring.
+        return res.status(200).json({ configured: false });
     }
 
-    res.json({ url, key });
+    res.json({ configured: true, url, key });
 }

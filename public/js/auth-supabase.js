@@ -10,7 +10,8 @@ export async function initSupabase() {
     initPromise = (async () => {
         const res = await fetch('/api/supabase-config');
         if (!res.ok) throw new Error('Supabase configuration unavailable');
-        const { url, key } = await res.json();
+        const { configured, url, key } = await res.json();
+        if (!configured || !url || !key) throw new Error('Social login not configured');
 
         supabaseClient = createClient(url, key, {
             auth: {
@@ -28,7 +29,13 @@ export async function initSupabase() {
 }
 
 export async function socialLogin(provider) {
-    const client = await initSupabase();
+    let client;
+    try {
+        client = await initSupabase();
+    } catch {
+        return { success: false, error: 'Social login is not available.' };
+    }
+
     const { data, error } = await client.auth.signInWithOAuth({
         provider,
         options: {
@@ -42,11 +49,15 @@ export async function socialLogin(provider) {
 }
 
 export async function logoutSupabase() {
-    const client = await initSupabase();
-    const { error } = await client.auth.signOut();
     localStorage.removeItem('orf_auth');
     sessionStorage.removeItem('orf_state');
-    if (error) return { success: false, error: error.message };
+    try {
+        const client = await initSupabase();
+        const { error } = await client.auth.signOut();
+        if (error) return { success: false, error: error.message };
+    } catch {
+        // Social login not configured – nothing to sign out of.
+    }
     return { success: true };
 }
 
