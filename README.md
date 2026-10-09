@@ -4,7 +4,7 @@
 
 ORF-Butler is a static web app that turns a curated list of free OpenRouter models into drop-in configuration files for Continue, OpenCode, Zed, Aider, Cursor, Windsurf, Claude Code, GitHub Copilot, Cline, Codeium, RooCode, LiteLLM, Cody and Tabby — packaged as a single ZIP download.
 
-![Tests](https://github.com/MarkO75SU/orfb-butler/actions/workflows/daily-update.yml/badge.svg)
+![Tests](https://github.com/MarkO75SU/orf-butler/actions/workflows/daily-update.yml/badge.svg)
 
 ## Features
 

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://orfb-butler.vercel.app/sitemap.xml
+Sitemap: https://orf-butler.vercel.app/sitemap.xml

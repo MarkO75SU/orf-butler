@@ -20,7 +20,7 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 | `/license` | `public/license.html` | MIT license text |
 | `/sitemap.xml`, `/robots.txt` | `public/` | SEO files |
 
-**Flow:** `orfb-butler.vercel.app` → `/` (landing) → "Go to app" → `/app`. Every page is public — there is **no login and no access gate**.
+**Flow:** `orf-butler.vercel.app` → `/` (landing) → "Go to app" → `/app`. Every page is public — there is **no login and no access gate**.
 
 ## Architecture
 
@@ -57,7 +57,7 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 - **No codes system** – no code login, no codes API, no paywall gate
 - **No login at all** – every page is public; do not reintroduce an auth gate
 - **Tracking**: Umami Cloud loaded in all HTML pages (`data-website-id` set); events `download` (props: models/tools/bundle/os) and `bmc_click` (prop: location) via `window.umami?.track`; cookieless, covered by privacy §7
-- **Open source (MIT)**: every page header/footer links to `https://github.com/MarkO75SU/orfb-butler`; the site states it is free & open source
+- **Open source (MIT)**: every page header/footer links to `https://github.com/MarkO75SU/orf-butler`; the site states it is free & open source
 - **Legal pages** (German, required): `/imprint` (`imprint.html`) and `/privacy` (`privacy.html`) – operator data must stay in sync with the actual controller
 
 ## Model Mapping

@@ -5,13 +5,13 @@
   "type": "module",
   "license": "MIT",
   "author": "ORF-Butler contributors",
-  "homepage": "https://orfb-butler.vercel.app",
+  "homepage": "https://orf-butler.vercel.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MarkO75SU/orfb-butler.git"
+    "url": "https://github.com/MarkO75SU/orf-butler.git"
   },
   "bugs": {
-    "url": "https://github.com/MarkO75SU/orfb-butler/issues"
+    "url": "https://github.com/MarkO75SU/orf-butler/issues"
   },
   "keywords": [
     "openrouter",
