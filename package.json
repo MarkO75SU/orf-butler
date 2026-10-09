@@ -29,9 +29,9 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node src/tests/test-runner.js",
-    "start": "node server.js",
-    "dev": "node server.js"
+    "test": "node tests/test-runner.js",
+    "start": "node scripts/server.js",
+    "dev": "node scripts/server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.107.0",

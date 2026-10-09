@@ -1,7 +1,10 @@
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const MAPPING_PATH = 'src/js/mapping.js';
-const CHANGELOG_PATH = 'data/changelog.json';
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+const MAPPING_PATH = path.join(ROOT, 'public', 'js', 'mapping.js');
+const CHANGELOG_PATH = path.join(ROOT, 'public', 'data', 'changelog.json');
 const OPENROUTER_API = 'https://openrouter.ai/api/v1/models';
 
 function extractTags(id, name, description, inputModalities) {

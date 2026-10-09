@@ -1,4 +1,4 @@
-// src/js/prompts.js
+// public/js/prompts.js
 export const DAILY_PROMPTS = [
     { title: "React Performance Tuner", prompt: "Analyse the provided React component for unnecessary re-renders. Check for missing useMemo/useCallback and suggest state-lifting where appropriate." },
     { title: "Python Type Safety", prompt: "Convert the following Python script into a fully type-hinted version using Pydantic and runtime validation. Ensure all error cases are handled." },

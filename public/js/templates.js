@@ -1,4 +1,4 @@
-// src/js/templates.js
+// public/js/templates.js
 import { MODEL_MAPPING } from './mapping.js';
 
 export const TOOL_TEMPLATES = {

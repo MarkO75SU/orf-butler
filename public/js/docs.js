@@ -1,4 +1,4 @@
-// src/js/docs.js
+// public/js/docs.js
 export const CLI_COMMANDS = {
     "ollama": {
         name: "Ollama",

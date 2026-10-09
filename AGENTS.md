@@ -13,16 +13,17 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 
 | URL | File | Purpose |
 |-----|------|---------|
-| `/` (root) | `index.html` | **Website login** – social (OAuth) or admin password |
-| `/landing` | `landing.html` | Features/tools/bundles (all free) + support section (BMC) + blog |
-| `/app` | `app.html` | 4-step wizard (models → tools → bundle → ZIP download) |
+| `/` (root) | `public/index.html` | **Website login** – social (OAuth) or admin password |
+| `/landing` | `public/landing.html` | Features/tools/bundles (all free) + support section (BMC) + blog |
+| `/app` | `public/app.html` | 4-step wizard (models → tools → bundle → ZIP download) |
 
 **Flow:** `orfb.vercel.app` → login → `/landing` → "Go to app" → `/app` → logout → back to `/`
 
 ## Architecture
 
-- **Static SPA** (no framework): `index.html` + `landing.html` + `app.html` as entry points
-- JS modules under `src/js/`, loaded via `<script type="module">`
+- **Static SPA** (no framework) served from `public/` (Vercel `outputDirectory`): `public/index.html` + `public/landing.html` + `public/app.html`
+- JS modules under `public/js/`, loaded via `<script type="module">`; installer assets the browser fetches live in `public/scripts/`
+- Dev/build tooling lives in `scripts/` (`server.js`, `update-models.js`) and is not deployed
 - **Vercel**: serverless API (`api/login.js`, `api/logout.js`, `api/supabase-config.js`, `api/confirm-session.js`); `vercel.json` rewrites; `middleware.js` protects `/landing` + `/app` via the `orf_session` cookie
 - **Auth**: the only login is the **website login** at `/` – social (Supabase OAuth) or admin (`LOGIN_USER`/`LOGIN_PASS` via `POST /api/login`); landing + app are open afterwards
 - Credentials: env vars `LOGIN_USER` / `LOGIN_PASS` only, never hardcoded
@@ -31,23 +32,24 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Login page (root route) |
-| `landing.html` | Marketing page + blog/changelog section |
-| `app.html` | Main app: 4-step wizard for model/tool selection |
-| `src/js/app.js` | UI logic: multi-select, bundle, ZIP download, BMC thanks popup, download tracking |
-| `src/js/config.js` | **Single source of truth** for `BMC_URL` (Buy-Me-a-Coffee placeholder) |
-| `src/js/mapping.js` | Auto-generated free-model DB (tags + descriptions) |
-| `src/js/templates.js` | Config generation per tool, `TOOL_TEMPLATES` registry (15 tools) |
-| `src/js/docs.js` | Install guides, OS paths, CLI commands |
-| `src/js/auth.js` | `isAuthenticated()` / `login()` / `logout()` / `getUser()` |
-| `src/tests/test-runner.js` | Pure Node test suite (no DOM) |
-| `data/changelog.json` | Auto-generated model change history (blog content) |
-| `scripts/auto-install.js` | Auto-installer with merge logic (overwrite/comment/merge) |
+| `public/index.html` | Login page (root route) |
+| `public/landing.html` | Marketing page + blog/changelog section |
+| `public/app.html` | Main app: 4-step wizard for model/tool selection |
+| `public/js/app.js` | UI logic: multi-select, bundle, ZIP download, BMC thanks popup, download tracking |
+| `public/js/config.js` | **Single source of truth** for `BMC_URL` (Buy-Me-a-Coffee placeholder) |
+| `public/js/mapping.js` | Auto-generated free-model DB (tags + descriptions) |
+| `public/js/templates.js` | Config generation per tool, `TOOL_TEMPLATES` registry (15 tools) |
+| `public/js/docs.js` | Install guides, OS paths, CLI commands |
+| `public/js/auth.js` | `isAuthenticated()` / `login()` / `logout()` / `getUser()` |
+| `tests/test-runner.js` | Pure Node test suite (no DOM) |
+| `public/data/changelog.json` | Auto-generated model change history (blog content) |
+| `public/scripts/auto-install.js` | Auto-installer with merge logic (overwrite/comment/merge) |
+| `scripts/server.js` | Local dev server (`npm start`) |
 
 ## Strategy: BMC instead of a paywall
 
 - **No prices, no paywall, no registration** – both bundles are free
-- **Buy Me a Coffee** (placeholder URL in `src/js/config.js`): links in the landing support section, app header and download thanks popup (all `a[data-bmc]`)
+- **Buy Me a Coffee** (placeholder URL in `public/js/config.js`): links in the landing support section, app header and download thanks popup (all `a[data-bmc]`)
 - **No codes system** – no code login, no codes API, no paywall gate
 - **Website login** at `/` (social + admin password) is the only login; `/landing` + `/app` are open afterwards
 - **Tracking**: Umami placeholder in all 3 HTML files (commented out until a website ID is set); events `download` (props: models/tools/bundle/os) and `bmc_click` (prop: location) via `window.umami?.track`
@@ -62,13 +64,13 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 
 ## Model History / Blog
 
-- Historical models are stored as blog entries in `data/changelog.json`
+- Historical models are stored as blog entries in `public/data/changelog.json`
 - Rendered on the landing page under "Blog / Changelog"
 - `scripts/update-models.js` appends new entries automatically on model changes
 
 ## Auto-Installer
 
-The installer in `scripts/auto-install.js` asks about existing configs:
+The installer in `public/scripts/auto-install.js` asks about existing configs:
 
 1. **Overwrite** – the old config is replaced
 2. **Comment out + new** – the old config is kept as a comment, the new one is written below
@@ -90,7 +92,7 @@ npm test
 ## Deployment
 
 - GitHub push → Vercel auto-deploy (no manual trigger needed)
-- `vercel.json` rewrites: `/api/*` → API functions, `/landing` → `landing.html`, `/app` → `app.html`, `/*` → `index.html`
+- `vercel.json`: `outputDirectory` is `public/`; rewrites `/api/*` → API functions, `/landing` → `/landing.html`, `/app` → `/app.html`, `/*` → `/index.html`
 - `.env` vars set in the Vercel project dashboard (LOGIN_USER, LOGIN_PASS)
 - `package.json` version: `"version": "12.8.0"`
 - Daily GitHub Actions workflow auto-updates free models via `scripts/update-models.js`
@@ -107,3 +109,4 @@ npm test
 - `GH_TOKEN` is no longer needed
 - `OPENROUTER_API_KEY` is no longer in `.env` – only set as a GitHub secret when needed
 - The auto-installer uses `readline` for interactive merge prompts (Node.js version only)
+- The 4 `auto-install*` files live in `public/scripts/` (the browser fetches them at `./scripts/…`); `scripts/` holds dev/build tooling only and is not deployed

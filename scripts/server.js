@@ -5,10 +5,14 @@ import { fileURLToPath } from 'url';
 
 dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
 const app = express();
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(PUBLIC_DIR));
+
+app.get('/landing', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'landing.html')));
+app.get('/app', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'app.html')));
 
 const VALID_USER = process.env.LOGIN_USER;
 const VALID_PASS = process.env.LOGIN_PASS;

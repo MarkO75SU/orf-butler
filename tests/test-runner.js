@@ -1,10 +1,10 @@
-import { DAILY_PROMPTS, getPromptOfDay, generateRSS } from '../js/prompts.js';
-import { MODEL_MAPPING, getBestModels, MODEL_HISTORY } from '../js/mapping.js';
-import { TOOL_TEMPLATES, generateConfig } from '../js/templates.js';
-import { generateInstallMD, CLI_COMMANDS, OS_PATHS } from '../js/docs.js';
-import { isAuthenticated, login, logout, getUser } from '../js/auth.js';
-import { fetchLiveFreeModels } from '../js/api.js';
-import { BMC_URL } from '../js/config.js';
+import { DAILY_PROMPTS, getPromptOfDay, generateRSS } from '../public/js/prompts.js';
+import { MODEL_MAPPING, getBestModels, MODEL_HISTORY } from '../public/js/mapping.js';
+import { TOOL_TEMPLATES, generateConfig } from '../public/js/templates.js';
+import { generateInstallMD, CLI_COMMANDS, OS_PATHS } from '../public/js/docs.js';
+import { isAuthenticated, login, logout, getUser } from '../public/js/auth.js';
+import { fetchLiveFreeModels } from '../public/js/api.js';
+import { BMC_URL } from '../public/js/config.js';
 import fs from 'fs';
 
 let passed = 0;
@@ -330,7 +330,7 @@ runTestGroup("Integration Tests", () => {
 // 13. App Strategy Tests (BMC instead of paywall, no admin panel)
 // ──────────────────────────────────────────────
 runTestGroup("App Strategy Tests", () => {
-    const appSrc = fs.readFileSync(new URL('../js/app.js', import.meta.url), 'utf-8');
+    const appSrc = fs.readFileSync(new URL('../public/js/app.js', import.meta.url), 'utf-8');
     const m = appSrc.match(/const texts = \{[\s\S]*?\n\};/);
     assert(!!m, "App: texts object found in app.js");
     const texts = new Function(m[0] + '\nreturn texts;')();
@@ -347,7 +347,7 @@ runTestGroup("App Strategy Tests", () => {
     assert(appSrc.includes("'standard'") && appSrc.includes("'full'"), "App: standard/full bundle keys");
     assert(!appSrc.includes('premium'), "App: no premium references in app.js");
 
-    const appHtml = fs.readFileSync(new URL('../../app.html', import.meta.url), 'utf-8');
+    const appHtml = fs.readFileSync(new URL('../public/app.html', import.meta.url), 'utf-8');
     assert(!appHtml.includes('codes-modal'), "App: no codes modal in app.html");
     assert(!appHtml.includes('admin-badge'), "App: no admin badge in app.html");
     assert(!appHtml.includes('5€') && !appHtml.includes('20€'), "App: no price strings in app.html");
@@ -356,13 +356,13 @@ runTestGroup("App Strategy Tests", () => {
     assert(appHtml.includes('bundle-standard') && appHtml.includes('bundle-full'), "App: standard/full bundle buttons");
     assert(appHtml.includes('lang="en"'), "App: English-only lang attribute");
 
-    const landing = fs.readFileSync(new URL('../../landing.html', import.meta.url), 'utf-8');
+    const landing = fs.readFileSync(new URL('../public/landing.html', import.meta.url), 'utf-8');
     assert(!landing.includes('5€') && !landing.includes('20€'), "Landing: no price strings");
     assert(landing.includes('data-bmc="landing"'), "Landing: BMC support link present");
     assert(!landing.includes('Registrierung testen'), "Landing: admin test mode removed");
     assert(landing.includes('lang="en"'), "Landing: English-only lang attribute");
 
-    const index = fs.readFileSync(new URL('../../index.html', import.meta.url), 'utf-8');
+    const index = fs.readFileSync(new URL('../public/index.html', import.meta.url), 'utf-8');
     assert(index.includes('lang="en"'), "Index: English-only lang attribute");
 
     assert(BMC_URL.includes('buymeacoffee.com'), "BMC: placeholder URL configured");
@@ -374,11 +374,11 @@ runTestGroup("App Strategy Tests", () => {
 // ──────────────────────────────────────────────
 runTestGroup("Installer Tests", () => {
     const read = p => fs.readFileSync(new URL(p, import.meta.url), 'utf-8');
-    const node = read('../../scripts/auto-install.js');
-    const bat = read('../../scripts/auto-install-win.bat');
-    const sh = read('../../scripts/auto-install-linux.sh');
-    const mac = read('../../scripts/auto-install-mac.command');
-    const appSrc = read('../js/app.js');
+    const node = read('../public/scripts/auto-install.js');
+    const bat = read('../public/scripts/auto-install-win.bat');
+    const sh = read('../public/scripts/auto-install-linux.sh');
+    const mac = read('../public/scripts/auto-install-mac.command');
+    const appSrc = read('../public/js/app.js');
 
     const installers = { node, bat, sh, mac };
 
@@ -424,7 +424,7 @@ runTestGroup("Installer Tests", () => {
 // HTTP Helper Tests (async)
 // ──────────────────────────────────────────────
 runAsyncTestGroup("HTTP Helper Tests", async () => {
-    const { applyCors, handlePreflight, methodGuard, clientIp } = await import('../../lib/http.js');
+    const { applyCors, handlePreflight, methodGuard, clientIp } = await import('../lib/http.js');
 
     const headers = {};
     applyCors({ setHeader: (k, v) => { headers[k] = v; } });

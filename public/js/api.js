@@ -1,4 +1,4 @@
-// src/js/api.js
+// public/js/api.js
 export async function fetchLiveFreeModels() {
     try {
         const response = await fetch("https://openrouter.ai/api/v1/models");

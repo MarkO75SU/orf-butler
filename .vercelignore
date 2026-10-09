@@ -1,7 +1,9 @@
-docs/
 .github/
-src/tests/
+tests/
+scripts/
+.vercel/
 .gitignore
+.gitattributes
 AGENTS.md
 README.md
 LICENSE
