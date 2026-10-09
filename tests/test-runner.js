@@ -188,6 +188,28 @@ runTestGroup("Config Generation Tests", () => {
     // Full instruction
     const fullInstr = generateConfig("cursor", [["test/model", fm[0]]], "full");
     assert(fullInstr.includes("You are an expert."), "generateConfig: Full instruction has system_prompt");
+
+    // Multiple selected models are written into every config type
+    const entries = Object.entries(MODEL_MAPPING).slice(0, 2);
+    if (entries.length === 2) {
+        const [idA] = entries[0];
+        const [idB] = entries[1];
+
+        const cont = JSON.parse(generateConfig("continue", entries, "standard"));
+        assert(cont.models.length === 2, "generateConfig: JSON type lists all selected models");
+
+        const oc = JSON.parse(generateConfig("opencode", entries, "standard"));
+        assert(oc.provider.openrouter.models[idA] && oc.provider.openrouter.models[idB],
+            "generateConfig: OpenCode lists all selected models");
+
+        const aider = generateConfig("aider", entries, "standard");
+        assert(aider.includes(`openrouter/${idA}`) && aider.includes(`openrouter/${idB}`),
+            "generateConfig: YAML type lists all selected models");
+
+        const instr = generateConfig("cursor", entries, "standard");
+        assert(instr.includes(idA) && instr.includes(idB),
+            "generateConfig: Instruction type lists all selected models");
+    }
 });
 
 // ──────────────────────────────────────────────

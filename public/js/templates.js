@@ -127,12 +127,17 @@ export function generateConfig(toolId, models, tier, apiKey) {
     } : {};
 
     if (tool.type === "opencode") {
+        const modelsMap = {};
+        models.forEach(([id]) => {
+            modelsMap[id] = { name: `ORF-${id.split('/')[1] || id}` };
+        });
         const cfg = {
             $schema: "https://opencode.ai/config.json",
             model: firstId,
             small_model: firstId,
             provider: {
                 openrouter: {
+                    models: modelsMap,
                     options: {
                         apiKey: apiKey || 'YOUR_API_KEY_HERE',
                         ...fullProviderOptions
@@ -165,11 +170,16 @@ export function generateConfig(toolId, models, tier, apiKey) {
             yaml += "\ntemperature: 0.3\nmax_tokens: 4096\n";
             yaml += `pre_prompt: "${firstData?.system_prompt || 'Act as an expert software engineer.'}"`;
         }
+        if (models.length > 1) {
+            yaml += "\n# Available models (switch the 'model:' value above):\n";
+            yaml += models.map(([id]) => `#   openrouter/${id}`).join('\n');
+        }
         return yaml;
     }
 
     const basePrompt = isFull 
         ? (firstData?.system_prompt || EXPERT_PROMPT)
         : 'Act as a professional coder.';
-    return `# ORF-Butler ${tier.toUpperCase()} Instructions\n${basePrompt}`;
+    const modelList = models.map(([id]) => `- ${id}`).join('\n');
+    return `# ORF-Butler ${tier.toUpperCase()} Instructions\n${basePrompt}\n\n## Available models\n${modelList}`;
 }
