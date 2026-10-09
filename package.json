@@ -5,7 +5,7 @@
   "type": "module",
   "license": "MIT",
   "author": "ORF-Butler contributors",
-  "homepage": "https://orfb.vercel.app",
+  "homepage": "https://orfb-butler.vercel.app",
   "repository": {
     "type": "git",
     "url": "https://github.com/MarkO75SU/orfb-butler.git"

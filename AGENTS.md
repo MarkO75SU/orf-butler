@@ -20,7 +20,7 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 | `/license` | `public/license.html` | MIT license text |
 | `/sitemap.xml`, `/robots.txt` | `public/` | SEO files |
 
-**Flow:** `orfb.vercel.app` → `/` (landing) → "Go to app" → `/app`. Every page is public — there is **no login and no access gate**.
+**Flow:** `orfb-butler.vercel.app` → `/` (landing) → "Go to app" → `/app`. Every page is public — there is **no login and no access gate**.
 
 ## Architecture
 
