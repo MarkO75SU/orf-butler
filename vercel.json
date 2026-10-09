@@ -8,10 +8,6 @@
     { "source": "/license", "destination": "/license.html" },
     { "source": "/imprint", "destination": "/imprint.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "redirects": [
-    { "source": "/lib/(.*)", "destination": "/404", "permanent": false },
-    { "source": "/tests/(.*)", "destination": "/404", "permanent": false }
+    { "source": "/(.*)", "destination": "/landing.html" }
   ]
 }

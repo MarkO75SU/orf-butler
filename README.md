@@ -15,31 +15,30 @@ ORF-Butler is a static web app that turns a curated list of free OpenRouter mode
 - **Interactive auto-installer** — optional installer (Node, Windows `.bat`, macOS `.command`, Linux `.sh`) with merge logic: overwrite, comment out, merge JSON, or skip.
 - **Tool-specific `INSTALL.md`** — step-by-step install guide per tool and OS.
 - **Blog / changelog** — the landing page renders model changes recorded in `public/data/changelog.json`.
-- **No tracking, no account required** — everything is free and runs entirely in the browser.
+- **No account required** — everything is free and runs entirely in the browser (cookieless Umami analytics only).
 
 ## Quick Start
 
 ```bash
 npm install
-cp .env.example .env   # set LOGIN_USER / LOGIN_PASS for the admin login
 npm start              # http://localhost:3000
 npm test               # pure Node ESM test suite
 ```
 
-There is no build step and no bundler. The app is plain HTML + ES modules and deploys as static files (Vercel). Social login is optional — without Supabase env vars the app still works with the admin password login.
+There is no build step and no bundler. The app is plain HTML + ES modules and deploys as pure static files on Vercel. No login, no account and no server-side functions.
 
 ## Routes
 
 | URL | File | Purpose |
 |-----|------|---------|
-| `/` | `public/index.html` | Login (social OAuth or admin password) |
-| `/landing` | `public/landing.html` | Features, tools, bundles and the changelog blog |
+| `/` and `/landing` | `public/landing.html` | Landing page: features, tools, bundles, changelog blog |
 | `/app` | `public/app.html` | 4-step wizard: models → tools → bundle → ZIP download |
 | `/imprint` | `public/imprint.html` | Legal imprint (Impressum, German law) |
 | `/privacy` | `public/privacy.html` | Privacy policy (Datenschutzerklärung, GDPR) |
 | `/license` | `public/license.html` | MIT license text |
+| `/sitemap.xml`, `/robots.txt` | `public/` | SEO files |
 
-Authentication is handled centrally: `middleware.js` guards `/landing` and `/app` using the `orf_session` cookie set by `api/login.js` (admin) or `api/confirm-session.js` (social login).
+Every page is public — there is no login or access gate.
 
 ## Tool targets
 
@@ -49,8 +48,9 @@ Continue · OpenCode · Zed · Aider · Cursor · Windsurf · Claude Code · Git
 
 ```
 public/                          Static site (Vercel output directory)
-  index.html / landing.html / app.html   Entry points (static SPA)
+  landing.html / app.html        Entry points (static SPA)
   imprint.html / privacy.html / license.html   Legal pages (Impressum, Datenschutz, MIT license)
+  sitemap.xml / robots.txt       SEO files
   favicon.svg
   js/
     app.js       Wizard UI: multi-select, bundle, ZIP download, thanks popup
@@ -58,7 +58,6 @@ public/                          Static site (Vercel output directory)
     templates.js Per-tool config generation (TOOL_TEMPLATES registry)
     docs.js      Install guides, OS paths, CLI commands
     config.js    BMC_URL (single source of truth)
-    auth.js      login() / logout() / isAuthenticated() / getUser()
   data/changelog.json            Model change history (blog content)
   scripts/
     auto-install.js              Interactive Node installer
@@ -68,10 +67,7 @@ public/                          Static site (Vercel output directory)
 scripts/                         Dev/build tooling (not deployed)
   server.js                      Local dev server (npm start)
   update-models.js               Daily model + changelog updater
-api/                             Vercel serverless functions
-lib/http.js                      Shared HTTP helpers
 tests/test-runner.js             Pure Node test suite
-middleware.js                    Vercel edge auth guard
 vercel.json                      Rewrites + output directory
 ```
 
@@ -81,9 +77,7 @@ vercel.json                      Rewrites + output directory
 
 ## Deployment
 
-Push to `main` — Vercel auto-deploys. Set `LOGIN_USER` and `LOGIN_PASS` under **Vercel → Project → Settings → Environment Variables (Production)**; without them `POST /api/login` returns `500 Credentials not configured`. Optional Supabase env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`) enable social login; without them the social buttons report "Social login is not available."
-
-After renaming the GitHub repository, re-check that the Vercel project still points at the correct repo and that all environment variables are present in the (possibly re-created) project.
+Push to `main` — Vercel auto-deploys the static site from `public/`. No environment variables and no serverless functions are required.
 
 ## Contributing
 

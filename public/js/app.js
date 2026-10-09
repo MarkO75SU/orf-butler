@@ -1,6 +1,5 @@
 import { TOOL_TEMPLATES, generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
-import { logout } from './auth.js';
 import { MODEL_MAPPING } from './mapping.js';
 import { BMC_URL } from './config.js';
 
@@ -53,12 +52,6 @@ const texts = {
     modelError: "Error loading models",
     newBadge: "NEW",
     toolTypeLabel: "Type:"
-};
-
-window.logout = () => {
-    logout();
-    sessionStorage.removeItem('orf_state');
-    window.location.href = '/landing';
 };
 
 function updateUI() {

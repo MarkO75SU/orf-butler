@@ -13,30 +13,28 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 
 | URL | File | Purpose |
 |-----|------|---------|
-| `/` (root) | `public/index.html` | **Website login** – social (OAuth) or admin password |
-| `/landing` | `public/landing.html` | Features/tools/bundles (all free) + support section (BMC) + blog |
+| `/` and `/landing` | `public/landing.html` | Features/tools/bundles (all free) + support section (BMC) + blog |
 | `/app` | `public/app.html` | 4-step wizard (models → tools → bundle → ZIP download) |
 | `/imprint` | `public/imprint.html` | Impressum (§ 5 DDG, German legal notice) |
 | `/privacy` | `public/privacy.html` | Datenschutzerklärung (GDPR privacy policy) |
 | `/license` | `public/license.html` | MIT license text |
+| `/sitemap.xml`, `/robots.txt` | `public/` | SEO files |
 
-**Flow:** `orfb.vercel.app` → login → `/landing` → "Go to app" → `/app` → logout → back to `/`
+**Flow:** `orfb.vercel.app` → `/` (landing) → "Go to app" → `/app`. Every page is public — there is **no login and no access gate**.
 
 ## Architecture
 
-- **Static SPA** (no framework) served from `public/` (Vercel `outputDirectory`): `public/index.html` + `public/landing.html` + `public/app.html`
+- **Static SPA** (no framework) served from `public/` (Vercel `outputDirectory`): `public/landing.html` (home) + `public/app.html`
 - JS modules under `public/js/`, loaded via `<script type="module">`; installer assets the browser fetches live in `public/scripts/`
 - Dev/build tooling lives in `scripts/` (`server.js`, `update-models.js`) and is not deployed
-- **Vercel**: serverless API (`api/login.js`, `api/logout.js`, `api/supabase-config.js`, `api/confirm-session.js`); `vercel.json` rewrites; `middleware.js` protects `/landing` + `/app` via the `orf_session` cookie
-- **Auth**: the only login is the **website login** at `/` – social (Supabase OAuth) or admin (`LOGIN_USER`/`LOGIN_PASS` via `POST /api/login`); landing + app are open afterwards
-- Credentials: env vars `LOGIN_USER` / `LOGIN_PASS` only, never hardcoded
+- **Vercel**: pure static hosting via `vercel.json` rewrites; **no serverless functions, no `api/`, no `lib/`, no `middleware.js`**
+- **No auth / no login** – all pages are public; there is no admin login, no social login and no access gate
 
 ## Key Modules
 
 | File | Purpose |
 |------|---------|
-| `public/index.html` | Login page (root route) |
-| `public/landing.html` | Marketing page + blog/changelog section |
+| `public/landing.html` | Landing/home page + blog/changelog section |
 | `public/app.html` | Main app: 4-step wizard for model/tool selection |
 | `public/imprint.html` | Impressum (§ 5 DDG) – operator: Markus Otterbein, Siegburg |
 | `public/privacy.html` | Datenschutzerklärung (GDPR) |
@@ -46,7 +44,7 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 | `public/js/mapping.js` | Auto-generated free-model DB (tags + descriptions) |
 | `public/js/templates.js` | Config generation per tool, `TOOL_TEMPLATES` registry (15 tools) |
 | `public/js/docs.js` | Install guides, OS paths, CLI commands |
-| `public/js/auth.js` | `isAuthenticated()` / `login()` / `logout()` / `getUser()` |
+| `public/sitemap.xml`, `public/robots.txt` | SEO files |
 | `tests/test-runner.js` | Pure Node test suite (no DOM) |
 | `public/data/changelog.json` | Auto-generated model change history (blog content) |
 | `public/scripts/auto-install.js` | Auto-installer with merge logic (overwrite/comment/merge) |
@@ -57,8 +55,8 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 - **No prices, no paywall, no registration** – both bundles are free
 - **Buy Me a Coffee** (placeholder URL in `public/js/config.js`): links in the landing support section, app header and download thanks popup (all `a[data-bmc]`)
 - **No codes system** – no code login, no codes API, no paywall gate
-- **Website login** at `/` (social + admin password) is the only login; `/landing` + `/app` are open afterwards
-- **Tracking**: Umami Cloud loaded in all 3 HTML files (`data-website-id` set); events `download` (props: models/tools/bundle/os) and `bmc_click` (prop: location) via `window.umami?.track`; cookieless, covered by privacy §7
+- **No login at all** – every page is public; do not reintroduce an auth gate
+- **Tracking**: Umami Cloud loaded in all HTML pages (`data-website-id` set); events `download` (props: models/tools/bundle/os) and `bmc_click` (prop: location) via `window.umami?.track`; cookieless, covered by privacy §7
 - **Open source (MIT)**: every page header/footer links to `https://github.com/MarkO75SU/orfb-butler`; the site states it is free & open source
 - **Legal pages** (German, required): `/imprint` (`imprint.html`) and `/privacy` (`privacy.html`) – operator data must stay in sync with the actual controller
 
@@ -100,8 +98,8 @@ npm test
 ## Deployment
 
 - GitHub push → Vercel auto-deploy (no manual trigger needed)
-- `vercel.json`: `outputDirectory` is `public/`; rewrites `/api/*` → API functions, `/landing` → `/landing.html`, `/app` → `/app.html`, `/*` → `/index.html`
-- `.env` vars set in the Vercel project dashboard (LOGIN_USER, LOGIN_PASS)
+- `vercel.json`: `outputDirectory` is `public/`; rewrites `/landing` → `/landing.html`, `/app` → `/app.html`, `/license|imprint|privacy` → their `.html`, catch-all → `/landing.html`
+- No environment variables required — pure static hosting
 - `package.json` version: `"version": "12.8.0"`
 - Daily GitHub Actions workflow auto-updates free models via `scripts/update-models.js`
 
@@ -109,12 +107,11 @@ npm test
 
 - Do NOT remove the `:free` suffix from model IDs
 - Do NOT hardcode credentials in any source file
-- `POST /api/login` returning `500 Credentials not configured` means `LOGIN_USER`/`LOGIN_PASS` are missing in the Vercel project (common after a repo rename / re-created project) – set them in the dashboard; social login is optional and degrades gracefully when Supabase env vars are absent
 - JSZip is loaded via CDN, not npm — available as the global `JSZip`
 - Tailwind CSS via CDN — cosmetic warnings are harmless
 - `models-grid` and `tools-grid` use a 2-column layout with max-height 400px + custom scrollbar
-- **No codes/paywall system** – do not reintroduce one (no `api/codes.js`, no `lib/github-store.js`)
-- **No separate app login** – access is controlled only by the website login (`middleware.js`); do not reactivate a check in `app.html`
+- **No codes/paywall system** – do not reintroduce one
+- **No login/auth gate** – do not reintroduce `middleware.js`, `api/login.js`, `api/confirm-session.js` or a login page
 - `GH_TOKEN` is no longer needed
 - `OPENROUTER_API_KEY` is no longer in `.env` – only set as a GitHub secret when needed
 - The auto-installer uses `readline` for interactive merge prompts (Node.js version only)

@@ -2,7 +2,6 @@ import { DAILY_PROMPTS, getPromptOfDay, generateRSS } from '../public/js/prompts
 import { MODEL_MAPPING, getBestModels, MODEL_HISTORY } from '../public/js/mapping.js';
 import { TOOL_TEMPLATES, generateConfig } from '../public/js/templates.js';
 import { generateInstallMD, CLI_COMMANDS, OS_PATHS } from '../public/js/docs.js';
-import { isAuthenticated, login, logout, getUser } from '../public/js/auth.js';
 import { fetchLiveFreeModels } from '../public/js/api.js';
 import { BMC_URL } from '../public/js/config.js';
 import fs from 'fs';
@@ -278,17 +277,7 @@ runTestGroup("OS Paths Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 10. Auth Tests
-// ──────────────────────────────────────────────
-runTestGroup("Auth Tests", () => {
-    assert(typeof isAuthenticated === 'function', "Auth: isAuthenticated is function");
-    assert(typeof login === 'function', "Auth: login is function");
-    assert(typeof logout === 'function', "Auth: logout is function");
-    assert(typeof getUser === 'function', "Auth: getUser is function");
-});
-
-// ──────────────────────────────────────────────
-// 11. API Tests
+// 10. API Tests
 // ──────────────────────────────────────────────
 runTestGroup("API Tests", () => {
     assert(typeof fetchLiveFreeModels === 'function', "API: fetchLiveFreeModels is function");
@@ -362,9 +351,6 @@ runTestGroup("App Strategy Tests", () => {
     assert(!landing.includes('Registrierung testen'), "Landing: admin test mode removed");
     assert(landing.includes('lang="en"'), "Landing: English-only lang attribute");
 
-    const index = fs.readFileSync(new URL('../public/index.html', import.meta.url), 'utf-8');
-    assert(index.includes('lang="en"'), "Index: English-only lang attribute");
-
     assert(BMC_URL.includes('buymeacoffee.com'), "BMC: placeholder URL configured");
     assert(BMC_URL === 'https://www.buymeacoffee.com/DEIN-NAME', "BMC: placeholder not yet replaced");
 });
@@ -418,34 +404,6 @@ runTestGroup("Installer Tests", () => {
     // Auto-install readme documents the project folder (English-only)
     assert(appSrc.includes('Project Folder'), "Installer readme: Project Folder section");
     assert(!appSrc.includes('Projektordner'), "Installer readme: no German section");
-});
-
-// ──────────────────────────────────────────────
-// HTTP Helper Tests (async)
-// ──────────────────────────────────────────────
-runAsyncTestGroup("HTTP Helper Tests", async () => {
-    const { applyCors, handlePreflight, methodGuard, clientIp } = await import('../lib/http.js');
-
-    const headers = {};
-    applyCors({ setHeader: (k, v) => { headers[k] = v; } });
-    assert(headers['Access-Control-Allow-Origin'] === '*', "http: applyCors sets wildcard origin");
-
-    let ended = false, statusCode = null;
-    const resOpt = {
-        status: (c) => { statusCode = c; return { end: () => { ended = true; }, json: () => {} }; },
-        end: () => { ended = true; }
-    };
-    assert(handlePreflight({ method: 'OPTIONS' }, resOpt) === true, "http: preflight handles OPTIONS");
-    assert(ended && statusCode === 200, "http: preflight ends 200");
-
-    let jsonBody = null;
-    const res405 = { status: (c) => ({ json: (b) => { statusCode = c; jsonBody = b; } }) };
-    assert(methodGuard({ method: 'GET' }, res405, 'POST') === true, "http: methodGuard blocks wrong method");
-    assert(statusCode === 405 && jsonBody && jsonBody.error, "http: methodGuard returns 405");
-    assert(methodGuard({ method: 'POST' }, res405, 'POST') === false, "http: methodGuard allows correct method");
-
-    assert(clientIp({ headers: { 'x-forwarded-for': '1.2.3.4, 5.6.7.8' } }) === '1.2.3.4', "http: clientIp parses x-forwarded-for");
-    assert(clientIp({ headers: {}, socket: { remoteAddress: '9.9.9.9' } }) === '9.9.9.9', "http: clientIp falls back to socket");
 });
 
 // Run async groups (before the summary)
