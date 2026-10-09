@@ -37,6 +37,7 @@ There is no build step and no bundler. The app is plain HTML + ES modules and de
 | `/app` | `public/app.html` | 4-step wizard: models → tools → bundle → ZIP download |
 | `/imprint` | `public/imprint.html` | Legal imprint (Impressum, German law) |
 | `/privacy` | `public/privacy.html` | Privacy policy (Datenschutzerklärung, GDPR) |
+| `/license` | `public/license.html` | MIT license text |
 
 Authentication is handled centrally: `middleware.js` guards `/landing` and `/app` using the `orf_session` cookie set by `api/login.js` (admin) or `api/confirm-session.js` (social login).
 
@@ -49,7 +50,7 @@ Continue · OpenCode · Zed · Aider · Cursor · Windsurf · Claude Code · Git
 ```
 public/                          Static site (Vercel output directory)
   index.html / landing.html / app.html   Entry points (static SPA)
-  imprint.html / privacy.html            Legal pages (Impressum, Datenschutz)
+  imprint.html / privacy.html / license.html   Legal pages (Impressum, Datenschutz, MIT license)
   favicon.svg
   js/
     app.js       Wizard UI: multi-select, bundle, ZIP download, thanks popup

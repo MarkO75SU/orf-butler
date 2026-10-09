@@ -13,6 +13,7 @@ app.use(express.static(PUBLIC_DIR));
 
 app.get('/landing', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'landing.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'app.html')));
+app.get('/license', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'license.html')));
 app.get('/imprint', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'imprint.html')));
 app.get('/privacy', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'privacy.html')));
 
