@@ -4,3 +4,8 @@ dist/
 .DS_Store
 .vercel
 graphify-out/
+.agents/
+.opencode/
+skills-lock.json
+model-changes.txt
+scripts/install-log.txt

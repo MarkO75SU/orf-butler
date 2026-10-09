@@ -81,7 +81,7 @@ function findConfigFiles(dir) {
     });
 }
 
-// Sucht Projektordner (Marker: .git) rund um Home/Desktop/Documents
+// Searches for project folders (marker: .git) around Home/Desktop/Documents
 function findProjectRoots(zipDir, limit = 8) {
     const roots = [];
     const seen = new Set();
@@ -112,22 +112,22 @@ function findProjectRoots(zipDir, limit = 8) {
 
 async function chooseProjectRoot(zipDir) {
     const roots = findProjectRoots(zipDir);
-    console.log(`\n  ${BOLD}Projektordner für projekt-lokale Configs${RESET}`);
+    console.log(`\n  ${BOLD}Project folder for project-local configs${RESET}`);
     console.log(`  ${CYAN}(.cursorrules, CLAUDE.md, .clinerules, …)${RESET}`);
-    console.log(`    ${CYAN}[Enter]${RESET} Behalte aktuellen Ordner: ${zipDir}`);
+    console.log(`    ${CYAN}[Enter]${RESET} Keep the current folder: ${zipDir}`);
     roots.slice(1).forEach((r, i) => console.log(`    ${CYAN}[${i + 1}]${RESET} ${r}`));
-    console.log(`    ${CYAN}[f]${RESET} Eigenen Pfad eingeben`);
+    console.log(`    ${CYAN}[f]${RESET} Enter a custom path`);
 
     const answer = await askQuestion(`  → `);
     if (!answer || answer === '0') return zipDir;
     if (answer.toLowerCase() === 'f') {
-        const custom = await askQuestion(`  Pfad: `);
+        const custom = await askQuestion(`  Path: `);
         return custom ? path.resolve(custom.replace(/^"|"$/g, '')) : zipDir;
     }
     const idx = parseInt(answer, 10);
     const pick = roots[idx];
     if (idx >= 1 && pick) return pick;
-    console.log(`  ${YELLOW}⚠ Ungültige Eingabe – aktueller Ordner${RESET}`);
+    console.log(`  ${YELLOW}⚠ Invalid input – using the current folder${RESET}`);
     return zipDir;
 }
 
@@ -143,7 +143,7 @@ function isJsonFile(filePath) {
 function validateConfig(content, ext) {
     if (ext === '.json') {
         try { JSON.parse(content); return true; }
-        catch (e) { return `JSON ungültig: ${e.message}`; }
+        catch (e) { return `Invalid JSON: ${e.message}`; }
     }
     if (ext === '.yml' || ext === '.yaml') {
         const lines = content.split('\n').filter(l => l.trim() && !l.trim().startsWith('#'));
@@ -154,7 +154,7 @@ function validateConfig(content, ext) {
 }
 
 function checkApiKeyPlaceholder(content) {
-    return content.includes('DEIN_API_KEY_HERE');
+    return content.includes('YOUR_API_KEY_HERE');
 }
 
 function mergeJson(existingContent, newContent) {
@@ -185,27 +185,27 @@ async function handleExistingFile(destPath, srcPath, label) {
     const ext = path.extname(destPath);
     const backupPath = destPath + '.backup-' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 
-    console.log(`\n  ${YELLOW}⚠ ${label}: Config existiert bereits!${RESET}`);
-    console.log(`    Pfad: ${destPath}`);
-    console.log(`  ${GREEN}📦 Backup wird erstellt: ${path.basename(backupPath)}${RESET}`);
+    console.log(`\n  ${YELLOW}⚠ ${label}: config already exists!${RESET}`);
+    console.log(`    Path: ${destPath}`);
+    console.log(`  ${GREEN}📦 Creating backup: ${path.basename(backupPath)}${RESET}`);
     fs.copyFileSync(destPath, backupPath);
 
-    console.log(`  ${BOLD}Was möchtest du tun?${RESET}`);
-    console.log(`    ${CYAN}[1]${RESET} Überschreiben (Backup in .backup-...)`);
-    console.log(`    ${CYAN}[2]${RESET} Auskommentieren + neue daneben (Backup in .backup-...)`);
-    console.log(`    ${CYAN}[3]${RESET} Beide Inhalte mergen (nur JSON, Backup in .backup-...)`);
-    console.log(`    ${CYAN}[s]${RESET} Überspringen (Backup bleibt, nichts geändert)`);
+    console.log(`  ${BOLD}What would you like to do?${RESET}`);
+    console.log(`    ${CYAN}[1]${RESET} Overwrite (backup in .backup-...)`);
+    console.log(`    ${CYAN}[2]${RESET} Comment out + write new below (backup in .backup-...)`);
+    console.log(`    ${CYAN}[3]${RESET} Merge both contents (JSON only, backup in .backup-...)`);
+    console.log(`    ${CYAN}[s]${RESET} Skip (backup kept, nothing changed)`);
 
     const answer = await askQuestion(`  → `);
 
     if (answer === 's' || answer === 'S') {
-        console.log(`  ${YELLOW}⚠ ${label}: Übersprungen${RESET}`);
+        console.log(`  ${YELLOW}⚠ ${label}: skipped${RESET}`);
         return 'skipped';
     }
 
     if (answer === '1') {
         fs.copyFileSync(srcPath, destPath);
-        console.log(`  ${GREEN}✔ ${label}: Überschrieben${RESET}`);
+        console.log(`  ${GREEN}✔ ${label}: overwritten${RESET}`);
         return 'overwritten';
     }
 
@@ -213,47 +213,47 @@ async function handleExistingFile(destPath, srcPath, label) {
         const commented = commentOutLines(existingContent, ext);
         const combined = commented + '\n\n// --- ORF-Butler Config ---\n\n' + newContent;
         fs.writeFileSync(destPath, combined);
-        console.log(`  ${GREEN}✔ ${label}: Alte Config auskommentiert + neue geschrieben${RESET}`);
+        console.log(`  ${GREEN}✔ ${label}: old config commented out + new one written${RESET}`);
         return 'commented';
     }
 
     if (answer === '3') {
         if (!isJsonFile(destPath)) {
-            console.log(`  ${YELLOW}⚠ Merge nur bei JSON-Dateien möglich – überspringe${RESET}`);
+            console.log(`  ${YELLOW}⚠ Merge is only possible for JSON files – skipping${RESET}`);
             return 'skipped';
         }
         const merged = mergeJson(existingContent, newContent);
         if (!merged) {
-            console.log(`  ${RED}✗ Merge fehlgeschlagen (ungültiges JSON) – überspringe${RESET}`);
+            console.log(`  ${RED}✗ Merge failed (invalid JSON) – skipping${RESET}`);
             return 'skipped';
         }
         fs.writeFileSync(destPath, merged);
-        console.log(`  ${GREEN}✔ ${label}: JSON gemerged${RESET}`);
+        console.log(`  ${GREEN}✔ ${label}: JSON merged${RESET}`);
         return 'merged';
     }
 
-    console.log(`  ${YELLOW}⚠ Ungültige Eingabe – übersprungen${RESET}`);
+    console.log(`  ${YELLOW}⚠ Invalid input – skipped${RESET}`);
     return 'skipped';
 }
 
 async function run() {
     console.log(`\n${BOLD}${CYAN}╔══════════════════════════════════════╗${RESET}`);
-    console.log(`${BOLD}${CYAN}║   ORF-Butler Auto-Installer (Premium) ║${RESET}`);
+    console.log(`${BOLD}${CYAN}║   ORF-Butler Auto-Installer (Full)   ║${RESET}`);
     console.log(`${BOLD}${CYAN}╚══════════════════════════════════════╝${RESET}\n`);
 
     const os_key = detectOS();
-    console.log(`  Betriebssystem: ${os_key}\n`);
+    console.log(`  Operating system: ${os_key}\n`);
 
-    const previewAnswer = await askQuestion(`  Config vor dem Speichern prüfen? (j/n, Enter = nein): `);
-    const previewEnabled = previewAnswer.toLowerCase() === 'j';
+    const previewAnswer = await askQuestion(`  Preview config before saving? (y/n, Enter = no): `);
+    const previewEnabled = previewAnswer.toLowerCase() === 'y';
 
-    // Log-Datei initialisieren
+    // Initialize log file
     const logPath = path.join(__dirname, 'install-log.txt');
-    const logLines = [`ORF-Butler Auto-Installer Log`, `Datum: ${new Date().toISOString()}`, `----------------------------------------`];
+    const logLines = [`ORF-Butler Auto-Installer Log`, `Date: ${new Date().toISOString()}`, `----------------------------------------`];
     function log(msg) { logLines.push(msg); }
     function writeLog() { try { fs.writeFileSync(logPath, logLines.join('\n')); } catch {} }
 
-    // Manifest-Prüfung
+    // Manifest check
     let manifestTools = null;
     try {
         const manifestContent = fs.readFileSync(path.join(__dirname, 'manifest.txt'), 'utf-8');
@@ -262,12 +262,12 @@ async function run() {
 
     const configs = findConfigFiles(__dirname);
     if (configs.length === 0) {
-        console.log(`  ${RED}Keine Config-Dateien gefunden.${RESET}`);
-        console.log(`  ${YELLOW}Lege das Skript in den Ordner mit den Config-Dateien.${RESET}\n`);
+        console.log(`  ${RED}No config files found.${RESET}`);
+        console.log(`  ${YELLOW}Place the script in the folder that contains the config files.${RESET}\n`);
         return;
     }
 
-    console.log(`  ${BOLD}Gefundene Konfigurationen:${RESET}`);
+    console.log(`  ${BOLD}Configs found:${RESET}`);
     configs.forEach((c, i) => {
         const info = OS_PATHS[os_key][c.toolId];
         const label = info ? info.label : c.toolId;
@@ -282,14 +282,14 @@ async function run() {
 
     const zipDir = __dirname;
     const projectRoot = needsProject ? await chooseProjectRoot(zipDir) : zipDir;
-    log(`Projektordner: ${projectRoot}`);
+    log(`Project folder: ${projectRoot}`);
 
     let installed = 0, skipped = 0, warnings = [];
 
     for (const config of configs) {
         const info = OS_PATHS[os_key][config.toolId];
         if (!info) {
-            console.log(`  ${YELLOW}⚠ ${config.toolId}: Unbekanntes Tool → übersprungen${RESET}`);
+            console.log(`  ${YELLOW}⚠ ${config.toolId}: unknown tool → skipped${RESET}`);
             skipped++;
             continue;
         }
@@ -300,12 +300,12 @@ async function run() {
         const srcPath = path.join(__dirname, config.file);
 
         if (!fs.existsSync(srcPath)) {
-            console.log(`  ${RED}✗ ${info.label}: Datei nicht gefunden${RESET}`);
+            console.log(`  ${RED}✗ ${info.label}: file not found${RESET}`);
             skipped++;
             continue;
         }
 
-        // Manifest-Prüfung: nur Tools verarbeiten, die im Bundle waren
+        // Manifest check: only process tools that were part of the bundle
         if (manifestTools && !manifestTools.includes(config.toolId)) {
             skipped++;
             continue;
@@ -314,17 +314,17 @@ async function run() {
         const newContent = fs.readFileSync(srcPath, 'utf-8');
         const ext = path.extname(config.file);
 
-        // Pro Tool Bestätigung
-        const toolConfirm = await askQuestion(`  Config für ${info.label} installieren? (j/n, Enter=ja): `);
+        // Per-tool confirmation
+        const toolConfirm = await askQuestion(`  Install config for ${info.label}? (y/n, Enter=yes): `);
         if (toolConfirm.toLowerCase() === 'n') {
-            console.log(`  ${YELLOW}⚠ ${info.label}: Übersprungen${RESET}`);
+            console.log(`  ${YELLOW}⚠ ${info.label}: skipped${RESET}`);
             skipped++;
             continue;
         }
 
         const valid = validateConfig(newContent, ext);
         if (valid !== true) {
-            console.log(`  ${RED}✗ ${info.label}: ${valid} → übersprungen${RESET}`);
+            console.log(`  ${RED}✗ ${info.label}: ${valid} → skipped${RESET}`);
             skipped++;
             continue;
         }
@@ -337,9 +337,9 @@ async function run() {
         if (!fs.existsSync(destDir)) {
             try {
                 fs.mkdirSync(destDir, { recursive: true });
-                console.log(`  ${CYAN}📁 Ordner erstellt: ${destDir}${RESET}`);
+                console.log(`  ${CYAN}📁 Folder created: ${destDir}${RESET}`);
             } catch (err) {
-                console.log(`  ${RED}✗ ${info.label}: Ordner konnte nicht erstellt werden${RESET}`);
+                console.log(`  ${RED}✗ ${info.label}: could not create folder${RESET}`);
                 skipped++;
                 continue;
             }
@@ -351,17 +351,17 @@ async function run() {
             installed++;
         } else {
             if (previewEnabled) {
-                console.log(`\n  ${BOLD}═══ Vorschau: ${info.label} ═══${RESET}`);
+                console.log(`\n  ${BOLD}═══ Preview: ${info.label} ═══${RESET}`);
                 console.log(fs.readFileSync(srcPath, 'utf-8'));
-                const confirm = await askQuestion(`  Speichern unter ${destPath}? (j/n): `);
-                if (confirm.toLowerCase() !== 'j') {
+                const confirm = await askQuestion(`  Save to ${destPath}? (y/n): `);
+                if (confirm.toLowerCase() !== 'y') {
                     const downloadPath = path.join(os.homedir(), 'Downloads', config.file);
                     try {
                         fs.copyFileSync(srcPath, downloadPath);
-                        console.log(`  ${GREEN}✔ ${info.label} → In Downloads gespeichert${RESET}`);
+                        console.log(`  ${GREEN}✔ ${info.label} → saved to Downloads${RESET}`);
                         installed++;
                     } catch (err) {
-                        console.log(`  ${RED}✗ ${info.label}: Fehler - ${err.message}${RESET}`);
+                        console.log(`  ${RED}✗ ${info.label}: error - ${err.message}${RESET}`);
                         skipped++;
                     }
                     continue;
@@ -369,33 +369,33 @@ async function run() {
             }
             try {
                 fs.copyFileSync(srcPath, destPath);
-                console.log(`  ${GREEN}✔ ${info.label} → Installiert${RESET}`);
+                console.log(`  ${GREEN}✔ ${info.label} → installed${RESET}`);
                 installed++;
             } catch (err) {
-                console.log(`  ${RED}✗ ${info.label}: Fehler - ${err.message}${RESET}`);
+                console.log(`  ${RED}✗ ${info.label}: error - ${err.message}${RESET}`);
                 skipped++;
             }
         }
     }
 
     console.log(`\n  ${BOLD}══════════════════════════════════════${RESET}`);
-    console.log(`  ${BOLD}  Zusammenfassung${RESET}`);
+    console.log(`  ${BOLD}  Summary${RESET}`);
     console.log(`  ${BOLD}══════════════════════════════════════${RESET}`);
-    console.log(`  ${GREEN}✔ Erfolgreich installiert: ${installed}${RESET}`);
-    console.log(`  ${YELLOW}⚠ Übersprungen: ${skipped}${RESET}`);
+    console.log(`  ${GREEN}✔ Successfully installed: ${installed}${RESET}`);
+    console.log(`  ${YELLOW}⚠ Skipped: ${skipped}${RESET}`);
 
     writeLog();
 
     if (warnings.length > 0) {
-        console.log(`\n  ${YELLOW}${BOLD}⚠ ACHTUNG: API-Key erforderlich${RESET}`);
-        console.log(`  ${YELLOW}Folgende Configs enthalten noch 'DEIN_API_KEY_HERE':${RESET}`);
+        console.log(`\n  ${YELLOW}${BOLD}⚠ NOTE: API key required${RESET}`);
+        console.log(`  ${YELLOW}The following configs still contain 'YOUR_API_KEY_HERE':${RESET}`);
         warnings.forEach(label => console.log(`    - ${label}`));
-        console.log(`  ${CYAN}→ In der Config-Datei mit Texteditor öffnen und ersetzen.${RESET}`);
-        console.log(`  ${CYAN}→ Kostenlosen Key holen: https://openrouter.ai/keys${RESET}`);
+        console.log(`  ${CYAN}→ Open the config file in a text editor and replace it.${RESET}`);
+        console.log(`  ${CYAN}→ Get a free key: https://openrouter.ai/keys${RESET}`);
     }
 
     console.log(`  ${CYAN}Log: ${logPath}${RESET}`);
-    console.log(`\n  ${CYAN}✅ Fertig! Starte dein Tool neu.${RESET}\n`);
+    console.log(`\n  ${CYAN}✅ Done! Restart your tool.${RESET}\n`);
 }
 
 export { OS_PATHS, findConfigFiles, findProjectRoots, chooseProjectRoot, detectOS };

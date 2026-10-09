@@ -1,7 +1,33 @@
 {
   "name": "orf-butler",
   "version": "12.8.0",
+  "description": "Generate ready-to-use configuration files for free OpenRouter models across popular AI coding tools.",
   "type": "module",
+  "license": "MIT",
+  "author": "ORF-Butler contributors",
+  "homepage": "https://orfb.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarkO75SU/orfb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MarkO75SU/orfb/issues"
+  },
+  "keywords": [
+    "openrouter",
+    "free-models",
+    "llm",
+    "ai",
+    "config-generator",
+    "continue",
+    "aider",
+    "opencode",
+    "zed",
+    "cursor"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "test": "node src/tests/test-runner.js",
     "start": "node server.js",

@@ -4,108 +4,106 @@
 
 ```bash
 npm start          # local dev @ http://localhost:3000
-npm test           # 664 tests, pure Node ESM
+npm test           # pure Node ESM test suite
 ```
 
-No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
+No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 
 ## Entry Points
 
 | URL | File | Purpose |
 |-----|------|---------|
-| `/` (root) | `index.html` | **Website-Login** – Social (OAuth) + Admin-Passwort, kein Sales-Content |
-| `/landing` | `landing.html` | Features/Tools/Bundles (komplett gratis) + Unterstützen-Sektion (BMC) + Blog |
-| `/app` | `app.html` | 4-Schritt Wizard (Modelle → Tools → Bundle → ZIP-Download) |
+| `/` (root) | `index.html` | **Website login** – social (OAuth) or admin password |
+| `/landing` | `landing.html` | Features/tools/bundles (all free) + support section (BMC) + blog |
+| `/app` | `app.html` | 4-step wizard (models → tools → bundle → ZIP download) |
 
-**Flow:** `orfb.vercel.app` → Login → `/landing` → "Zur App" → `/app` → Logout → zurück zu `/`
+**Flow:** `orfb.vercel.app` → login → `/landing` → "Go to app" → `/app` → logout → back to `/`
 
 ## Architecture
 
 - **Static SPA** (no framework): `index.html` + `landing.html` + `app.html` as entry points
 - JS modules under `src/js/`, loaded via `<script type="module">`
-- **Vercel**: serverless API (`api/login.js`, `api/logout.js`, `api/supabase-config.js`, `api/confirm-session.js`); `vercel.json` rewrites; `middleware.js` schützt `/landing` + `/app` per `orf_session`-Cookie
-- **Auth**: einziger Login ist der **Website-Login** an `/` – Social (Supabase OAuth) oder Admin (`LOGIN_USER`/`LOGIN_PASS` via `POST /api/login`); danach sind Landing + App frei
+- **Vercel**: serverless API (`api/login.js`, `api/logout.js`, `api/supabase-config.js`, `api/confirm-session.js`); `vercel.json` rewrites; `middleware.js` protects `/landing` + `/app` via the `orf_session` cookie
+- **Auth**: the only login is the **website login** at `/` – social (Supabase OAuth) or admin (`LOGIN_USER`/`LOGIN_PASS` via `POST /api/login`); landing + app are open afterwards
 - Credentials: env vars `LOGIN_USER` / `LOGIN_PASS` only, never hardcoded
 
 ## Key Modules
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Pure login page (root route) |
-| `landing.html` | Sales page + Blog/Changelog section |
+| `index.html` | Login page (root route) |
+| `landing.html` | Marketing page + blog/changelog section |
 | `app.html` | Main app: 4-step wizard for model/tool selection |
-| `src/js/app.js` | UI logic: multi-select, bundle, ZIP download, BMC-Danke-Popup, Download-Tracking |
-| `src/js/config.js` | **Einzigste Fundstelle** für `BMC_URL` (Buy-Me-a-Coffee-Platzhalter) |
-| `src/js/mapping.js` | Auto-generated free-model DB (21 models + tags + descriptions) |
-| `src/js/templates.js` | Config generation per tool, `TOOL_TEMPLATES` registry (12 tools) |
-| `src/js/i18n.js` | DE/EN translations, `setLanguage()`, `getLang()` |
+| `src/js/app.js` | UI logic: multi-select, bundle, ZIP download, BMC thanks popup, download tracking |
+| `src/js/config.js` | **Single source of truth** for `BMC_URL` (Buy-Me-a-Coffee placeholder) |
+| `src/js/mapping.js` | Auto-generated free-model DB (tags + descriptions) |
+| `src/js/templates.js` | Config generation per tool, `TOOL_TEMPLATES` registry (15 tools) |
 | `src/js/docs.js` | Install guides, OS paths, CLI commands |
 | `src/js/auth.js` | `isAuthenticated()` / `login()` / `logout()` / `getUser()` |
-| `src/tests/test-runner.js` | 664 pure Node tests (no DOM) |
+| `src/tests/test-runner.js` | Pure Node test suite (no DOM) |
 | `data/changelog.json` | Auto-generated model change history (blog content) |
-| `scripts/auto-install.js` | Auto-installer mit Merge-Logik (überschreiben/auskommentieren/mergen) |
+| `scripts/auto-install.js` | Auto-installer with merge logic (overwrite/comment/merge) |
 
-## Strategie: BMC statt Paywall
+## Strategy: BMC instead of a paywall
 
-- **Keine Preise, keine Paywall, keine Registrierung** – beide Bundles sind "GRATIS"; 5€/20€-Anzeigen wurden komplett entfernt
-- **Buy Me a Coffee** (Platzhalter-URL in `src/js/config.js`): Links in Landing-Unterstützen-Sektion, App-Header und Download-Danke-Popup (alle `a[data-bmc]`)
-- **Codes-System komplett entfernt** – kein Code-Login, keine Codes-API (`api/codes.js`), kein Paywall-Gate
-- **Website-Login** an `/` (Social + Admin-Passwort) ist der einzige Login; `/landing` + `/app` sind danach frei
-- **Tracking**: Umami-Platzhalter in allen 3 HTML-Dateien (auskommentiert bis Website-ID eingetragen); Events `download` (Props: models/tools/bundle/os/lang) und `bmc_click` (Prop: location) via `window.umami?.track`
+- **No prices, no paywall, no registration** – both bundles are free
+- **Buy Me a Coffee** (placeholder URL in `src/js/config.js`): links in the landing support section, app header and download thanks popup (all `a[data-bmc]`)
+- **No codes system** – no code login, no codes API, no paywall gate
+- **Website login** at `/` (social + admin password) is the only login; `/landing` + `/app` are open afterwards
+- **Tracking**: Umami placeholder in all 3 HTML files (commented out until a website ID is set); events `download` (props: models/tools/bundle/os) and `bmc_click` (prop: location) via `window.umami?.track`
 
 ## Model Mapping
 
-- **21 free models** auto-generated daily from OpenRouter API via `scripts/update-models.js`
-- Each model has: `role`/`role_de`, `desc_en`/`desc_de` (aus API-Beschreibung), `tags` (coding, reasoning, vision, …), `context`, `languages`, optional `modalities`/`modality_icon`
-- Model IDs **must end with `:free`** suffix
-- Tags werden als farbige Badges in der Modellkarte angezeigt
-- Suchfeld filtert Modelle live nach ID, Tags, Rolle, Beschreibung
+- Free models are auto-generated daily from the OpenRouter API via `scripts/update-models.js`
+- Each model has: `role`, `desc` (from the API description), `tags` (coding, reasoning, vision, …), `context`, `languages`, optional `modalities`/`modality_icon`
+- Model IDs **must end with the `:free` suffix**
+- Tags are shown as colored badges on the model card
+- The search field filters models live by ID, tags, role or description
 
 ## Model History / Blog
 
-- 12 historische Modelle (GPT-3.5, Claude 3 Haiku, Gemini 1.5, etc.) als Blog-Einträge in `data/changelog.json`
-- Wird auf der Landingpage unter "Blog / Änderungsprotokoll" angezeigt
-- `scripts/update-models.js` schreibt automatisch neue Einträge bei Modell-Änderungen
+- Historical models are stored as blog entries in `data/changelog.json`
+- Rendered on the landing page under "Blog / Changelog"
+- `scripts/update-models.js` appends new entries automatically on model changes
 
-## Auto-Installer (Premium)
+## Auto-Installer
 
-Der Installer in `scripts/auto-install.js` fragt bei existierenden Configs:
+The installer in `scripts/auto-install.js` asks about existing configs:
 
-1. **Überschreiben** – alte Config wird ersetzt
-2. **Auskommentieren + neue** – alte bleibt als Kommentar erhalten, neue wird darunter geschrieben
-3. **Mergen** (nur JSON) – beide JSON-Strukturen werden zusammengeführt
-4. **Überspringen** – nichts tun
+1. **Overwrite** – the old config is replaced
+2. **Comment out + new** – the old config is kept as a comment, the new one is written below
+3. **Merge** (JSON only) – both JSON structures are merged
+4. **Skip** – do nothing
 
-Batch/Shell-Varianten (`auto-install-win.bat`, `auto-install-mac.command`, `auto-install-linux.sh`) sichern die alte Config mit `.backup`-Suffix.
+Batch/shell variants (`auto-install-win.bat`, `auto-install-mac.command`, `auto-install-linux.sh`) back up the old config with a `.backup` suffix.
 
-**Scope + Projektordner:** Configs sind pro Tool entweder `global` (opencode, continue, zed → Home/APPDATA) oder `project` (übrige 12 → relativ zum Projektordner). Alle 4 Installer suchen in typischen Ordnern (`~`, Desktop, Documents, Projects, dev, code) nach `.git` und lassen den Zielordner per Menü bestätigen (`[1..n]` Kandidaten, `[Enter]` aktueller Ordner, `[f]` eigener Pfad). `auto-install-win.bat` wird durch `.gitattributes` (`eol=crlf`) als CRLF getestet – nicht auf LF umschreiben.
+**Scope + project folder:** configs are either `global` (opencode, continue, zed → home/APPDATA) or `project` (the other 12 → relative to the project folder). All 4 installers search common folders (`~`, Desktop, Documents, Projects, dev, code) for `.git` and let you confirm the target folder via a menu (`[1..n]` candidates, `[Enter]` current folder, `[f]` custom path). `auto-install-win.bat` is kept as CRLF via `.gitattributes` (`eol=crlf`) – do not rewrite it to LF.
 
 ## Testing
 
 ```bash
-npm test                          # 664 tests
+npm test
 # Tests run in plain Node.js (no browser). DOM-dependent code is not tested.
-# "App Strategy Tests" prüfen DE/EN-Key-Parität, Fehlen von Admin/Preis-Resten, BMC-Placeholder.
+# "App Strategy Tests" verify the absence of admin/price remnants and the BMC placeholder.
 ```
 
 ## Deployment
 
 - GitHub push → Vercel auto-deploy (no manual trigger needed)
 - `vercel.json` rewrites: `/api/*` → API functions, `/landing` → `landing.html`, `/app` → `app.html`, `/*` → `index.html`
-- `.env` vars set in Vercel project dashboard (LOGIN_USER, LOGIN_PASS)
+- `.env` vars set in the Vercel project dashboard (LOGIN_USER, LOGIN_PASS)
 - `package.json` version: `"version": "12.8.0"`
 - Daily GitHub Actions workflow auto-updates free models via `scripts/update-models.js`
-- Bei Modell-Änderungen: Email-Benachrichtigung an learncode@web.de
 
 ## Common Pitfalls
 
 - Do NOT remove the `:free` suffix from model IDs
 - Do NOT hardcode credentials in any source file
-- JSZip is loaded via CDN, not npm — available as global `JSZip`
+- JSZip is loaded via CDN, not npm — available as the global `JSZip`
 - Tailwind CSS via CDN — cosmetic warnings are harmless
-- `models-grid` and `tools-grid` use 2-column layout with max-height 400px + custom scrollbar
-- **Kein Codes-/Paywall-System** mehr – nicht wieder einbauen (keine `api/codes.js`, kein `lib/github-store.js`)
-- **Kein separater App-Login** – Zugang nur über den Website-Login (`middleware.js`), nicht in `app.html` reaktivieren
-- `GH_TOKEN` nicht mehr nötig (nur Codes-Store war GitHub-persistiert)
-- `OPENROUTER_API_KEY` nicht mehr in `.env` – wird nur bei Bedarf als GitHub Secret gesetzt
-- Auto-installer verwendet `readline` für interaktive Merge-Abfragen (nur Node.js-Version)
+- `models-grid` and `tools-grid` use a 2-column layout with max-height 400px + custom scrollbar
+- **No codes/paywall system** – do not reintroduce one (no `api/codes.js`, no `lib/github-store.js`)
+- **No separate app login** – access is controlled only by the website login (`middleware.js`); do not reactivate a check in `app.html`
+- `GH_TOKEN` is no longer needed
+- `OPENROUTER_API_KEY` is no longer in `.env` – only set as a GitHub secret when needed
+- The auto-installer uses `readline` for interactive merge prompts (Node.js version only)

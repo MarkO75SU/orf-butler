@@ -9,7 +9,7 @@ export async function initSupabase() {
 
     initPromise = (async () => {
         const res = await fetch('/api/supabase-config');
-        if (!res.ok) throw new Error('Supabase-Konfiguration nicht verfügbar');
+        if (!res.ok) throw new Error('Supabase configuration unavailable');
         const { url, key } = await res.json();
 
         supabaseClient = createClient(url, key, {

@@ -3,6 +3,5 @@ docs/
 src/tests/
 .gitignore
 AGENTS.md
-PROJECT.md
-roadmap.md
 README.md
+LICENSE

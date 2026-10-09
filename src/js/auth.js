@@ -19,11 +19,11 @@ export async function login(username, password, remember) {
     const trimmedPass = (password || '').trim();
 
     if (!trimmedUser) {
-        return { success: false, error: 'Bitte Benutzername eingeben.' };
+        return { success: false, error: 'Please enter a username.' };
     }
 
     if (!trimmedPass) {
-        return { success: false, error: 'Bitte Passwort eingeben.' };
+        return { success: false, error: 'Please enter a password.' };
     }
 
     try {
@@ -43,9 +43,9 @@ export async function login(username, password, remember) {
         }
 
         const error = await response.json();
-        return { success: false, error: error.error || 'Zugang verweigert' };
+        return { success: false, error: error.error || 'Access denied' };
     } catch (e) {
-        return { success: false, error: 'Server nicht erreichbar' };
+        return { success: false, error: 'Server unreachable' };
     }
 }
 

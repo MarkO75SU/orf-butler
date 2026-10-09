@@ -6,7 +6,7 @@ export default function handler(req, res) {
     const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
     if (!url || !key) {
-        return res.status(500).json({ error: 'Supabase nicht konfiguriert' });
+        return res.status(500).json({ error: 'Supabase not configured' });
     }
 
     res.json({ url, key });

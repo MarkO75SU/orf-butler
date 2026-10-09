@@ -30,19 +30,11 @@ function extractTags(id, name, description, inputModalities) {
 
 function determineRole(tags, id, name) {
     const text = (id + ' ' + name).toLowerCase();
-    if (tags.includes('coding') || /coder|code|laguna|poolside/i.test(text)) return { role: 'Code', role_de: 'Code' };
-    if (tags.includes('reasoning') || /deepseek.*r1|reason/i.test(text)) return { role: 'Reasoning', role_de: 'Logik' };
-    if (tags.includes('chat') || /instruct|hermes/i.test(text)) return { role: 'Chat', role_de: 'Chat' };
-    if (tags.includes('lightweight') || /nano|small/i.test(text)) return { role: 'Lightweight', role_de: 'Leichtgewicht' };
-    return { role: 'General', role_de: 'Allgemein' };
-}
-
-function makeGermanDesc(desc, role) {
-    if (!desc || desc.length < 10) {
-        const map = { 'Code': 'Code-Generierungs-Modell über OpenRouter kostenlos.', 'Reasoning': 'Logik-Modell über OpenRouter kostenlos.', 'Chat': 'Chat-Modell über OpenRouter kostenlos.', 'Lightweight': 'Leichtgewicht-Modell über OpenRouter kostenlos.', 'General': 'Allgemeines KI-Modell über OpenRouter kostenlos.' };
-        return map[role] || 'KI-Modell über OpenRouter kostenlos.';
-    }
-    return desc;
+    if (tags.includes('coding') || /coder|code|laguna|poolside/i.test(text)) return 'Code';
+    if (tags.includes('reasoning') || /deepseek.*r1|reason/i.test(text)) return 'Reasoning';
+    if (tags.includes('chat') || /instruct|hermes/i.test(text)) return 'Chat';
+    if (tags.includes('lightweight') || /nano|small/i.test(text)) return 'Lightweight';
+    return 'General';
 }
 
 function shortDesc(text, maxLen = 140) {
@@ -105,19 +97,16 @@ function buildMappingContent(freeModels, existingIds) {
     let out = 'export const MODEL_MAPPING = {\n';
     withNew.forEach((m, i) => {
         const tags = extractTags(m.id, m.name, m.description, m.inputModalities);
-        const { role, role_de } = determineRole(tags, m.id, m.name);
-        const descEn = shortDesc(m.description) || (role + ' model via OpenRouter free tier.');
-        const descDe = makeGermanDesc(descEn, role) || (role_de + '-Modell über OpenRouter kostenlos.');
+        const role = determineRole(tags, m.id, m.name);
+        const desc = shortDesc(m.description) || (role + ' model via OpenRouter free tier.');
         const ctxStr = m.context ? (m.context < 1000 ? `${m.context}` : `${Math.round(m.context/1000)}k`) : '?';
         const modIcon = modalityLabel(m.inputModalities);
         const isMultimodal = m.inputModalities.some(m => m !== 'text');
 
         out += '    "' + m.id + '": {\n';
         out += '        role: "' + role + '",\n';
-        out += '        role_de: "' + role_de + '",\n';
         out += '        context: "' + ctxStr + '",\n';
-        out += '        desc_en: ' + JSON.stringify(descEn) + ',\n';
-        out += '        desc_de: ' + JSON.stringify(descDe) + ',\n';
+        out += '        desc: ' + JSON.stringify(desc) + ',\n';
         if (isMultimodal) {
             out += '        modalities: ' + JSON.stringify(m.inputModalities) + ',\n';
             out += '        modality_icon: "' + modIcon + '",\n';
@@ -174,7 +163,7 @@ async function main() {
     if (added.length > 0 || removed.length > 0) {
         let msg = '### ' + today + '\n';
         if (added.length > 0) {
-            msg += '**Neu hinzugefügt:**\n';
+            msg += '**Added:**\n';
             added.forEach(id => {
                 const m = freeModels.find(f => f.id === id);
                 const tags = m ? extractTags(m.id, m.name, m.description, m.inputModalities).join(', ') : '';
@@ -182,7 +171,7 @@ async function main() {
             });
         }
         if (removed.length > 0) {
-            msg += '**Entfernt:**\n';
+            msg += '**Removed:**\n';
             removed.forEach(id => msg += '- ' + id + '\n');
         }
         msg += '\n';

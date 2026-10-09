@@ -1,4 +1,3 @@
-import { setLanguage, getLang } from './i18n.js';
 import { TOOL_TEMPLATES, generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
 import { logout } from './auth.js';
@@ -8,7 +7,7 @@ import { BMC_URL } from './config.js';
 let state = {
     selectedModels: [],
     selectedTools: [],
-    selectedBundle: 'basic'
+    selectedBundle: 'standard'
 };
 
 function saveState() {
@@ -22,70 +21,38 @@ function loadState() {
             const parsed = JSON.parse(saved);
             state.selectedModels = parsed.selectedModels || [];
             state.selectedTools = parsed.selectedTools || [];
-            state.selectedBundle = parsed.selectedBundle || 'basic';
+            state.selectedBundle = ['standard', 'full'].includes(parsed.selectedBundle) ? parsed.selectedBundle : 'standard';
         }
     } catch {}
 }
 
-const translations = {
-    de: {
-        step1Title: "Wähle deine Free-LLM Modelle",
-        step1Desc: "Wähle ein oder mehrere Modelle von OpenRouter",
-        step2Title: "Wähle deine Tools",
-        step2Desc: "Wähle ein oder mehrere Tools für die Config",
-        step3Title: "Wähle dein Bundle",
-        step3Desc: "Welches Paket möchtest du?",
-        step4Title: "Checkout & Download",
-        step4Desc: "Erstelle und lade deine Configs herunter",
-        summaryModel: "Ausgewählte Modelle:",
-        summaryTool: "Tools:",
-        summaryBundle: "Bundle:",
-        selectAll: "Alle Auswählen",
-        downloadBtn: "Als ZIP Herunterladen",
-        noModel: "Keine Modelle ausgewählt",
-        noTool: "Keine Tools ausgewählt",
-        bundleFree: "GRATIS",
-        thanksTitle: "Download gestartet ☕",
-        thanksText: "Hat dir der Konfigurator geholfen? Unterstütze das Projekt mit einer Tasse Kaffee.",
-        thanksBtn: "☕ Kaffee kaufen",
-        thanksClose: "Weiter",
-        modelSearchPlaceholder: "🔍 Suche nach ID, Tag, Rolle oder Beschreibung...",
-        modelError: "Fehler beim Laden der Modelle",
-        newBadge: "NEU",
-        toolTypeLabel: "Typ:"
-    },
-    en: {
-        selectAll: "Select All",
-        step1Title: "Select your Free-LLM Models",
-        step1Desc: "Select one or more models from OpenRouter",
-        step2Title: "Select your Tools",
-        step2Desc: "Select one or more tools for the config",
-        step3Title: "Select your Bundle",
-        step3Desc: "Which package do you want?",
-        step4Title: "Checkout & Download",
-        step4Desc: "Create and download your configs",
-        summaryModel: "Selected Models:",
-        summaryTool: "Tools:",
-        summaryBundle: "Bundle:",
-        downloadBtn: "Download as ZIP",
-        noModel: "No models selected",
-        noTool: "No tools selected",
-        bundleFree: "FREE",
-        thanksTitle: "Download started ☕",
-        thanksText: "Did the configurator help you? Support the project with a cup of coffee.",
-        thanksBtn: "☕ Buy me a coffee",
-        thanksClose: "Continue",
-        modelSearchPlaceholder: "🔍 Search by ID, tag, role or description...",
-        modelError: "Error loading models",
-        newBadge: "NEW",
-        toolTypeLabel: "Type:"
-    }
-};
-
-window.setLang = (lang) => {
-    setLanguage(lang);
-    loadModels();
-    updateUI();
+const texts = {
+    step1Title: "Select your Free-LLM Models",
+    step1Desc: "Select one or more models from OpenRouter",
+    step2Title: "Select your Tools",
+    step2Desc: "Select one or more tools for the config",
+    step3Title: "Select your Bundle",
+    step3Desc: "Which package do you want?",
+    step4Title: "Checkout & Download",
+    step4Desc: "Create and download your configs",
+    summaryModel: "Selected Models:",
+    summaryTool: "Tools:",
+    summaryBundle: "Bundle:",
+    selectAll: "Select All",
+    downloadBtn: "Download as ZIP",
+    downloadBtnBusy: "Generating ZIP...",
+    selectPrompt: "Please select models and tools.",
+    noModel: "No models selected",
+    noTool: "No tools selected",
+    bundleFree: "FREE",
+    thanksTitle: "Download started ☕",
+    thanksText: "Did the configurator help you? Support the project with a cup of coffee.",
+    thanksBtn: "☕ Buy me a coffee",
+    thanksClose: "Continue",
+    modelSearchPlaceholder: "🔍 Search by ID, tag, role or description...",
+    modelError: "Error loading models",
+    newBadge: "NEW",
+    toolTypeLabel: "Type:"
 };
 
 window.logout = () => {
@@ -95,9 +62,6 @@ window.logout = () => {
 };
 
 function updateUI() {
-    const lang = getLang();
-    const texts = translations[lang] || translations.de;
-    
     document.getElementById('step1-title').textContent = texts.step1Title;
     document.getElementById('step1-desc').textContent = texts.step1Desc;
     document.getElementById('step2-title').textContent = texts.step2Title;
@@ -111,8 +75,8 @@ function updateUI() {
     document.getElementById('summary-bundle-label').textContent = texts.summaryBundle;
     document.getElementById('download-btn').textContent = texts.downloadBtn;
 
-    document.getElementById('bundle-basic-price').textContent = texts.bundleFree;
-    document.getElementById('bundle-premium-price').textContent = texts.bundleFree;
+    document.getElementById('bundle-standard-price').textContent = texts.bundleFree;
+    document.getElementById('bundle-full-price').textContent = texts.bundleFree;
 
     setText('model-search', null, texts.modelSearchPlaceholder, 'placeholder');
     setText('model-error', texts.modelError);
@@ -121,7 +85,6 @@ function updateUI() {
     setText('thanks-text', texts.thanksText);
     setText('thanks-bmc', texts.thanksBtn);
     setText('thanks-close-btn', texts.thanksClose);
-    updateLangButtons();
 
     document.querySelectorAll('a[data-bmc]').forEach(a => {
         const utm = a.getAttribute('data-bmc') === 'thanks'
@@ -147,19 +110,16 @@ function setText(id, text, value = undefined, attr = 'textContent') {
 }
 
 function updateSummary() {
-    const lang = getLang();
-    const texts = translations[lang] || translations.de;
-    
     const modelNames = state.selectedModels.map(id => {
         const data = MODEL_MAPPING[id];
         return data ? data.role : id.split('/').pop();
     }).join(', ');
-    
+
     const toolNames = state.selectedTools.map(id => TOOL_TEMPLATES[id]?.name || id).join(', ');
-    
-    const bundleLabel = state.selectedBundle === 'basic'
+
+    const bundleLabel = state.selectedBundle === 'standard'
         ? 'Standard Bundle'
-        : 'Premium Bundle';
+        : 'Full Bundle';
 
     document.getElementById('summary-models').textContent = state.selectedModels.length 
         ? `(${state.selectedModels.length}) ${modelNames}` 
@@ -173,19 +133,17 @@ function updateSummary() {
 function loadModels() {
     const grid = document.getElementById('models-grid');
     grid.innerHTML = '';
-    const lang = getLang();
-    
+
     const entries = Object.entries(MODEL_MAPPING).sort(([idA, a], [idB, b]) => {
         if (a.new && !b.new) return -1;
         if (!a.new && b.new) return 1;
         return idA.localeCompare(idB);
     });
-    const texts = translations[lang] || translations.de;
 
     entries.forEach(([id, data]) => {
         const card = document.createElement('div');
-        const role = lang === 'de' ? data.role_de : data.role;
-        const desc = lang === 'de' ? data.desc_de : data.desc_en;
+        const role = data.role;
+        const desc = data.desc;
         const checkId = `model-${id.replace(/[:/.]/g, '-')}`;
         const isChecked = state.selectedModels.includes(id) ? 'checked' : '';
         const neueBadge = data.new ? `<span class="text-[9px] bg-sky-600 text-white px-1.5 py-0.5 rounded font-bold ml-1">${texts.newBadge}</span>` : '';
@@ -245,25 +203,9 @@ function loadModels() {
     });
 }
 
-function createModelCard(modelId) {
-    const data = MODEL_MAPPING[modelId];
-    if (!data) return;
-    const lang = getLang();
-    const role = lang === 'de' ? data.role_de : data.role;
-    const grid = document.getElementById('models-grid');
-    const existing = grid.querySelector(`[data-model-id="${modelId}"]`);
-    if (existing) {
-        const cb = existing.querySelector('input[type="checkbox"]');
-        cb.checked = state.selectedModels.includes(modelId);
-        existing.className = `model-card bg-[#1a1a1e] border ${cb.checked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
-    }
-}
-
 function loadTools() {
     const grid = document.getElementById('tools-grid');
     grid.innerHTML = '';
-    const lang = getLang();
-    const texts = translations[lang] || translations.de;
 
     const entries = Object.entries(TOOL_TEMPLATES).sort(([, a], [, b]) => a.name.localeCompare(b.name));
 
@@ -271,7 +213,7 @@ function loadTools() {
         const card = document.createElement('div');
         const checkId = `tool-${id}`;
         const isChecked = state.selectedTools.includes(id) ? 'checked' : '';
-        const desc = lang === 'en' && tool.desc_en ? tool.desc_en : tool.desc;
+        const desc = tool.desc;
 
         card.className = `tool-card bg-[#1a1a1e] border ${isChecked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
         card.setAttribute('data-tool-id', id);
@@ -355,13 +297,11 @@ window.toggleTool = (id) => {
 function filterModels(query) {
     const q = query.toLowerCase().trim();
     const cards = document.querySelectorAll('#models-grid .model-card');
-    let visibleCount = 0;
     cards.forEach(card => {
         const id = (card.getAttribute('data-model-id') || '').toLowerCase();
         const text = (card.textContent || '').toLowerCase();
         const match = !q || id.includes(q) || text.includes(q);
         card.style.display = match ? '' : 'none';
-        if (match) visibleCount++;
     });
 }
 window.filterModels = filterModels;
@@ -373,16 +313,13 @@ function updateSelectedCount() {
     if (countEl) {
         const total = Object.keys(MODEL_MAPPING).length;
         const selected = state.selectedModels.length;
-        const lang = getLang();
-        const countText = lang === 'en' ? `${selected}/${total} selected` : `${selected}/${total} ausgewählt`;
-        countEl.textContent = selected > 0 ? countText : '';
+        countEl.textContent = selected > 0 ? `${selected}/${total} selected` : '';
     }
     if (checkEl) {
         checkEl.checked = state.selectedModels.length === Object.keys(MODEL_MAPPING).length && state.selectedModels.length > 0;
     }
     if (labelEl) {
-        const lang = getLang();
-        labelEl.textContent = lang === 'en' ? 'Select All' : 'Alle Auswählen';
+        labelEl.textContent = texts.selectAll;
     }
 }
 
@@ -412,94 +349,91 @@ function selectBundle(type) {
 window.selectBundle = selectBundle;
 
 function initBundleSelection() {
-    document.getElementById('bundle-basic')?.addEventListener('click', () => selectBundle('basic'));
-    document.getElementById('bundle-premium')?.addEventListener('click', () => selectBundle('premium'));
+    document.getElementById('bundle-standard')?.addEventListener('click', () => selectBundle('standard'));
+    document.getElementById('bundle-full')?.addEventListener('click', () => selectBundle('full'));
 }
 
 async function downloadZIP() {
     if (state.selectedModels.length === 0 || state.selectedTools.length === 0) {
-        alert(getLang() === 'de' ? 'Bitte wähle Modelle und Tools aus.' : 'Please select models and tools.');
+        alert(texts.selectPrompt);
         return;
     }
-    
+
     const btn = document.getElementById('download-btn');
     const origText = btn.textContent;
     btn.disabled = true;
-    btn.textContent = getLang() === 'de' ? 'Generiere ZIP...' : 'Generating ZIP...';
+    btn.textContent = texts.downloadBtnBusy;
     btn.classList.add('opacity-50', 'cursor-not-allowed');
-    
+
     try {
         const zip = new JSZip();
-    const os = navigator.platform.toLowerCase().includes('win') ? 'win32' : 
-               navigator.platform.toLowerCase().includes('mac') ? 'darwin' : 'linux';
-    
-    const primaryModel = state.selectedModels[0];
-    
-    state.selectedTools.forEach(toolId => {
-        const tool = TOOL_TEMPLATES[toolId];
-        if (!tool) return;
-        
-        const modelTuples = state.selectedModels.map(id => [id, MODEL_MAPPING[id]]);
-        const configContent = generateConfig(toolId, modelTuples, state.selectedBundle);
-        const path = OS_PATHS[os][toolId];
-        const installMD = generateInstallMD({ id: toolId, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path, getLang());
-        
-        const safeName = toolId.replace(/_/g, '-');
-        zip.file(safeName + '-config.json', configContent);
-        if (state.selectedBundle !== 'premium') {
-            zip.file(safeName + '-INSTALL.md', installMD);
-        }
-    });
-    
-    // Manifest mit ausgewählten Tools
-    zip.file('manifest.txt', state.selectedTools.join('\n'));
-    
-    if (state.selectedBundle === 'premium') {
-        try {
-            const launchers = [
-                ['auto-install.js', 'auto-install.js'],
-                ['auto-install-win.bat', 'auto-install-win.bat'],
-                ['auto-install-mac.command', 'auto-install-mac.command'],
-                ['auto-install-linux.sh', 'auto-install-linux.sh']
-            ];
-            for (const [src, dest] of launchers) {
-                const res = await fetch('./scripts/' + src);
-                if (res.ok) {
-                    const text = await res.text();
-                    zip.file(dest, text);
-                }
-            }
-            
-            if (zip.file('auto-install-mac.command')) {
-                zip.file('auto-install-mac.command').unixPermissions = '755';
-            }
-            if (zip.file('auto-install-linux.sh')) {
-                zip.file('auto-install-linux.sh').unixPermissions = '755';
-            }
-            
-            zip.file('README-AUTOINSTALL.md', autoInstallReadme(getLang()));
-        } catch (e) {
-            console.warn('Auto-installer not available:', e.message);
-        }
-    }
-    
-    const content = await zip.generateAsync({ type: 'blob' });
-    const url = URL.createObjectURL(content);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'orfb-configs.zip';
-    a.click();
-    URL.revokeObjectURL(url);
+        const os = navigator.platform.toLowerCase().includes('win') ? 'win32' : 
+                   navigator.platform.toLowerCase().includes('mac') ? 'darwin' : 'linux';
 
-    trackEvent('download', {
-        models: state.selectedModels.length,
-        tools: state.selectedTools.join(','),
-        bundle: state.selectedBundle,
-        os,
-        lang: getLang()
-    });
-    document.getElementById('thanks-modal')?.classList.remove('hidden');
-    document.getElementById('thanks-close-btn')?.focus();
+        state.selectedTools.forEach(toolId => {
+            const tool = TOOL_TEMPLATES[toolId];
+            if (!tool) return;
+
+            const modelTuples = state.selectedModels.map(id => [id, MODEL_MAPPING[id]]);
+            const configContent = generateConfig(toolId, modelTuples, state.selectedBundle);
+            const path = OS_PATHS[os][toolId];
+            const installMD = generateInstallMD({ id: toolId, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path);
+
+            const safeName = toolId.replace(/_/g, '-');
+            zip.file(safeName + '-config.json', configContent);
+            if (state.selectedBundle !== 'full') {
+                zip.file(safeName + '-INSTALL.md', installMD);
+            }
+        });
+
+        // Manifest with the selected tools
+        zip.file('manifest.txt', state.selectedTools.join('\n'));
+
+        if (state.selectedBundle === 'full') {
+            try {
+                const launchers = [
+                    ['auto-install.js', 'auto-install.js'],
+                    ['auto-install-win.bat', 'auto-install-win.bat'],
+                    ['auto-install-mac.command', 'auto-install-mac.command'],
+                    ['auto-install-linux.sh', 'auto-install-linux.sh']
+                ];
+                for (const [src, dest] of launchers) {
+                    const res = await fetch('./scripts/' + src);
+                    if (res.ok) {
+                        const text = await res.text();
+                        zip.file(dest, text);
+                    }
+                }
+
+                if (zip.file('auto-install-mac.command')) {
+                    zip.file('auto-install-mac.command').unixPermissions = '755';
+                }
+                if (zip.file('auto-install-linux.sh')) {
+                    zip.file('auto-install-linux.sh').unixPermissions = '755';
+                }
+
+                zip.file('README-AUTOINSTALL.md', autoInstallReadme());
+            } catch (e) {
+                console.warn('Auto-installer not available:', e.message);
+            }
+        }
+
+        const content = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(content);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'orfb-configs.zip';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        trackEvent('download', {
+            models: state.selectedModels.length,
+            tools: state.selectedTools.join(','),
+            bundle: state.selectedBundle,
+            os
+        });
+        document.getElementById('thanks-modal')?.classList.remove('hidden');
+        document.getElementById('thanks-close-btn')?.focus();
 
     } finally {
         btn.disabled = false;
@@ -507,9 +441,9 @@ async function downloadZIP() {
         btn.classList.remove('opacity-50', 'cursor-not-allowed');
     }
 }
-function autoInstallReadme(lang) {
-    if (lang === 'en') {
-        return `# ORF-Butler Auto-Installer (Premium)
+
+function autoInstallReadme() {
+    return `# ORF-Butler Auto-Installer
 
 Automatically copies all config files to the correct paths.
 
@@ -564,72 +498,12 @@ Global configs (OpenCode, Continue, Zed) always go to your home directory.
 5. On conflict: you decide via the menu
 6. Done – restart your tool
 `;
-    }
-    return `# ORF-Butler Auto-Installer (Premium)
-
-Kopiert alle Config-Dateien automatisch an die richtigen Pfade.
-
-## Verwendung
-
-### Windows
-Doppelklick auf **auto-install-win.bat**
-
-### Mac
-Doppelklick auf **auto-install-mac.command**
-
-### Linux
-Doppelklick auf **auto-install-linux.sh**
-
-### Alternativ (jedes System)
-\`node auto-install.js\` im Terminal
-
-## Voraussetzungen
-
-- Node.js 18+ (https://nodejs.org) – nur für die Node-Version
-- Config-Dateien (.json/.yml/.yaml) im selben Ordner
-- OpenRouter API-Key: Wird NUR lokal in der Config gespeichert, kein Server-Versand
-
-## Interaktives Menü
-
-Existiert eine Config bereits, fragt der Installer:
-
-  [1] **Überschreiben** – alte Config wird ersetzt (Backup als .backup)
-  [2] **Auskommentieren** – alte bleibt als Kommentar, neue darunter
-  [3] **Mergen** (nur JSON) – beide Strukturen werden zusammengeführt
-  [s] **Überspringen** – nichts tun, Config bleibt unverändert
-
-## Projektordner
-
-Tool-Configs, die zum Projekt gehören (Cursor, Windsurf, Claude Code, Cline,
-Codeium, RooCode, Aider, Antigravity, LiteLLM, Cody, Tabby), werden in einen
-Projektordner geschrieben. Der Installer sucht in typischen Ordnern nach einem
-Git-Repository (Marker: .git) und zeigt ein Menü:
-
-  [1..n] **Gefundene Projektordner** – einen auswählen
-  [Enter] **Aktueller Ordner** – der Ordner, aus dem der Installer gestartet wurde
-  [f] **Eigener Pfad** – beliebigen Pfad eingeben
-
-Globale Configs (OpenCode, Continue, Zed) landen immer im Home-Verzeichnis.
-
-## Was passiert?
-
-1. Das Skript erkennt dein Betriebssystem (Windows/Mac/Linux)
-2. Es findet die richtigen Verzeichnisse für jedes Tool
-3. Für projekt-lokale Configs fragt es nach dem Projektordner
-4. Existierende Configs werden gesichert (Endung .backup)
-5. Bei Konflikt: Du entscheidest via Menü
-6. Fertig – starte dein Tool neu
-`;
 }
+
 function trackEvent(name, props) {
     try { window.umami?.track(name, props); } catch {}
 }
-function updateLangButtons() {
-    const lang = getLang();
-    document.querySelectorAll('[data-lang]').forEach(btn => {
-        btn.setAttribute('aria-pressed', String(btn.dataset.lang === lang));
-    });
-}
+
 window.closeThanks = () => {
     document.getElementById('thanks-modal')?.classList.add('hidden');
     document.getElementById('download-btn')?.focus();
@@ -639,8 +513,6 @@ window.downloadZIP = downloadZIP;
 // ---- Init ----
 
 document.addEventListener('DOMContentLoaded', () => {
-    const lang = getLang() || 'de';
-    setLanguage(lang);
     loadState();
     loadModels();
     loadTools();
@@ -652,16 +524,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateSelectedCount();
     updateUI();
-    
+
     document.getElementById('download-btn')?.addEventListener('click', downloadZIP);
 
     document.querySelectorAll('a[data-bmc]').forEach(a => {
         a.addEventListener('click', () => trackEvent('bmc_click', { location: a.getAttribute('data-bmc') }));
-    });
-    
-    const langBtns = document.querySelectorAll('[data-lang]');
-    langBtns.forEach(btn => {
-        btn.addEventListener('click', () => window.setLang(btn.dataset.lang));
     });
 
     document.addEventListener('keydown', (e) => {

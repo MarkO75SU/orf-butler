@@ -4,28 +4,22 @@
 export const MODEL_MAPPING = {
     "apodex/apodex-1.1-mini:free": {
         role: "Reasoning",
-        role_de: "Logik",
         context: "262k",
-        desc_en: "Apodex 1.1 Mini is a reasoning-first model from Apodex, built for complex, long-horizon research and forecasting tasks.",
-        desc_de: "Apodex 1.1 Mini is a reasoning-first model from Apodex, built for complex, long-horizon research and forecasting tasks.",
+        desc: "Apodex 1.1 Mini is a reasoning-first model from Apodex, built for complex, long-horizon research and forecasting tasks.",
         tags: ["reasoning"],
         languages: ["python","javascript","typescript"]
     },
     "cohere/north-mini-code:free": {
         role: "Code",
-        role_de: "Code",
         context: "256k",
-        desc_en: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
-        desc_de: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
+        desc: "North Mini Code is Cohere's first agentic coding model and the debut of its North family.",
         tags: ["agent","lightweight","moe"],
         languages: ["python","javascript","typescript"]
     },
     "dots-studio/dots-3-note-preview:free": {
         role: "General",
-        role_de: "Allgemein",
         context: "512k",
-        desc_en: "Dots3-Note Preview is an open-weight mixture-of-experts model from Dots Studio, with 16B active parameters out of 280B total.",
-        desc_de: "Dots3-Note Preview is an open-weight mixture-of-experts model from Dots Studio, with 16B active parameters out of 280B total.",
+        desc: "Dots3-Note Preview is an open-weight mixture-of-experts model from Dots Studio, with 16B active parameters out of 280B total.",
         modalities: ["text","image"],
         modality_icon: "🖼️",
         tags: ["moe","multimodal","open-source","vision"],
@@ -33,10 +27,8 @@ export const MODEL_MAPPING = {
     },
     "google/gemma-4-26b-a4b-it:free": {
         role: "Chat",
-        role_de: "Chat",
         context: "262k",
-        desc_en: "Gemma 4 26B A4B IT is an instruction-tuned Mixture-of-Experts (MoE) model from Google DeepMind.",
-        desc_de: "Gemma 4 26B A4B IT is an instruction-tuned Mixture-of-Experts (MoE) model from Google DeepMind.",
+        desc: "Gemma 4 26B A4B IT is an instruction-tuned Mixture-of-Experts (MoE) model from Google DeepMind.",
         modalities: ["image","text","video"],
         modality_icon: "🖼️ 🎬",
         tags: ["chat","lightweight","moe","multimodal","video","vision"],
@@ -44,10 +36,8 @@ export const MODEL_MAPPING = {
     },
     "google/gemma-4-31b-it:free": {
         role: "Reasoning",
-        role_de: "Logik",
         context: "262k",
-        desc_en: "Gemma 4 31B Instruct is Google DeepMind's 30.7B dense multimodal model supporting text and image input with text output.",
-        desc_de: "Gemma 4 31B Instruct is Google DeepMind's 30.7B dense multimodal model supporting text and image input with text output.",
+        desc: "Gemma 4 31B Instruct is Google DeepMind's 30.7B dense multimodal model supporting text and image input with text output.",
         modalities: ["image","text","video"],
         modality_icon: "🖼️ 🎬",
         tags: ["chat","multimodal","reasoning","video","vision"],
@@ -55,28 +45,22 @@ export const MODEL_MAPPING = {
     },
     "inclusionai/ling-3.0-flash-sante:free": {
         role: "General",
-        role_de: "Allgemein",
         context: "262k",
-        desc_en: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
-        desc_de: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
+        desc: "Ling 3.0 Flash Sante is a health and medicine-focused mixture-of-experts model from InclusionAI, built on Ling 3.0 Flash with 5.1B active...",
         tags: ["moe"],
         languages: ["python","javascript","typescript"]
     },
     "liquid/lfm-2.5-2.6b:free": {
         role: "Reasoning",
-        role_de: "Logik",
         context: "66k",
-        desc_en: "LFM2.5-2.6B is a compact reasoning model from Liquid AI.",
-        desc_de: "LFM2.5-2.6B is a compact reasoning model from Liquid AI.",
+        desc: "LFM2.5-2.6B is a compact reasoning model from Liquid AI.",
         tags: ["agent","embedding","lightweight","reasoning"],
         languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
         role: "Reasoning",
-        role_de: "Logik",
         context: "256k",
-        desc_en: "NVIDIA Nemotron™ 3 Nano Omni is a 30B-A3B open multimodal model designed to function as a perception and context sub-agent in enterprise...",
-        desc_de: "NVIDIA Nemotron™ 3 Nano Omni is a 30B-A3B open multimodal model designed to function as a perception and context sub-agent in enterprise...",
+        desc: "NVIDIA Nemotron™ 3 Nano Omni is a 30B-A3B open multimodal model designed to function as a perception and context sub-agent in enterprise...",
         modalities: ["text","audio","image","video"],
         modality_icon: "🎤 🖼️ 🎬",
         tags: ["agent","audio","lightweight","multimodal","reasoning","video","vision"],
@@ -84,28 +68,22 @@ export const MODEL_MAPPING = {
     },
     "nvidia/nemotron-3-super-120b-a12b:free": {
         role: "Lightweight",
-        role_de: "Leichtgewicht",
         context: "262k",
-        desc_en: "NVIDIA Nemotron 3 Super is a 120B-parameter open hybrid MoE model, activating just 12B parameters for maximum compute efficiency and...",
-        desc_de: "NVIDIA Nemotron 3 Super is a 120B-parameter open hybrid MoE model, activating just 12B parameters for maximum compute efficiency and...",
+        desc: "NVIDIA Nemotron 3 Super is a 120B-parameter open hybrid MoE model, activating just 12B parameters for maximum compute efficiency and...",
         tags: ["agent","lightweight","moe"],
         languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-3-ultra-550b-a55b:free": {
         role: "Reasoning",
-        role_de: "Logik",
         context: "1000k",
-        desc_en: "NVIDIA Nemotron 3 Ultra is an open frontier-reasoning and orchestration model from NVIDIA, with 55B active parameters out of 550B total...",
-        desc_de: "NVIDIA Nemotron 3 Ultra is an open frontier-reasoning and orchestration model from NVIDIA, with 55B active parameters out of 550B total...",
+        desc: "NVIDIA Nemotron 3 Ultra is an open frontier-reasoning and orchestration model from NVIDIA, with 55B active parameters out of 550B total...",
         tags: ["moe","reasoning"],
         languages: ["python","javascript","typescript"]
     },
     "nvidia/nemotron-3.5-content-safety:free": {
         role: "Lightweight",
-        role_de: "Leichtgewicht",
         context: "128k",
-        desc_en: "NVIDIA Nemotron 3.5 Content Safety is a compact 4B-parameter multimodal guardrail model from NVIDIA, fine-tuned from Google Gemma-3-4B.",
-        desc_de: "NVIDIA Nemotron 3.5 Content Safety is a compact 4B-parameter multimodal guardrail model from NVIDIA, fine-tuned from Google Gemma-3-4B.",
+        desc: "NVIDIA Nemotron 3.5 Content Safety is a compact 4B-parameter multimodal guardrail model from NVIDIA, fine-tuned from Google Gemma-3-4B.",
         modalities: ["text","image"],
         modality_icon: "🖼️",
         tags: ["lightweight","multimodal","vision"],
@@ -113,37 +91,29 @@ export const MODEL_MAPPING = {
     },
     "nvidia/nemotron-3.5-lightning:free": {
         role: "Lightweight",
-        role_de: "Leichtgewicht",
         context: "1000k",
-        desc_en: "NVIDIA Nemotron 3.5 Lightning is an open mixture-of-experts model from NVIDIA, with 3B active parameters out of 30B total.",
-        desc_de: "NVIDIA Nemotron 3.5 Lightning is an open mixture-of-experts model from NVIDIA, with 3B active parameters out of 30B total.",
+        desc: "NVIDIA Nemotron 3.5 Lightning is an open mixture-of-experts model from NVIDIA, with 3B active parameters out of 30B total.",
         tags: ["agent","lightweight","moe"],
         languages: ["python","javascript","typescript"]
     },
     "poolside/laguna-s-2.1:free": {
         role: "Code",
-        role_de: "Code",
         context: "262k",
-        desc_en: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
-        desc_de: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
+        desc: "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>).",
         tags: ["agent","coding"],
         languages: ["python","javascript","typescript"]
     },
     "poolside/laguna-xs-2.1:free": {
         role: "Code",
-        role_de: "Code",
         context: "262k",
-        desc_en: "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their...",
-        desc_de: "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their...",
+        desc: "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their...",
         tags: ["agent","coding","lightweight"],
         languages: ["go"]
     },
     "thinkingmachines/inkling-small:free": {
         role: "Reasoning",
-        role_de: "Logik",
         context: "1049k",
-        desc_en: "Inkling Small is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 12B active parameters out of 276B total.",
-        desc_de: "Inkling Small is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 12B active parameters out of 276B total.",
+        desc: "Inkling Small is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 12B active parameters out of 276B total.",
         modalities: ["text","image","audio"],
         modality_icon: "🖼️ 🎤",
         tags: ["audio","lightweight","moe","multimodal","open-source","reasoning","vision"],
@@ -151,10 +121,8 @@ export const MODEL_MAPPING = {
     },
     "thinkingmachines/inkling:free": {
         role: "Reasoning",
-        role_de: "Logik",
         context: "1049k",
-        desc_en: "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total.",
-        desc_de: "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total.",
+        desc: "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total.",
         modalities: ["text","image","audio"],
         modality_icon: "🖼️ 🎤",
         tags: ["agent","audio","chat","moe","multimodal","open-source","reasoning","vision"],
@@ -178,146 +146,109 @@ export const MODEL_HISTORY = [
     {
         id: "openai/gpt-3.5-turbo",
         role: "Chat Completion",
-        role_de: "Chat-Vervollst├ñndigung",
         context: "16k",
-        desc_en: "Former flagship OpenAI chat model.",
-        desc_de: "Ehemaliges Flaggschiff von OpenAI.",
-        available: "2023-06 ÔÇô 2024-07",
+        desc: "Former flagship OpenAI chat model.",
+        available: "2023-06 – 2024-07",
         languages: ["python", "javascript", "typescript", "go", "java"],
-        reason: "moved to paid",
-        reason_de: "auf Bezahlung umgestellt"
+        reason: "moved to paid"
     },
     {
         id: "openai/gpt-4o-mini",
         role: "Multimodal",
-        role_de: "Multimodal",
         context: "128k",
-        desc_en: "Lightning-fast multimodal model.",
-        desc_de: "Schnelles multimodales Modell.",
-        available: "2024-05 ÔÇô 2025-03",
+        desc: "Lightning-fast multimodal model.",
+        available: "2024-05 – 2025-03",
         languages: ["python", "javascript", "typescript", "go", "java"],
-        reason: "moved to paid",
-        reason_de: "auf Bezahlung umgestellt"
+        reason: "moved to paid"
     },
     {
         id: "anthropic/claude-3-haiku",
         role: "Fast Chat",
-        role_de: "Schneller Chat",
         context: "200k",
-        desc_en: "Anthropic's fastest and most compact model.",
-        desc_de: "Anthropics schnellstes und kompaktestes Modell.",
-        available: "2024-03 ÔÇô 2025-02",
+        desc: "Anthropic's fastest and most compact model.",
+        available: "2024-03 – 2025-02",
         languages: ["python", "javascript", "typescript", "go"],
-        reason: "moved to paid",
-        reason_de: "auf Bezahlung umgestellt"
+        reason: "moved to paid"
     },
     {
         id: "google/gemini-1.5-flash",
         role: "Fast Multimodal",
-        role_de: "Schnell Multimodal",
         context: "1M",
-        desc_en: "Google's fastest multimodal model.",
-        desc_de: "Googles schnellstes multimodales Modell.",
-        available: "2024-05 ÔÇô 2025-04",
+        desc: "Google's fastest multimodal model.",
+        available: "2024-05 – 2025-04",
         languages: ["python", "javascript", "typescript", "go", "java"],
-        reason: "moved to paid",
-        reason_de: "auf Bezahlung umgestellt"
+        reason: "moved to paid"
     },
     {
         id: "google/gemini-1.5-pro",
         role: "Reasoning",
-        role_de: "Logik",
         context: "2M",
-        desc_en: "Google's most powerful reasoning model.",
-        desc_de: "Googles st├ñrkstes Logik-Modell.",
-        available: "2024-02 ÔÇô 2025-01",
+        desc: "Google's most powerful reasoning model.",
+        available: "2024-02 – 2025-01",
         languages: ["python", "javascript", "typescript", "go", "java", "rust"],
-        reason: "moved to paid",
-        reason_de: "auf Bezahlung umgestellt"
+        reason: "moved to paid"
     },
     {
         id: "mistralai/mistral-7b-instruct",
         role: "Instruct",
-        role_de: "Instruktion",
         context: "32k",
-        desc_en: "Mistral's original open-source model.",
-        desc_de: "Mistrals urspr├╝ngliches Open-Source-Modell.",
-        available: "2023-09 ÔÇô 2024-12",
+        desc: "Mistral's original open-source model.",
+        available: "2023-09 – 2024-12",
         languages: ["python", "javascript", "typescript", "go", "java"],
-        reason: "deprecated",
-        reason_de: "eingestellt"
+        reason: "deprecated"
     },
     {
         id: "meta-llama/llama-2-70b-chat",
         role: "Chat",
-        role_de: "Chat",
         context: "4k",
-        desc_en: "Meta's large-scale chat model.",
-        desc_de: "Metas gro├ƒes Chat-Modell.",
-        available: "2023-07 ÔÇô 2024-09",
+        desc: "Meta's large-scale chat model.",
+        available: "2023-07 – 2024-09",
         languages: ["python", "javascript", "typescript", "go"],
-        reason: "superseded by Llama 3",
-        reason_de: "durch Llama 3 ersetzt"
+        reason: "superseded by Llama 3"
     },
     {
         id: "meta-llama/llama-3-8b-instruct",
         role: "Instruct",
-        role_de: "Instruktion",
         context: "8k",
-        desc_en: "Metas compact Llama 3 model.",
-        desc_de: "Metas kompaktes Llama-3-Modell.",
-        available: "2024-04 ÔÇô 2024-12",
+        desc: "Metas compact Llama 3 model.",
+        available: "2024-04 – 2024-12",
         languages: ["python", "javascript", "typescript", "go"],
-        reason: "superseded by Llama 3.1/3.2",
-        reason_de: "durch Llama 3.1/3.2 ersetzt"
+        reason: "superseded by Llama 3.1/3.2"
     },
     {
         id: "meta-llama/llama-3-70b-instruct",
         role: "Large Instruct",
-        role_de: "Gro├ƒ Instruktion",
         context: "8k",
-        desc_en: "Metas large Llama 3 model.",
-        desc_de: "Metas gro├ƒes Llama-3-Modell.",
-        available: "2024-04 ÔÇô 2024-12",
+        desc: "Metas large Llama 3 model.",
+        available: "2024-04 – 2024-12",
         languages: ["python", "javascript", "typescript", "go", "java"],
-        reason: "superseded by Llama 3.1",
-        reason_de: "durch Llama 3.1 ersetzt"
+        reason: "superseded by Llama 3.1"
     },
     {
         id: "cohere/command-r",
         role: "RAG",
-        role_de: "RAG",
         context: "128k",
-        desc_en: "Cohere's retrieval-augmented model.",
-        desc_de: "Coheres Retrieval-Modell.",
-        available: "2024-03 ÔÇô 2025-01",
+        desc: "Cohere's retrieval-augmented model.",
+        available: "2024-03 – 2025-01",
         languages: ["python", "javascript", "typescript"],
-        reason: "moved to paid",
-        reason_de: "auf Bezahlung umgestellt"
+        reason: "moved to paid"
     },
     {
         id: "qwen/qwen-2-72b-instruct",
         role: "Large Instruct",
-        role_de: "Gro├ƒ Instruktion",
         context: "32k",
-        desc_en: "Alibaba's large instruction model.",
-        desc_de: "Alibabas gro├ƒes Instruktions-Modell.",
-        available: "2024-06 ÔÇô 2025-03",
+        desc: "Alibaba's large instruction model.",
+        available: "2024-06 – 2025-03",
         languages: ["python", "javascript", "typescript", "go", "java"],
-        reason: "superseded by Qwen 2.5",
-        reason_de: "durch Qwen 2.5 ersetzt"
+        reason: "superseded by Qwen 2.5"
     },
     {
         id: "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",
         role: "DPO",
-        role_de: "DPO",
         context: "32k",
-        desc_en: "Nous Research's optimized Mixtral.",
-        desc_de: "Nous Researchs optimierter Mixtral.",
-        available: "2024-01 ÔÇô 2024-11",
+        desc: "Nous Research's optimized Mixtral.",
+        available: "2024-01 – 2024-11",
         languages: ["python", "javascript", "typescript", "go"],
-        reason: "superseded by Hermes 3",
-        reason_de: "durch Hermes 3 ersetzt"
+        reason: "superseded by Hermes 3"
     }
 ];
-

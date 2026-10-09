@@ -70,192 +70,63 @@ export const CLI_COMMANDS = {
 export const OS_PATHS = {
     "win32": {
         "continue": "C:\\Users\\[YourName]\\.continue\\config.json",
-        "cursor": ".cursorrules (In deinem Projektordner)",
-        "windsurf": ".windsurfrules (In deinem Projektordner)",
+        "cursor": ".cursorrules (in your project folder)",
+        "windsurf": ".windsurfrules (in your project folder)",
         "zed": "C:\\Users\\[YourName]\\AppData\\Roaming\\Zed\\settings.json",
-        "aider": ".aider.conf.yml (In deinem Projektordner)",
-        "github_copilot": ".github\\copilot-instructions.md (In deinem Projektordner)",
+        "aider": ".aider.conf.yml (in your project folder)",
+        "github_copilot": ".github\\copilot-instructions.md (in your project folder)",
         "opencode": "C:\\Users\\[YourName]\\.config\\opencode\\opencode.json",
-        "antigravity": "settings.yaml (In deinem Projektordner)",
-        "claude_code": "CLAUDE.md (In deinem Projektordner)",
-        "cline": ".clinerules (In deinem Projektordner)",
-        "codeium": ".codeiumrules (In deinem Projektordner)",
-        "roocode": ".roorules (In deinem Projektordner)",
-        "litellm": "litellm_config.yaml (In deinem Projektordner)",
-        "cody": ".cody/config.json (In deinem Projektordner)",
-        "tabby": "tabby_config.json (In deinem Projektordner)"
+        "antigravity": "settings.yaml (in your project folder)",
+        "claude_code": "CLAUDE.md (in your project folder)",
+        "cline": ".clinerules (in your project folder)",
+        "codeium": ".codeiumrules (in your project folder)",
+        "roocode": ".roorules (in your project folder)",
+        "litellm": "litellm_config.yaml (in your project folder)",
+        "cody": ".cody/config.json (in your project folder)",
+        "tabby": "tabby_config.json (in your project folder)"
     },
     "darwin": {
         "continue": "~/.continue/config.json",
-        "cursor": ".cursorrules (In deinem Projektordner)",
-        "windsurf": ".windsurfrules (In deinem Projektordner)",
+        "cursor": ".cursorrules (in your project folder)",
+        "windsurf": ".windsurfrules (in your project folder)",
         "zed": "~/.config/zed/settings.json",
         "aider": ".aider.conf.yml",
         "github_copilot": ".github/copilot-instructions.md",
         "opencode": "~/.config/opencode/opencode.json",
-        "antigravity": "settings.yaml (In deinem Projektordner)",
-        "claude_code": "CLAUDE.md (In deinem Projektordner)",
-        "cline": ".clinerules (In deinem Projektordner)",
-        "codeium": ".codeiumrules (In deinem Projektordner)",
-        "roocode": ".roorules (In deinem Projektordner)",
-        "litellm": "litellm_config.yaml (In deinem Projektordner)",
-        "cody": ".cody/config.json (In deinem Projektordner)",
-        "tabby": "tabby_config.json (In deinem Projektordner)"
+        "antigravity": "settings.yaml (in your project folder)",
+        "claude_code": "CLAUDE.md (in your project folder)",
+        "cline": ".clinerules (in your project folder)",
+        "codeium": ".codeiumrules (in your project folder)",
+        "roocode": ".roorules (in your project folder)",
+        "litellm": "litellm_config.yaml (in your project folder)",
+        "cody": ".cody/config.json (in your project folder)",
+        "tabby": "tabby_config.json (in your project folder)"
     },
     "linux": {
         "continue": "~/.continue/config.json",
-        "cursor": ".cursorrules (In deinem Projektordner)",
-        "windsurf": ".windsurfrules (In deinem Projektordner)",
+        "cursor": ".cursorrules (in your project folder)",
+        "windsurf": ".windsurfrules (in your project folder)",
         "zed": "~/.config/zed/settings.json",
         "aider": ".aider.conf.yml",
         "github_copilot": ".github/copilot-instructions.md",
         "opencode": "~/.config/opencode/opencode.json",
-        "antigravity": "settings.yaml (In deinem Projektordner)",
-        "claude_code": "CLAUDE.md (In deinem Projektordner)",
-        "cline": ".clinerules (In deinem Projektordner)",
-        "codeium": ".codeiumrules (In deinem Projektordner)",
-        "roocode": ".roorules (In deinem Projektordner)",
-        "litellm": "litellm_config.yaml (In deinem Projektordner)",
-        "cody": ".cody/config.json (In deinem Projektordner)",
-        "tabby": "tabby_config.json (In deinem Projektordner)"
+        "antigravity": "settings.yaml (in your project folder)",
+        "claude_code": "CLAUDE.md (in your project folder)",
+        "cline": ".clinerules (in your project folder)",
+        "codeium": ".codeiumrules (in your project folder)",
+        "roocode": ".roorules (in your project folder)",
+        "litellm": "litellm_config.yaml (in your project folder)",
+        "cody": ".cody/config.json (in your project folder)",
+        "tabby": "tabby_config.json (in your project folder)"
     }
 };
 
-export function generateInstallMD(tool, os, tier, path, lang = "de") {
+export function generateInstallMD(tool, os, tier, path) {
     const isWin = os === "win32";
-    const shell = isWin ? "PowerShell or Command Prompt" : "Terminal";
     const home = isWin ? '%USERPROFILE%' : '~';
-    const isPremium = tier === "premium";
+    const isFull = tier === "full";
 
     const toolGuides = {
-        continue: {
-            type: 'extension',
-            desc: 'VS Code Erweiterung für KI-Assistenz.',
-            needInstall: 'Continue Extension im VS Code Marketplace installieren (Strg+Shift+X → "Continue" suchen).',
-            configAt: path || home + '/.continue/config.json',
-            howToUse: 'VS Code öffnen → Strg+Shift+P → "Continue: Open Chat" → Chat-Panel unten rechts zeigt dein Modell an. Oder Strg+L für Inline-Chat.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        cursor: {
-            type: 'rules',
-            desc: '.cursorrules wird von Cursor Editor automatisch gelesen.',
-            needInstall: 'Cursor Editor installieren von cursor.com.',
-            configAt: 'Im selben Ordner wie dein Projekt.',
-            howToUse: 'Cursor öffnen → Chat öffnen (Strg+I) → Modell oben im Dropdown auf "OpenRouter" umstellen.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        windsurf: {
-            type: 'rules',
-            desc: '.windsurfrules wird von Windsurf Editor automatisch gelesen.',
-            needInstall: 'Windsurf Editor installieren von codeium.com/windsurf.',
-            configAt: 'Im selben Ordner wie dein Projekt.',
-            howToUse: 'Windsurf öffnen → Cascade-Öffnung (Strg+Shift+P → "Cascade: Open") → Modell auf OpenRouter umstellen.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        zed: {
-            type: 'config',
-            desc: 'Zed Editor nutzt settings.json für KI-Modelle.',
-            needInstall: 'Zed Editor installieren von zed.dev.',
-            configAt: path || home + '/.config/zed/settings.json',
-            howToUse: 'Zed öffnen → Strg+R → Assistant-Panel → Modell sollte als "ORF" erscheinen.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        aider: {
-            type: 'cli',
-            desc: 'Aider CLI – Terminal-basiertes Pair-Programming.',
-            needInstall: 'pip install aider-chat (Python 3.9-3.12 erforderlich). Alternativ: curl -LsSf https://aider.chat/install.sh | sh',
-            installCmd: 'pip install aider-chat',
-            configAt: '.aider.conf.yml im aktuellen Projektordner.',
-            howToUse: 'Terminal öffnen → in dein Projektverzeichnis wechseln → `aider --model openrouter/DEIN_MODELL` ausführen.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        opencode: {
-            type: 'cli',
-            desc: 'OpenCode CLI – Terminal-basierte KI.',
-            needInstall: 'npm install -g opencode-ai',
-            installCmd: 'npm install -g opencode-ai',
-            configAt: path || home + '/.config/opencode/opencode.json',
-            howToUse: 'Terminal öffnen → `opencode` ausführen → Das Modell wird automatisch geladen.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        antigravity: {
-            type: 'yaml',
-            desc: 'Antigravity – Agentic Coding IDE (settings.yaml).',
-            needInstall: 'Antigravity IDE installieren.',
-            configAt: path || 'settings.yaml im aktuellen Ordner.',
-            howToUse: 'Antigravity starten → Config wird automatisch geladen.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        claude_code: {
-            type: 'cli',
-            desc: 'Claude Code CLI – Anthropics offizielles Terminal-Tool.',
-            needInstall: 'Installation via curl -fsSL https://claude.ai/install.sh | bash (Mac/Linux) oder winget install Anthropic.ClaudeCode (Windows). Alternativ: npm install -g @anthropic-ai/claude-code',
-            installCmd: 'curl -fsSL https://claude.ai/install.sh | bash',
-            configAt: 'CLAUDE.md in deinem Projektordner.',
-            howToUse: 'Terminal öffnen → in dein Projekt wechseln → `claude` ausführen.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        github_copilot: {
-            type: 'instructions',
-            desc: 'GitHub Copilot – Custom Instructions für VS Code.',
-            needInstall: 'GitHub Copilot Extension in VS Code installieren + aktives GitHub-Abo.',
-            configAt: '.github/copilot-instructions.md in deinem Projekt.',
-            howToUse: 'VS Code öffnen → Copilot Chat (Strg+Shift+I) → Copilot nutzt die Instructions automatisch.',
-            note: 'GitHub Copilot nutzt standardmäßig OpenAI-Modelle. Die Instructions passen das Verhalten an.'
-        },
-        cline: {
-            type: 'extension',
-            desc: 'Cline (CLI + VS Code) – Open-Source agentischer Coding-Assistent.',
-            needInstall: 'Cline Extension im VS Code Marketplace installieren. Für CLI: npm install -g cline.',
-            configAt: '.clinerules in deinem Projektordner.',
-            howToUse: 'Terminal: `cline` ausführen. VS Code: Cline-Symbol in der Sidebar → OpenRouter-Modell auswählen.',
-            note: 'Das Modell läuft auf OpenRouter-Servern (Cloud). Du brauchst einen kostenlosen OpenRouter-Account und API-Key.'
-        },
-        codeium: {
-            type: 'rules',
-            desc: 'Codeium/Windsurf – .codeiumrules für Code-Vervollständigung.',
-            needInstall: 'Windsurf Editor installieren (codeium.com/windsurf). Codeium ist in Windsurf integriert.',
-            configAt: '.codeiumrules in deinem Projektordner.',
-            howToUse: 'Windsurf öffnen → Cascade-Panel → Modell-Einstellungen prüfen.',
-            note: 'Codeium wurde in Windsurf integriert. Die Config wird automatisch vom Editor gelesen.'
-        },
-        roocode: {
-            type: 'extension',
-            desc: 'RooCode - VS Code Extension für agentische KI-Entwicklung mit OpenRouter.',
-            needInstall: 'RooCode Extension im VS Code Marketplace installieren.',
-            configAt: '.roorules im Projektordner',
-            howToUse: 'VS Code -> RooCode Icon in der Sidebar -> OpenRouter als Provider wählen -> Config wird automatisch gelesen.',
-            note: 'RooCode unterstützt OpenRouter-Modelle direkt. Die Config definiert das Verhalten.'
-        },
-        litellm: {
-            type: 'config',
-            desc: 'LiteLLM – Universeller LLM-Proxy. Unterstützt OpenRouter, OpenAI, Anthropic & mehr.',
-            needInstall: 'pip install litellm oder npm install -g litellm-proxy',
-            installCmd: 'pip install litellm',
-            configAt: 'litellm_config.yaml im Projektordner',
-            howToUse: '`litellm --model openrouter/google/gemma-4-26b-a4b-it:free --port 8000` starten. Dann in deinem Tool als API-Endpoint localhost:8000 eintragen.',
-            note: 'LiteLLM routet Anfragen an OpenRouter. Der API-Key wird in der Config gesetzt.'
-        },
-        cody: {
-            type: 'extension',
-            desc: 'Cody (Sourcegraph) – AI Coding Assistant mit tiefem Codebase-Kontext.',
-            needInstall: 'Cody Extension im VS Code Marketplace installieren.',
-            configAt: '.cody/config.json im Projektordner',
-            howToUse: 'VS Code → Cody Icon in der Sidebar → OpenRouter als Provider auswählen.',
-            note: 'Cody unterstützt OpenRouter als Provider. Config definiert model und API-Key.'
-        },
-        tabby: {
-            type: 'config',
-            desc: 'Tabby – Self-hosted AI Coding Assistant.',
-            needInstall: 'Tabby Docker: docker run -p 8080:8080 tabbyml/tabby serve --model StarCoder-1B',
-            installCmd: 'docker run -p 8080:8080 tabbyml/tabby serve --model StarCoder-1B',
-            configAt: 'tabby_config.json im Projektordner',
-            howToUse: 'Tabby-Server starten → In VS Code Tabby Extension verbinden → Config platziert.',
-            note: 'Tabby läuft lokal. Falls kein eigener GPU-Server, OpenRouter als Fallback nutzen.'
-        }
-    };
-
-    const toolGuidesEn = {
         continue: {
             type: 'extension',
             desc: 'VS Code extension for AI assistance.',
@@ -383,13 +254,9 @@ export function generateInstallMD(tool, os, tier, path, lang = "de") {
         }
     };
 
-    const genericDe = { type: 'generic', desc: '', needInstall: '', configAt: path, howToUse: 'Config wurde installiert. Starte das Tool neu.', note: '' };
-    const genericEn = { type: 'generic', desc: '', needInstall: '', configAt: path, howToUse: 'The config was installed. Restart the tool.', note: '' };
+    const generic = { type: 'generic', desc: '', needInstall: '', configAt: path, howToUse: 'The config was installed. Restart the tool.', note: '' };
 
-    let guide = lang === 'en' ? (toolGuidesEn[tool.id] || genericEn) : (toolGuides[tool.id] || genericDe);
-    if (guide.configAt) {
-        guide = { ...guide, configAt: String(guide.configAt).replace(/\(In deinem Projektordner\)/, lang === 'en' ? '(in your project folder)' : '(in deinem Projektordner)') };
-    }
+    const guide = toolGuides[tool.id] || generic;
 
     let installCmdSection = '';
     if (guide.installCmd) {
@@ -400,8 +267,7 @@ ${guide.installCmd}
 \`\`\``;
     }
 
-    if (lang === 'en') {
-        return `
+    return `
 # ${tool.name} – Setup Guide
 
 ## What is this?
@@ -417,9 +283,9 @@ ${guide.needInstall}${installCmdSection}
 The config was installed at:
 \`${guide.configAt}\`
 
-If it still contains \`DEIN_API_KEY_HERE\`:
+If it still contains \`YOUR_API_KEY_HERE\`:
 1. Open the file in a text editor
-2. Replace \`DEIN_API_KEY_HERE\` with your OpenRouter API key
+2. Replace \`YOUR_API_KEY_HERE\` with your OpenRouter API key
 3. Save
 
 ## 3. Usage
@@ -430,51 +296,12 @@ ${guide.howToUse}
 - Model not showing up? → Restart the tool
 - "Invalid API Key"? → Check the key in the config
 - Still having issues? → See openrouter.ai/docs for help
-${isPremium ? `
-## 5. Premium Features
+${isFull ? `
+## 5. Full Bundle Features
 This config contains extended settings:
 - Optimized temperature (0.3) for more consistent answers
 - Higher token limit (4096) for extensive generations
 - Expert system prompt for more precise code generation
-    ` : ''}
-    `.trim();
-    }
-
-    return `
-# ${tool.name} – Setup-Anleitung
-
-## Was ist das?
-${guide.desc}
-
-## Wichtig zu wissen
-${guide.note}
-
-## 1. Tool installieren (falls nicht vorhanden)
-${guide.needInstall}${installCmdSection}
-
-## 2. Config-Datei
-Die Config wurde installiert unter:
-\`${guide.configAt}\`
-
-Falls darin noch \`DEIN_API_KEY_HERE\` steht:
-1. Datei mit Texteditor öffnen
-2. \`DEIN_API_KEY_HERE\` durch deinen OpenRouter-API-Key ersetzen
-3. Speichern
-
-## 3. Nutzung
-${guide.howToUse}
-
-## 4. Problembehebung
-- Config nicht gefunden? → Installer erneut ausführen
-- Modell erscheint nicht? → Tool neustarten
-- "Invalid API Key"? → Key in der Config prüfen
-- Weiterhin Probleme? → openrouter.ai/docs für Hilfe
-${isPremium ? `
-## 5. Premium Features
-Diese Config enthält erweiterte Einstellungen:
-- Optimierte Temperature (0.3) für konsistentere Antworten
-- Höheres Token-Limit (4096) für umfangreiche Generierungen
-- Expert System-Prompt für präzisere Code-Generierung
-    ` : ''}
+` : ''}
     `.trim();
 }

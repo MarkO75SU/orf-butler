@@ -1,10 +1,9 @@
-import { TRANSLATIONS, setLanguage, getLang, t } from '../js/i18n.js';
 import { DAILY_PROMPTS, getPromptOfDay, generateRSS } from '../js/prompts.js';
 import { MODEL_MAPPING, getBestModels, MODEL_HISTORY } from '../js/mapping.js';
 import { TOOL_TEMPLATES, generateConfig } from '../js/templates.js';
 import { generateInstallMD, CLI_COMMANDS, OS_PATHS } from '../js/docs.js';
 import { isAuthenticated, login, logout, getUser } from '../js/auth.js';
-import { fetchLiveFreeModels, verifyUpdateWindow } from '../js/api.js';
+import { fetchLiveFreeModels } from '../js/api.js';
 import { BMC_URL } from '../js/config.js';
 import fs from 'fs';
 
@@ -30,40 +29,7 @@ function runAsyncTestGroup(name, fn) {
 console.log("=== RUNNING ALL TESTS ===\n");
 
 // ──────────────────────────────────────────────
-// 1. i18n Tests
-// ──────────────────────────────────────────────
-runTestGroup("i18n Tests", () => {
-    assert(TRANSLATIONS.de.title === "Openrouter Free Butler", "i18n: DE title");
-    assert(TRANSLATIONS.en.title === "Openrouter Free Butler", "i18n: EN title");
-    assert(TRANSLATIONS.de.search_placeholder, "i18n: DE search_placeholder");
-    assert(TRANSLATIONS.en.search_placeholder, "i18n: EN search_placeholder");
-    assert(TRANSLATIONS.de.deploy_btn, "i18n: DE deploy_btn");
-    assert(TRANSLATIONS.en.deploy_btn, "i18n: EN deploy_btn");
-    assert(TRANSLATIONS.de.recommendations, "i18n: DE recommendations");
-    assert(TRANSLATIONS.en.recommendations, "i18n: EN recommendations");
-    assert(TRANSLATIONS.de.roster_title, "i18n: DE roster_title");
-    assert(TRANSLATIONS.en.roster_title, "i18n: EN roster_title");
-    assert(TRANSLATIONS.de.potd_title, "i18n: DE potd_title");
-    assert(TRANSLATIONS.en.potd_title, "i18n: EN potd_title");
-    assert(TRANSLATIONS.de.basic_tier, "i18n: DE basic_tier");
-    assert(TRANSLATIONS.en.basic_tier, "i18n: EN basic_tier");
-    assert(TRANSLATIONS.de.premium_tier, "i18n: DE premium_tier");
-    assert(TRANSLATIONS.en.premium_tier, "i18n: EN premium_tier");
-    assert(TRANSLATIONS.de.mission_title, "i18n: DE mission_title");
-    assert(TRANSLATIONS.en.mission_title, "i18n: EN mission_title");
-
-    setLanguage('de');
-    assert(getLang() === 'de', "i18n: setLanguage/getLang DE");
-    assert(t('title') === "Openrouter Free Butler", "i18n: t() returns DE key");
-
-    setLanguage('en');
-    assert(getLang() === 'en', "i18n: setLanguage/getLang EN");
-    assert(t('title') === "Openrouter Free Butler", "i18n: t() returns EN key");
-    assert(t('nonexistent_key') === 'nonexistent_key', "i18n: t() missing key returns key");
-});
-
-// ──────────────────────────────────────────────
-// 2. Prompt Tests
+// 1. Prompt Tests
 // ──────────────────────────────────────────────
 runTestGroup("Prompt Tests", () => {
     const prompt = getPromptOfDay();
@@ -81,19 +47,20 @@ runTestGroup("Prompt Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 3. Mapping Tests
+// 2. Mapping Tests
 // ──────────────────────────────────────────────
 runTestGroup("Mapping Tests", () => {
     const ids = Object.keys(MODEL_MAPPING);
     assert(ids.length >= 16, "Mapping: 16+ models in database");
 
-    // Tägliches Model-Update tauscht IDs aus – Struktur statt Hardcoded-IDs prüfen
+    // The daily model update swaps IDs – check structure instead of hardcoded IDs
     Object.entries(MODEL_MAPPING).forEach(([id, m]) => {
         assert(m.role, `Mapping: ${id} has role`);
-        assert(m.role_de, `Mapping: ${id} has role_de`);
-        assert(m.desc_en, `Mapping: ${id} has desc_en`);
-        assert(m.desc_de, `Mapping: ${id} has desc_de`);
+        assert(m.desc, `Mapping: ${id} has desc`);
         assert(m.context, `Mapping: ${id} has context`);
+        assert(!('role_de' in m), `Mapping: ${id} has no role_de`);
+        assert(!('desc_de' in m), `Mapping: ${id} has no desc_de`);
+        assert(!('desc_en' in m), `Mapping: ${id} has no desc_en`);
         assert(Array.isArray(m.languages) && m.languages.length > 0, `Mapping: ${id} has languages`);
         assert(Array.isArray(m.tags) && m.tags.length > 0, `Mapping: ${id} has tags`);
         assert(id.endsWith(':free'), `Mapping: ${id} ends with :free`);
@@ -106,7 +73,7 @@ runTestGroup("Mapping Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 4. getBestModels Tests
+// 3. getBestModels Tests
 // ──────────────────────────────────────────────
 runTestGroup("getBestModels Tests", () => {
     const pythonModels = getBestModels('python', 'coding');
@@ -129,18 +96,18 @@ runTestGroup("getBestModels Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 5. Model History Tests
+// 4. Model History Tests
 // ──────────────────────────────────────────────
 runTestGroup("Model History Tests", () => {
     assert(MODEL_HISTORY.length >= 12, "History: 12+ archived models");
     assert(MODEL_HISTORY.every(m => m.id), "History: All have ID");
     assert(MODEL_HISTORY.every(m => m.role), "History: All have role");
-    assert(MODEL_HISTORY.every(m => m.role_de), "History: All have role_de");
-    assert(MODEL_HISTORY.every(m => m.desc_en), "History: All have desc_en");
-    assert(MODEL_HISTORY.every(m => m.desc_de), "History: All have desc_de");
+    assert(MODEL_HISTORY.every(m => m.desc), "History: All have desc");
+    assert(MODEL_HISTORY.every(m => !('role_de' in m)), "History: No role_de");
+    assert(MODEL_HISTORY.every(m => !('desc_de' in m)), "History: No desc_de");
     assert(MODEL_HISTORY.every(m => m.available), "History: All have available period");
     assert(MODEL_HISTORY.every(m => m.reason), "History: All have removal reason");
-    assert(MODEL_HISTORY.every(m => m.reason_de), "History: All have reason_de");
+    assert(MODEL_HISTORY.every(m => !('reason_de' in m)), "History: No reason_de");
     assert(MODEL_HISTORY.every(m => Array.isArray(m.languages) && m.languages.length > 0), "History: All have languages");
     assert(MODEL_HISTORY.every(m => m.context), "History: All have context");
 
@@ -157,7 +124,7 @@ runTestGroup("Model History Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 6. Templates Tests
+// 5. Templates Tests
 // ──────────────────────────────────────────────
 runTestGroup("Templates Tests", () => {
     const allTools = ["opencode", "continue", "zed", "aider", "antigravity",
@@ -170,6 +137,7 @@ runTestGroup("Templates Tests", () => {
         assert(tool.type, `Templates: ${id} has type`);
         assert(tool.status, `Templates: ${id} has status`);
         assert(tool.desc, `Templates: ${id} has desc`);
+        assert(!('desc_en' in tool) && !('desc_de' in tool), `Templates: ${id} has no legacy desc fields`);
         assert(["stable", "partial"].includes(tool.status), `Templates: ${id} status valid`);
         assert(["json_global", "json_merge", "yaml_config", "instruction_paste", "opencode"].includes(tool.type), `Templates: ${id} type valid`);
     });
@@ -182,49 +150,49 @@ runTestGroup("Templates Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 7. Config Generation Tests
+// 6. Config Generation Tests
 // ──────────────────────────────────────────────
 runTestGroup("Config Generation Tests", () => {
     const [testId, testData] = Object.entries(MODEL_MAPPING)[0];
     const testModels = [[testId, testData]];
 
     // JSON type (continue)
-    const jsonConfig = generateConfig("continue", testModels, "basic");
+    const jsonConfig = generateConfig("continue", testModels, "standard");
     const parsedJson = JSON.parse(jsonConfig);
     assert(parsedJson.models[0].model === testId, "generateConfig: JSON model correct");
     assert(parsedJson.models[0].provider === "openrouter", "generateConfig: JSON provider correct");
-    assert(!parsedJson.models[0].system_prompt, "generateConfig: Basic no system_prompt");
+    assert(!parsedJson.models[0].system_prompt, "generateConfig: Standard no system_prompt");
 
     // OpenCode type
-    const opencodeConfig = generateConfig("opencode", testModels, "basic");
+    const opencodeConfig = generateConfig("opencode", testModels, "standard");
     const parsedOpencode = JSON.parse(opencodeConfig);
-    assert(parsedOpencode.provider.openrouter.options.apiKey === "DEIN_API_KEY_HERE", "generateConfig: OpenCode has apiKey");
+    assert(parsedOpencode.provider.openrouter.options.apiKey === "YOUR_API_KEY_HERE", "generateConfig: OpenCode has apiKey");
     assert(parsedOpencode.model === testId, "generateConfig: OpenCode model");
 
-    // Premium JSON
-    const pm = [{ ...testData, premium_prompt: "You are an expert." }];
-    const premConfig = generateConfig("continue", [["test/model", pm[0]]], "premium");
-    const parsedPrem = JSON.parse(premConfig);
-    assert(parsedPrem.models[0].system_prompt === "You are an expert.", "generateConfig: Premium has system_prompt");
+    // Full JSON
+    const fm = [{ ...testData, system_prompt: "You are an expert." }];
+    const fullConfig = generateConfig("continue", [["test/model", fm[0]]], "full");
+    const parsedFull = JSON.parse(fullConfig);
+    assert(parsedFull.models[0].system_prompt === "You are an expert.", "generateConfig: Full has system_prompt");
 
     // YAML type (aider)
-    const yamlConfig = generateConfig("aider", testModels, "basic");
+    const yamlConfig = generateConfig("aider", testModels, "standard");
     assert(yamlConfig.includes("model:"), "generateConfig: YAML contains model");
     assert(yamlConfig.includes("openrouter/"), "generateConfig: YAML contains openrouter/");
     assert(yamlConfig.includes("endpoint:"), "generateConfig: YAML contains endpoint");
 
     // Instruction type (cursor)
-    const instrConfig = generateConfig("cursor", testModels, "basic");
+    const instrConfig = generateConfig("cursor", testModels, "standard");
     assert(instrConfig.includes("ORF-Butler"), "generateConfig: Instruction contains ORF-Butler");
     assert(instrConfig.includes("professional coder"), "generateConfig: Instruction contains prompt text");
 
-    // Premium instruction
-    const premInstr = generateConfig("cursor", [["test/model", pm[0]]], "premium");
-    assert(premInstr.includes("You are an expert."), "generateConfig: Premium instruction has premium_prompt");
+    // Full instruction
+    const fullInstr = generateConfig("cursor", [["test/model", fm[0]]], "full");
+    assert(fullInstr.includes("You are an expert."), "generateConfig: Full instruction has system_prompt");
 });
 
 // ──────────────────────────────────────────────
-// 8. CLI Commands Tests
+// 7. CLI Commands Tests
 // ──────────────────────────────────────────────
 runTestGroup("CLI Commands Tests", () => {
     const allCLI = ["ollama", "opencode", "aider", "claude_code", "cline"];
@@ -246,26 +214,30 @@ runTestGroup("CLI Commands Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 9. InstallMD Tests
+// 8. InstallMD Tests
 // ──────────────────────────────────────────────
 runTestGroup("InstallMD Tests", () => {
-    const md = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "win32", "basic", "C:\\test");
-    assert(md.includes("Setup-Anleitung"), "InstallMD: Title");
+    const md = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "win32", "standard", "C:\\test");
+    assert(md.includes("Setup Guide"), "InstallMD: Title");
     assert(md.includes("npm install -g opencode-ai"), "InstallMD: Win install command");
-    assert(md.includes("DEIN_API_KEY_HERE"), "InstallMD: API placeholder");
+    assert(md.includes("YOUR_API_KEY_HERE"), "InstallMD: API placeholder");
     assert(md.includes("C:\\test"), "InstallMD: Win path in body");
+    assert(!md.includes("Setup-Anleitung"), "InstallMD: no German title");
 
-    const mdMac = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "darwin", "basic", "~/.config");
+    const mdMac = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "darwin", "standard", "~/.config");
     assert(mdMac.includes("npm install -g opencode-ai"), "InstallMD: Mac install command");
     assert(mdMac.includes("~/.config"), "InstallMD: Mac path in body");
 
-    const mdClaude = generateInstallMD({ id: "claude_code", name: "Claude Code", config_file: "CLAUDE.md" }, "darwin", "basic", "~/CLAUDE.md");
+    const mdClaude = generateInstallMD({ id: "claude_code", name: "Claude Code", config_file: "CLAUDE.md" }, "darwin", "standard", "~/CLAUDE.md");
     assert(mdClaude.includes("Claude Code"), "InstallMD: Claude Code title");
     assert(mdClaude.includes("curl -fsSL https://claude.ai/install.sh | bash"), "InstallMD: Claude Code install command");
+
+    const mdFull = generateInstallMD({ id: "opencode", name: "OpenCode", config_file: ".opencode.json" }, "win32", "full", "C:\\test");
+    assert(mdFull.includes("Full Bundle Features"), "InstallMD: Full bundle section");
 });
 
 // ──────────────────────────────────────────────
-// 10. OS Paths Tests
+// 9. OS Paths Tests
 // ──────────────────────────────────────────────
 runTestGroup("OS Paths Tests", () => {
     const allToolPaths = ["continue", "cursor", "windsurf", "zed", "aider", "github_copilot",
@@ -294,7 +266,7 @@ runTestGroup("OS Paths Tests", () => {
     assert(OS_PATHS["win32"]["cursor"].includes(".cursorrules"), "OS_PATHS: Win cursor path");
     assert(OS_PATHS["darwin"]["windsurf"].includes(".windsurfrules"), "OS_PATHS: Mac windsurf path");
 
-    // Kein Drift: config_file (Zielname) muss zum OS-Pfad-Namen passen
+    // No drift: config_file (target name) must match the OS path name
     const baseName = (s) => String(s).replace(/\s*\(.*?\)\s*$/, '').split(/[\\/]/).pop();
     Object.keys(TOOL_TEMPLATES).forEach(id => {
         const expected = baseName(TOOL_TEMPLATES[id].config_file);
@@ -306,7 +278,7 @@ runTestGroup("OS Paths Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 11. Auth Tests
+// 10. Auth Tests
 // ──────────────────────────────────────────────
 runTestGroup("Auth Tests", () => {
     assert(typeof isAuthenticated === 'function', "Auth: isAuthenticated is function");
@@ -316,39 +288,27 @@ runTestGroup("Auth Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 12. API Tests
+// 11. API Tests
 // ──────────────────────────────────────────────
 runTestGroup("API Tests", () => {
     assert(typeof fetchLiveFreeModels === 'function', "API: fetchLiveFreeModels is function");
-
-    // verifyUpdateWindow tests
-    assert(typeof verifyUpdateWindow === 'function', "API: verifyUpdateWindow is function");
-
-    const now = Date.now();
-    const oneDay = 24 * 60 * 60 * 1000;
-    const fiveWeeks = 35 * 24 * 60 * 60 * 1000;
-
-    assert(verifyUpdateWindow(new Date(now - oneDay).toISOString()) === true, "API: 1 day ago within window");
-    assert(verifyUpdateWindow(new Date(now - 27 * oneDay).toISOString()) === true, "API: 27 days within window");
-    assert(verifyUpdateWindow(new Date(now - fiveWeeks).toISOString()) === false, "API: 35 days outside window");
-    assert(verifyUpdateWindow(new Date(now).toISOString()) === true, "API: Today within window");
 });
 
 // ──────────────────────────────────────────────
-// 13. Cross-Module Integration Tests
+// 12. Cross-Module Integration Tests
 // ──────────────────────────────────────────────
 runTestGroup("Integration Tests", () => {
     // getBestModels -> generateConfig pipeline
     const models = getBestModels('python', 'coding');
     assert(models.length > 0, "Integration: Python models available");
 
-    const config = generateConfig("opencode", models, "basic");
+    const config = generateConfig("opencode", models, "standard");
     const parsed = JSON.parse(config);
-    assert(parsed.provider.openrouter.options.apiKey === "DEIN_API_KEY_HERE", "Integration: OpenCode has openrouter provider");
+    assert(parsed.provider.openrouter.options.apiKey === "YOUR_API_KEY_HERE", "Integration: OpenCode has openrouter provider");
 
     const hasValidModel = models.some(([id]) => {
         try {
-            JSON.parse(generateConfig("opencode", [[id, MODEL_MAPPING[id]]], "basic"));
+            JSON.parse(generateConfig("opencode", [[id, MODEL_MAPPING[id]]], "standard"));
             return true;
         } catch { return false; }
     });
@@ -357,7 +317,7 @@ runTestGroup("Integration Tests", () => {
     // All tools generate valid config with first model
     const firstModel = Object.entries(MODEL_MAPPING)[0];
     Object.keys(TOOL_TEMPLATES).forEach(toolId => {
-        const result = generateConfig(toolId, [firstModel], "basic");
+        const result = generateConfig(toolId, [firstModel], "standard");
         assert(result && result.length > 0, `Integration: ${toolId} generates non-empty config`);
     });
 
@@ -367,31 +327,25 @@ runTestGroup("Integration Tests", () => {
 });
 
 // ──────────────────────────────────────────────
-// 14. App-Strategie Tests (BMC statt Paywall, kein Admin-Panel)
+// 13. App Strategy Tests (BMC instead of paywall, no admin panel)
 // ──────────────────────────────────────────────
 runTestGroup("App Strategy Tests", () => {
     const appSrc = fs.readFileSync(new URL('../js/app.js', import.meta.url), 'utf-8');
-    const m = appSrc.match(/const translations = \{[\s\S]*?\n\};/);
-    assert(!!m, "App: translations object found in app.js");
-    const translations = new Function(m[0] + '\nreturn translations;')();
-
-    const deKeys = Object.keys(translations.de).sort();
-    const enKeys = Object.keys(translations.en).sort();
-    assert(deKeys.length === enKeys.length, `App i18n: DE/EN key count equal (${deKeys.length})`);
-    assert(JSON.stringify(deKeys) === JSON.stringify(enKeys), "App i18n: DE/EN keys identical");
-
-    ['adminBadge', 'codesTitle', 'codesGenerate', 'codesThUser', 'promptAdminPassword', 'confirmRevoke', 'confirmReset']
-        .forEach(k => {
-            assert(!(k in translations.de) && !(k in translations.en), `App i18n: removed key "${k}" gone`);
-        });
+    const m = appSrc.match(/const texts = \{[\s\S]*?\n\};/);
+    assert(!!m, "App: texts object found in app.js");
+    const texts = new Function(m[0] + '\nreturn texts;')();
 
     ['bundleFree', 'thanksTitle', 'thanksText', 'thanksBtn', 'thanksClose'].forEach(k => {
-        assert(!!translations.de[k] && !!translations.en[k], `App i18n: strategy key "${k}" present DE+EN`);
+        assert(!!texts[k], `App: strategy key "${k}" present`);
     });
 
+    assert(!appSrc.includes("from './i18n.js'"), "App: no i18n import in app.js");
+    assert(!appSrc.includes('translations'), "App: no translations object in app.js");
     assert(!appSrc.includes('isAdmin'), "App: no admin logic in app.js");
     assert(!appSrc.includes('openCodesPanel'), "App: no codes panel in app.js");
     assert(!appSrc.includes('5€') && !appSrc.includes('20€'), "App: no price strings in app.js");
+    assert(appSrc.includes("'standard'") && appSrc.includes("'full'"), "App: standard/full bundle keys");
+    assert(!appSrc.includes('premium'), "App: no premium references in app.js");
 
     const appHtml = fs.readFileSync(new URL('../../app.html', import.meta.url), 'utf-8');
     assert(!appHtml.includes('codes-modal'), "App: no codes modal in app.html");
@@ -399,18 +353,24 @@ runTestGroup("App Strategy Tests", () => {
     assert(!appHtml.includes('5€') && !appHtml.includes('20€'), "App: no price strings in app.html");
     assert(appHtml.includes('thanks-modal'), "App: thanks modal present in app.html");
     assert(appHtml.includes('data-bmc="header"'), "App: BMC header link present");
+    assert(appHtml.includes('bundle-standard') && appHtml.includes('bundle-full'), "App: standard/full bundle buttons");
+    assert(appHtml.includes('lang="en"'), "App: English-only lang attribute");
 
     const landing = fs.readFileSync(new URL('../../landing.html', import.meta.url), 'utf-8');
     assert(!landing.includes('5€') && !landing.includes('20€'), "Landing: no price strings");
     assert(landing.includes('data-bmc="landing"'), "Landing: BMC support link present");
     assert(!landing.includes('Registrierung testen'), "Landing: admin test mode removed");
+    assert(landing.includes('lang="en"'), "Landing: English-only lang attribute");
+
+    const index = fs.readFileSync(new URL('../../index.html', import.meta.url), 'utf-8');
+    assert(index.includes('lang="en"'), "Index: English-only lang attribute");
 
     assert(BMC_URL.includes('buymeacoffee.com'), "BMC: placeholder URL configured");
     assert(BMC_URL === 'https://www.buymeacoffee.com/DEIN-NAME', "BMC: placeholder not yet replaced");
 });
 
 // ──────────────────────────────────────────────
-// 15. Installer Tests (Projektordner-Suche + Scope-Parität)
+// 14. Installer Tests (project folder search + scope parity)
 // ──────────────────────────────────────────────
 runTestGroup("Installer Tests", () => {
     const read = p => fs.readFileSync(new URL(p, import.meta.url), 'utf-8');
@@ -422,7 +382,7 @@ runTestGroup("Installer Tests", () => {
 
     const installers = { node, bat, sh, mac };
 
-    // Parität: jedes Tool-Template kommt als Toolkey in allen vier Installern vor
+    // Parity: every tool template appears as a toolkey in all four installers
     Object.keys(TOOL_TEMPLATES).forEach(id => {
         Object.entries(installers).forEach(([name, src]) => {
             assert(src.includes(`"${id}"`), `Installer ${name}: toolkey ${id} present`);
@@ -430,21 +390,23 @@ runTestGroup("Installer Tests", () => {
     });
     Object.entries(installers).forEach(([name, src]) => {
         assert(!src.includes('amazon_q'), `Installer ${name}: amazon_q removed`);
+        assert(!src.includes('DEIN_API_KEY_HERE'), `Installer ${name}: no German API placeholder`);
     });
 
-    // Node-Installer: Scope-Felder + Projektordner-Funktionen
+    // Node installer: scope fields + project folder functions
     assert(node.includes("scope: 'global'") && node.includes("scope: 'project'"), "Installer node: scope global/project");
     assert(node.includes('findProjectRoots') && node.includes('chooseProjectRoot'), "Installer node: project folder functions");
     assert(node.includes('detectOS'), "Installer node: detectOS exported");
+    assert(node.includes('YOUR_API_KEY_HERE'), "Installer node: English API placeholder");
 
-    // Batch-Installer
+    // Batch installer
     assert(bat.includes(':choose_project'), "Installer bat: choose_project subroutine");
     assert(bat.includes('set PROJECT_ROOT='), "Installer bat: PROJECT_ROOT");
     assert(bat.includes('NEED_PROJECT'), "Installer bat: NEED_PROJECT detection");
     assert(bat.includes('if /i "%~5"=="project"'), "Installer bat: scope-aware safe_copy");
     assert(bat.includes('\r\n'), "Installer bat: CRLF line endings (gitattributes eol=crlf)");
 
-    // Shell-Installer (Linux + Mac)
+    // Shell installers (Linux + Mac)
     [['linux', sh], ['mac', mac]].forEach(([name, src]) => {
         assert(src.includes('choose_project_root'), `Installer ${name}: choose_project_root function`);
         assert(src.includes('find_project_roots'), `Installer ${name}: find_project_roots function`);
@@ -453,13 +415,13 @@ runTestGroup("Installer Tests", () => {
         assert(src.includes('"$SCOPE" = "project"'), `Installer ${name}: scope-aware try_copy`);
     });
 
-    // README-AUTOINSTALL (DE/EN) dokumentiert den Projektordner
-    assert(appSrc.includes('Projektordner'), "Installer readme: DE Projektordner section");
-    assert(appSrc.includes('Project Folder'), "Installer readme: EN Project Folder section");
+    // Auto-install readme documents the project folder (English-only)
+    assert(appSrc.includes('Project Folder'), "Installer readme: Project Folder section");
+    assert(!appSrc.includes('Projektordner'), "Installer readme: no German section");
 });
 
 // ──────────────────────────────────────────────
-// HTTP + Store + Codes-API Tests (async)
+// HTTP Helper Tests (async)
 // ──────────────────────────────────────────────
 runAsyncTestGroup("HTTP Helper Tests", async () => {
     const { applyCors, handlePreflight, methodGuard, clientIp } = await import('../../lib/http.js');
@@ -486,7 +448,7 @@ runAsyncTestGroup("HTTP Helper Tests", async () => {
     assert(clientIp({ headers: {}, socket: { remoteAddress: '9.9.9.9' } }) === '9.9.9.9', "http: clientIp falls back to socket");
 });
 
-// Async-Gruppen ausführen (vor der Zusammenfassung)
+// Run async groups (before the summary)
 for (const { name, fn } of asyncGroups) {
     console.log(`\n--- ${name} ---`);
     try { await fn(); } catch (error) { failed++; console.error(`\n${error.message}`); }

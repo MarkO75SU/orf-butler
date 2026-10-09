@@ -17,14 +17,14 @@ app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     
     if (!VALID_USER || !VALID_PASS) {
-        return res.status(500).json({ error: 'Zugangsdaten nicht konfiguriert' });
+        return res.status(500).json({ error: 'Credentials not configured' });
     }
     
     if (username === VALID_USER && password === VALID_PASS) {
         return res.json({ success: true });
     }
     
-    res.status(401).json({ error: 'Zugang verweigert' });
+    res.status(401).json({ error: 'Access denied' });
 });
 
 app.listen(3000, () => {

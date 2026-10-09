@@ -4,41 +4,41 @@ cd /d "%~dp0"
 
 set LOGFILE=install-log.txt
 echo ORF-Butler Auto-Installer Log > "%LOGFILE%"
-echo Datum: %DATE% %TIME% >> "%LOGFILE%"
+echo Date: %DATE% %TIME% >> "%LOGFILE%"
 echo ---------------------------------------- >> "%LOGFILE%"
 
 echo ============================================
 echo    ORF-Butler Auto-Installer
-echo    OpenRouter Free Butler - Konfiguration
+echo    OpenRouter Free Butler - Configuration
 echo ============================================
 echo.
 
 where node >nul 2>nul
 if errorlevel 1 (
-  echo   [HINWEIS] Node.js nicht gefunden.
-  echo   Download: https://nodejs.org (Version 18+)
+  echo   [NOTE] Node.js not found.
+  echo   Download: https://nodejs.org (version 18+)
   echo.
 ) else (
-  echo   [OK] Node.js ist installiert.
+  echo   [OK] Node.js is installed.
 )
 echo.
 
 set APIKEY=
-echo   OpenRouter API-Key (optional):
-echo     Nur lokal in der Config gespeichert, kein Server-Versand.
-echo     Ohne Key: DEIN_API_KEY_HERE bleibt stehen, spaeter ersetzbar.
-set /p "APIKEY=  Key eingeben oder Enter zum Ueberspringen: "
+echo   OpenRouter API key (optional):
+echo     Stored only locally in the config, never sent to a server.
+echo     Without a key: YOUR_API_KEY_HERE stays, replaceable later.
+set /p "APIKEY=  Enter key or press Enter to skip: "
 echo.
 
 if not "%APIKEY%"=="" (
-  echo Setze API-Key in Configs ein...
-  powershell -Command "$k='%APIKEY:''=''%'; Get-ChildItem '.\*' -Include '*-config.json','*.yml','*.yaml' -Name | ForEach-Object { $c = Get-Content $_ -Raw; $c = $c -replace 'DEIN_API_KEY_HERE', $k; Set-Content $_ $c }; Write-Host '  [OK] API-Key eingetragen'"
+  echo Setting API key in configs...
+  powershell -Command "$k='%APIKEY:''=''%'; Get-ChildItem '.\*' -Include '*-config.json','*.yml','*.yaml' -Name | ForEach-Object { $c = Get-Content $_ -Raw; $c = $c -replace 'YOUR_API_KEY_HERE', $k; Set-Content $_ $c }; Write-Host '  [OK] API key set'"
   echo.
 )
 
-set /p "PREVIEW=Config vor dem Speichern pruefen? (j/n, Enter=nein): "
+set /p "PREVIEW=Preview config before saving? (y/n, Enter=no): "
 echo.
-echo Kopiere Config-Dateien...
+echo Copying config files...
 echo.
 
 setlocal enabledelayedexpansion
@@ -80,38 +80,38 @@ call :safe_copy "tabby-config.json" "tabby_config.json" "Tabby" "tabby" project
 
 echo.
 echo ============================================
-echo            ZUSAMMENFASSUNG
+echo            SUMMARY
 echo ============================================
 if !INSTALLED! equ 0 (
   echo.
-  echo   Es wurden KEINE Config-Dateien gefunden.
-  echo   Lege dieses Skript in den Ordner mit den
-  echo   -config.json und -INSTALL.md Dateien.
+  echo   No config files were found.
+  echo   Place this script in the folder that contains
+  echo   the -config.json and -INSTALL.md files.
   echo.
-  echo   Alternativ verwalte die Configs manuell
-  echo   mit "node auto-install.js" im Terminal.
+  echo   Or manage the configs manually
+  echo   with "node auto-install.js" in the terminal.
   echo.
 ) else (
-  echo   Erfolgreich installiert: !INSTALLED!
+  echo   Successfully installed: !INSTALLED!
   echo.
 )
 echo.
-echo   Die Schritt-fuer-Schritt Anleitungen stehen
-echo   in den *_INSTALL.md Dateien im ZIP-Ordner.
+echo   The step-by-step guides are in the
+echo   *_INSTALL.md files in the ZIP folder.
 echo.
 
 echo.
-echo   WICHTIG: Enthaelt eine Config noch DEIN_API_KEY_HERE?
-echo   Dann die Datei im Editor oeffnen und durch echten
-echo   OpenRouter-API-Key ersetzen (openrouter.ai/keys).
+echo   NOTE: Does a config still contain YOUR_API_KEY_HERE?
+echo   Open the file in an editor and replace it with a real
+echo   OpenRouter API key (openrouter.ai/keys).
 echo.
 echo.
-echo   Starte dein Tool neu.
+echo   Restart your tool.
 echo.
 echo   Log: %LOGFILE%
 echo.
 echo   ============================================
-echo   Druecke eine beliebige Taste zum Schliessen.
+echo   Press any key to close.
 echo   ============================================
 pause
 goto :EOF
@@ -135,23 +135,23 @@ if exist "manifest.txt" (
 for %%I in ("%DEST%") do set "DESTDIR=%%~dpI"
 if not exist "!DESTDIR!" mkdir "!DESTDIR!" 2>nul
 if not exist "%DEST%" (
-  if /i "!PREVIEW!"=="j" (
+  if /i "!PREVIEW!"=="y" (
     echo.
     echo ============================================
-    echo   Vorschau: %LABEL%
+    echo   Preview: %LABEL%
     echo ============================================
     type "%SRC%"
     echo.
-    echo   Speichern unter %DEST%?
-    set /p "CONFIRM=  [j] Ja / [n] In Downloads: "
+    echo   Save to %DEST%?
+    set /p "CONFIRM=  [y] Yes / [n] Save to Downloads: "
     if /i "!CONFIRM!"=="n" set "DEST=%USERPROFILE%\Downloads\%~nx1"
   )
   copy "%SRC%" "%DEST%" >nul
   if errorlevel 1 (
-    echo   [FEHLER] %LABEL%
-    echo   [FEHLER] %LABEL%: %SRC% -^> %DEST% >> "%LOGFILE%"
+    echo   [ERROR] %LABEL%
+    echo   [ERROR] %LABEL%: %SRC% -^> %DEST% >> "%LOGFILE%"
     echo.
-    echo   FEHLER bei %LABEL%. Druecke eine Taste...
+    echo   ERROR with %LABEL%. Press a key...
     pause >nul
   ) else (
     echo   [OK] %LABEL%
@@ -163,47 +163,47 @@ if not exist "%DEST%" (
 )
 
 copy "%DEST%" "%DEST%.backup" >nul
-echo   [BACKUP] %LABEL%: alte Config gesichert
+echo   [BACKUP] %LABEL%: old config saved
 echo   [BACKUP] %DEST%.backup >> "%LOGFILE%"
 
 echo.
-echo   %LABEL%: Config existiert bereits unter %DEST%
-echo     [1] Ueberschreiben (Backup vorhanden)
-echo     [2] Auskommentieren + neue daneben
-echo     [3] Beide Inhalte mergen (nur JSON)
-echo     [s] Ueberspringen (nichts tun)
+echo   %LABEL%: config already exists at %DEST%
+echo     [1] Overwrite (backup available)
+echo     [2] Comment out + write new below
+echo     [3] Merge both contents (JSON only)
+echo     [s] Skip (do nothing)
 set /p "CHOICE=  > "
 
 if /i "!CHOICE!"=="s" (
-  echo   [WARN] %LABEL%: Uebersprungen
+  echo   [WARN] %LABEL%: skipped
   echo   [SKIPPED] %LABEL% >> "%LOGFILE%"
   exit /b 0
 )
 
 if "!CHOICE!"=="1" (
-  if /i "!PREVIEW!"=="j" (
+  if /i "!PREVIEW!"=="y" (
     echo.
     echo ============================================
-    echo   Vorschau: %LABEL%
+    echo   Preview: %LABEL%
     echo ============================================
     type "%SRC%"
     echo.
-    set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
-    if /i not "!CONFIRM!"=="j" (
-      echo   [WARN] %LABEL%: Abgebrochen
+    set /p "CONFIRM=  Really save to %DEST%? (y/n): "
+    if /i not "!CONFIRM!"=="y" (
+      echo   [WARN] %LABEL%: cancelled
       echo   [SKIPPED] %LABEL% >> "%LOGFILE%"
       exit /b 0
     )
   )
   copy "%SRC%" "%DEST%" >nul
   if errorlevel 1 (
-    echo   [FEHLER] %LABEL%
-    echo   [FEHLER] %LABEL%: Ueberschreiben fehlgeschlagen >> "%LOGFILE%"
+    echo   [ERROR] %LABEL%
+    echo   [ERROR] %LABEL%: overwrite failed >> "%LOGFILE%"
     echo.
-    echo   FEHLER bei %LABEL%. Druecke eine Taste...
+    echo   ERROR with %LABEL%. Press a key...
     pause >nul
   ) else (
-    echo   [OK] %LABEL%: Ueberschrieben
+    echo   [OK] %LABEL%: overwritten
     echo   [OVERWRITTEN] %LABEL%: %DEST% >> "%LOGFILE%"
     set /a INSTALLED+=1
     set installed_tools=!installed_tools! %TOOLKEY%
@@ -212,29 +212,29 @@ if "!CHOICE!"=="1" (
 )
 
 if "!CHOICE!"=="2" (
-  if /i "!PREVIEW!"=="j" (
+  if /i "!PREVIEW!"=="y" (
     echo.
     echo ============================================
-    echo   Vorschau: %LABEL%
+    echo   Preview: %LABEL%
     echo ============================================
     type "%SRC%"
     echo.
-    set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
-    if /i not "!CONFIRM!"=="j" (
-      echo   [WARN] %LABEL%: Abgebrochen
+    set /p "CONFIRM=  Really save to %DEST%? (y/n): "
+    if /i not "!CONFIRM!"=="y" (
+      echo   [WARN] %LABEL%: cancelled
       echo   [SKIPPED] %LABEL% >> "%LOGFILE%"
       exit /b 0
     )
   )
   powershell -Command "$c=Get-Content '%DEST%'; $ext=[System.IO.Path]::GetExtension('%DEST%'); $pre='// '; if($ext -eq '.yml' -or $ext -eq '.yaml'){$pre='# '}; $commented=$c -replace '^', $pre; \"$commented`n`n// --- ORF-Butler Config ---`n\"+ (Get-Content '%SRC%') | Set-Content '%DEST%'"
   if errorlevel 1 (
-    echo   [FEHLER] %LABEL%
-    echo   [FEHLER] %LABEL%: Auskommentieren fehlgeschlagen >> "%LOGFILE%"
+    echo   [ERROR] %LABEL%
+    echo   [ERROR] %LABEL%: commenting failed >> "%LOGFILE%"
     echo.
-    echo   FEHLER bei %LABEL%. Druecke eine Taste...
+    echo   ERROR with %LABEL%. Press a key...
     pause >nul
   ) else (
-    echo   [OK] %LABEL%: Alte auskommentiert + neue geschrieben
+    echo   [OK] %LABEL%: old commented out + new one written
     echo   [COMMENTED] %LABEL%: %DEST% >> "%LOGFILE%"
     set /a INSTALLED+=1
     set installed_tools=!installed_tools! %TOOLKEY%
@@ -245,15 +245,15 @@ if "!CHOICE!"=="2" (
 if "!CHOICE!"=="3" (
   set EXT=%SRC:~-5%
   if /i not "!EXT!"==".json" (
-    echo   [WARN] %LABEL%: Merge nur bei JSON - uebersprungen
-    echo   [SKIPPED] %LABEL%: kein JSON >> "%LOGFILE%"
+    echo   [WARN] %LABEL%: merge is only possible for JSON - skipped
+    echo   [SKIPPED] %LABEL%: not JSON >> "%LOGFILE%"
     exit /b 0
   )
-  :: Prüfe ob Inhalt wirklich JSON ist
+  :: Check that the content really is JSON
   findstr /B "{" "%SRC%" >nul
   if errorlevel 1 (
-    echo   [WARN] %LABEL%: Datei ist kein JSON (Text-Instruktion) - uebersprungen
-    echo   [SKIPPED] %LABEL%: kein JSON-Inhalt >> "%LOGFILE%"
+    echo   [WARN] %LABEL%: file is not JSON (text instruction) - skipped
+    echo   [SKIPPED] %LABEL%: not JSON content >> "%LOGFILE%"
     exit /b 0
   )
   set MERGE_TMP=%TEMP%\orf-merge-%RANDOM%.json
@@ -267,40 +267,40 @@ if "!CHOICE!"=="3" (
     node -e "var a=JSON.parse(require('fs').readFileSync(process.env.NODE_DEST));var b=JSON.parse(require('fs').readFileSync(process.env.NODE_SRC));var m={};Object.keys(a).forEach(function(k){m[k]=a[k]});Object.keys(b).forEach(function(k){m[k]=b[k]});require('fs').writeFileSync(process.env.NODE_OUT,JSON.stringify(m,null,2))"
   )
   if errorlevel 1 (
-    echo   [FEHLER] %LABEL%
-    echo   [FEHLER] %LABEL%: Merge fehlgeschlagen >> "%LOGFILE%"
+    echo   [ERROR] %LABEL%
+    echo   [ERROR] %LABEL%: merge failed >> "%LOGFILE%"
     del "!MERGE_TMP!" 2>nul
     echo.
-    echo   FEHLER bei %LABEL%. Druecke eine Taste...
+    echo   ERROR with %LABEL%. Press a key...
     pause >nul
     exit /b 0
   )
-  if /i "!PREVIEW!"=="j" (
+  if /i "!PREVIEW!"=="y" (
     echo.
     echo ============================================
-    echo   Gemergte Vorschau: %LABEL%
+    echo   Merged preview: %LABEL%
     echo ============================================
     type "!MERGE_TMP!"
     echo.
-    set /p "CONFIRM=  Wirklich speichern unter %DEST%? (j/n): "
-    if /i not "!CONFIRM!"=="j" (
+    set /p "CONFIRM=  Really save to %DEST%? (y/n): "
+    if /i not "!CONFIRM!"=="y" (
       del "!MERGE_TMP!" 2>nul
-      echo   [WARN] %LABEL%: Abgebrochen
-      echo   [SKIPPED] %LABEL%: Merge abgelehnt >> "%LOGFILE%"
+      echo   [WARN] %LABEL%: cancelled
+      echo   [SKIPPED] %LABEL%: merge rejected >> "%LOGFILE%"
       exit /b 0
     )
   )
   copy "!MERGE_TMP!" "%DEST%" >nul
   del "!MERGE_TMP!" 2>nul
-  echo   [OK] %LABEL%: JSON gemerged
+  echo   [OK] %LABEL%: JSON merged
   echo   [MERGED] %LABEL%: %DEST% >> "%LOGFILE%"
   set /a INSTALLED+=1
   set installed_tools=!installed_tools! %TOOLKEY%
   exit /b 0
 )
 
-echo   [WARN] %LABEL%: Ungueltige Eingabe - uebersprungen
-echo   [SKIPPED] %LABEL%: ungueltige Eingabe >> "%LOGFILE%"
+echo   [WARN] %LABEL%: invalid input - skipped
+echo   [SKIPPED] %LABEL%: invalid input >> "%LOGFILE%"
 exit /b 0
 
 :choose_project
@@ -314,15 +314,15 @@ for %%D in ("%USERPROFILE%\*" "%USERPROFILE%\Desktop\*" "%USERPROFILE%\Documents
   )
 )
 echo.
-echo   Projektordner fuer projekt-lokale Configs:
+echo   Project folder for project-local configs:
 echo     (.cursorrules, CLAUDE.md, .clinerules, ...)
-echo     [0] Aktueller Ordner: %cd%
+echo     [0] Current folder: %cd%
 for /l %%N in (1,1,!NCAND!) do (
   echo     [%%N] !CAND[%%N]!
 )
-echo     Oder kompletten Pfad eingeben.
+echo     Or enter a full path.
 set "PCHOICE="
-set /p "PCHOICE=  Wahl (Enter=0): "
+set /p "PCHOICE=  Choice (Enter=0): "
 if not defined PCHOICE exit /b 0
 echo(!PCHOICE!| findstr /R /C:"^[0-9][0-9]*$" >nul
 if errorlevel 1 (
@@ -334,6 +334,6 @@ call set "SEL=%%CAND[%PCHOICE%]%%"
 if defined SEL (
   set "PROJECT_ROOT=!SEL!"
 ) else (
-  echo   [WARN] Ungueltige Nummer - aktueller Ordner.
+  echo   [WARN] Invalid number - current folder.
 )
 exit /b 0

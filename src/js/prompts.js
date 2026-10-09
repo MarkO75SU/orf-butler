@@ -7,7 +7,7 @@ export const DAILY_PROMPTS = [
 ];
 
 export function getPromptOfDay() {
-    // Deterministische Auswahl basierend auf dem Datum (1 Tag = 1 Prompt)
+    // Deterministic selection based on the date (1 day = 1 prompt)
     const today = new Date();
     const index = (today.getFullYear() + today.getMonth() + today.getDate()) % DAILY_PROMPTS.length;
     return DAILY_PROMPTS[index];

@@ -9,7 +9,7 @@ export default function handler(req, res) {
     const validPass = process.env.LOGIN_PASS;
     
     if (!validUser || !validPass) {
-        return res.status(500).json({ error: 'Zugangsdaten nicht konfiguriert' });
+        return res.status(500).json({ error: 'Credentials not configured' });
     }
     
     if (username === validUser && password === validPass) {
@@ -17,5 +17,5 @@ export default function handler(req, res) {
         return res.json({ success: true });
     }
     
-    res.status(401).json({ error: 'Zugang verweigert' });
+    res.status(401).json({ error: 'Access denied' });
 }

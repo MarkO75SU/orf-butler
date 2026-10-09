@@ -3,40 +3,40 @@ cd "$(dirname "$0")"
 clear
 LOGFILE="install-log.txt"
 echo "ORF-Butler Auto-Installer Log" > "$LOGFILE"
-echo "Datum: $(date)" >> "$LOGFILE"
+echo "Date: $(date)" >> "$LOGFILE"
 echo "----------------------------------------" >> "$LOGFILE"
 echo "============================================"
 echo "   ORF-Butler Auto-Installer"
-echo "   OpenRouter Free Butler - Konfiguration"
+echo "   OpenRouter Free Butler - Configuration"
 echo "============================================"
 echo ""
 
 if ! command -v node &> /dev/null; then
-  echo "  [HINWEIS] Node.js nicht gefunden."
-  echo "  Installation: https://nodejs.org (Version 18+)"
-  echo "  oder via Paketmanager: sudo apt install nodejs"
+  echo "  [NOTE] Node.js not found."
+  echo "  Install: https://nodejs.org (version 18+)"
+  echo "  or via package manager: sudo apt install nodejs"
   echo ""
 fi
 echo ""
 
-echo "  OpenRouter API-Key (optional):"
-echo "    Nur lokal in der Config gespeichert, kein Server-Versand."
-echo "    Ohne Key: DEIN_API_KEY_HERE bleibt stehen, spaeter ersetzbar."
-read -p "  Key eingeben oder Enter zum Ueberspringen: " APIKEY
+echo "  OpenRouter API key (optional):"
+echo "    Stored only locally in the config, never sent to a server."
+echo "    Without a key: YOUR_API_KEY_HERE stays, replaceable later."
+read -p "  Enter key or press Enter to skip: " APIKEY
 echo ""
 if [ -n "$APIKEY" ]; then
-  echo "Setze API-Key in Configs ein..."
+  echo "Setting API key in configs..."
   for f in *-config.json *.yml *.yaml; do
-    [ -f "$f" ] && sed -i.bak "s|DEIN_API_KEY_HERE|$APIKEY|g" "$f" 2>/dev/null
+    [ -f "$f" ] && sed -i.bak "s|YOUR_API_KEY_HERE|$APIKEY|g" "$f" 2>/dev/null
   done
   rm -f *.bak 2>/dev/null
-  echo "  [OK] API-Key eingetragen"
+  echo "  [OK] API key set"
   echo ""
 fi
 
-read -p "Config vor dem Speichern pruefen? (j/n, Enter=nein): " PREVIEW
+read -p "Preview config before saving? (y/n, Enter=no): " PREVIEW
 echo ""
-echo "Kopiere Config-Dateien..."
+echo "Copying config files..."
 echo ""
 
 INSTALLED=0
@@ -63,8 +63,8 @@ choose_project_root() {
   local candidates i choice custom cand_line
   local -a CAND=()
   echo ""
-  echo "  Projektordner fuer projekt-lokale Configs:"
-  echo "  (Cursor, Windsurf, Claude, Cline ... legen ihre Configs dort ab)"
+  echo "  Project folder for project-local configs:"
+  echo "  (Cursor, Windsurf, Claude, Cline ... store their configs there)"
   echo ""
   candidates="$(find_project_roots)"
   i=1
@@ -74,20 +74,20 @@ choose_project_root() {
     echo "    [$i] $cand_line"
     i=$((i + 1))
   done <<< "$candidates"
-  echo "    [Enter] Aktueller Ordner: $PWD"
-  echo "    [f] Eigenen Pfad eingeben"
+  echo "    [Enter] Current folder: $PWD"
+  echo "    [f] Enter a custom path"
   echo ""
-  read -p "  Wahl: " choice
+  read -p "  Choice: " choice
   case "$choice" in
     "" )
       PROJECT_ROOT="$PWD"
       ;;
     f|F )
-      read -p "  Pfad: " custom
+      read -p "  Path: " custom
       if [ -d "$custom" ]; then
         PROJECT_ROOT="$custom"
       else
-        echo "  [WARN] Ordner nicht gefunden - nutze aktuellen Ordner"
+        echo "  [WARN] Folder not found - using the current folder"
         PROJECT_ROOT="$PWD"
       fi
       ;;
@@ -97,7 +97,7 @@ choose_project_root() {
           if [ -d "$choice" ]; then
             PROJECT_ROOT="$choice"
           else
-            echo "  [WARN] Ungueltige Eingabe - nutze aktuellen Ordner"
+            echo "  [WARN] Invalid input - using the current folder"
             PROJECT_ROOT="$PWD"
           fi
           ;;
@@ -105,14 +105,14 @@ choose_project_root() {
           if [ "$choice" -ge 1 ] && [ "$choice" -le "${#CAND[@]}" ]; then
             PROJECT_ROOT="${CAND[$((choice - 1))]}"
           else
-            echo "  [WARN] Ungueltige Nummer - nutze aktuellen Ordner"
+            echo "  [WARN] Invalid number - using the current folder"
             PROJECT_ROOT="$PWD"
           fi
           ;;
       esac
       ;;
   esac
-  echo "  Projektordner: $PROJECT_ROOT"
+  echo "  Project folder: $PROJECT_ROOT"
 }
 
 try_copy() {
@@ -134,59 +134,59 @@ try_copy() {
   fi
   mkdir -p "$(dirname "$DEST")" 2>/dev/null
   if [ ! -f "$DEST" ]; then
-    if [ "$PREVIEW" = "j" ] || [ "$PREVIEW" = "J" ]; then
+    if [ "$PREVIEW" = "y" ] || [ "$PREVIEW" = "Y" ]; then
       echo ""
       echo "============================================"
-      echo "  Vorschau: $NAME"
+      echo "  Preview: $NAME"
       echo "============================================"
       cat "$SRC"
       echo ""
-      echo "  Speichern unter $DEST?"
-      read -p "  [j] Ja / [n] In Downloads: " CONFIRM
+      echo "  Save to $DEST?"
+      read -p "  [y] Yes / [n] Save to Downloads: " CONFIRM
       if [ "$CONFIRM" = "n" ] || [ "$CONFIRM" = "N" ]; then
         DEST="$HOME/Downloads/$(basename "$SRC")"
       fi
     fi
     if cp "$SRC" "$DEST" 2>/dev/null; then
-      echo "  [OK] $NAME > Installiert"
+      echo "  [OK] $NAME > installed"
       echo "  [OK] $NAME: $DEST" >> "$LOGFILE"
       INSTALLED=$((INSTALLED + 1))
       INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
     else
-      echo "  [FEHLER] $NAME"
-      echo "  [FEHLER] $NAME" >> "$LOGFILE"
+      echo "  [ERROR] $NAME"
+      echo "  [ERROR] $NAME" >> "$LOGFILE"
       echo ""
-      echo "  FEHLER bei $NAME. Druecke Enter..."
+      echo "  ERROR with $NAME. Press Enter..."
       read -p ""
     fi
     return
   fi
 
   cp "$DEST" "$DEST.backup" 2>/dev/null
-  echo "  [BACKUP] $NAME: alte Config gesichert unter $(basename "$DEST").backup"
+  echo "  [BACKUP] $NAME: old config saved as $(basename "$DEST").backup"
 
-  echo "  $NAME: Config existiert bereits unter $DEST"
-  echo "    [1] Ueberschreiben (Backup vorhanden)"
-  echo "    [2] Auskommentieren + neue daneben"
-  echo "    [3] Beide Inhalte mergen (nur JSON)"
-  echo "    [s] Ueberspringen (nichts tun)"
+  echo "  $NAME: config already exists at $DEST"
+  echo "    [1] Overwrite (backup available)"
+  echo "    [2] Comment out + write new below"
+  echo "    [3] Merge both contents (JSON only)"
+  echo "    [s] Skip (do nothing)"
   read -p "  > " CHOICE
 
   EXT="${SRC##*.}"
 
   if [ "$CHOICE" = "s" ] || [ "$CHOICE" = "S" ]; then
-    echo "  [WARN] $NAME: Uebersprungen"
+    echo "  [WARN] $NAME: skipped"
     echo "  [SKIPPED] $NAME" >> "$LOGFILE"
     return
   fi
 
   if [ "$CHOICE" = "1" ]; then
     if cp "$SRC" "$DEST" 2>/dev/null; then
-      echo "  [OK] $NAME: Ueberschrieben"
+      echo "  [OK] $NAME: overwritten"
       INSTALLED=$((INSTALLED + 1))
       INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
     else
-      echo "  [FEHLER] $NAME"
+      echo "  [ERROR] $NAME"
     fi
     return
   fi
@@ -202,7 +202,7 @@ try_copy() {
     echo "" >> "$DEST.tmp"
     cat "$SRC" >> "$DEST.tmp"
     mv "$DEST.tmp" "$DEST"
-    echo "  [OK] $NAME: Alte auskommentiert + neue geschrieben"
+    echo "  [OK] $NAME: old config commented out + new one written"
     INSTALLED=$((INSTALLED + 1))
     INSTALLED_TOOLS="$INSTALLED_TOOLS $TOOLKEY"
     return
@@ -210,20 +210,20 @@ try_copy() {
 
   if [ "$CHOICE" = "3" ]; then
     if [ "$EXT" != "json" ]; then
-      echo "  [WARN] $NAME: Merge nur bei JSON - uebersprungen"
+      echo "  [WARN] $NAME: merge is only possible for JSON - skipped"
       return
     fi
-    # Prüfe ob Inhalt wirklich JSON ist
+    # Check that the content really is JSON
     FIRST=$(head -c 1 "$SRC")
     if [ "$FIRST" != "{" ]; then
-      echo "  [WARN] $NAME: Datei ist kein JSON (Text-Instruktion) - uebersprungen"
-      echo "  [SKIPPED] $NAME: kein JSON-Inhalt" >> "$LOGFILE"
+      echo "  [WARN] $NAME: file is not JSON (text instruction) - skipped"
+      echo "  [SKIPPED] $NAME: not JSON content" >> "$LOGFILE"
       return
     fi
     if command -v jq &> /dev/null; then
-      jq -s '.[0] * .[1]' "$DEST" "$SRC" > "$DEST.tmp" 2>/dev/null && mv "$DEST.tmp" "$DEST" && echo "  [OK] $NAME: JSON gemerged (jq)"
+      jq -s '.[0] * .[1]' "$DEST" "$SRC" > "$DEST.tmp" 2>/dev/null && mv "$DEST.tmp" "$DEST" && echo "  [OK] $NAME: JSON merged (jq)"
     elif command -v node &> /dev/null; then
-      node -e "const fs=require('fs'); const a=JSON.parse(fs.readFileSync('$DEST')); const b=JSON.parse(fs.readFileSync('$SRC')); fs.writeFileSync('$DEST', JSON.stringify({...a,...b},null,2))" 2>/dev/null && echo "  [OK] $NAME: JSON gemerged (node)"
+      node -e "const fs=require('fs'); const a=JSON.parse(fs.readFileSync('$DEST')); const b=JSON.parse(fs.readFileSync('$SRC')); fs.writeFileSync('$DEST', JSON.stringify({...a,...b},null,2))" 2>/dev/null && echo "  [OK] $NAME: JSON merged (node)"
     elif command -v python3 &> /dev/null; then
       python3 -c "
 import json, sys
@@ -231,9 +231,9 @@ with open('$DEST') as f: a=json.load(f)
 with open('$SRC') as f: b=json.load(f)
 a.update(b)
 with open('$DEST','w') as f: json.dump(a,f,indent=2)
-" 2>/dev/null && echo "  [OK] $NAME: JSON gemerged (python3)"
+" 2>/dev/null && echo "  [OK] $NAME: JSON merged (python3)"
     else
-      echo "  [WARN] $NAME: Kein Tool fuer Merge (jq/node/python3) - uebersprungen"
+      echo "  [WARN] $NAME: no tool for merge (jq/node/python3) - skipped"
       return
     fi
     INSTALLED=$((INSTALLED + 1))
@@ -241,7 +241,7 @@ with open('$DEST','w') as f: json.dump(a,f,indent=2)
     return
   fi
 
-  echo "  [WARN] $NAME: Ungueltige Eingabe - uebersprungen"
+  echo "  [WARN] $NAME: invalid input - skipped"
 }
 
 NEED_PROJECT=0
@@ -257,7 +257,7 @@ done
 PROJECT_ROOT="$PWD"
 if [ "$NEED_PROJECT" -eq 1 ]; then
   choose_project_root
-  echo "  Projektordner: $PROJECT_ROOT" >> "$LOGFILE"
+  echo "  Project folder: $PROJECT_ROOT" >> "$LOGFILE"
 fi
 echo ""
 
@@ -279,36 +279,36 @@ try_copy "tabby-config.json" "tabby_config.json" "Tabby" "tabby" "project"
 
 echo ""
 echo "============================================"
-echo "            ZUSAMMENFASSUNG"
+echo "            SUMMARY"
 echo "============================================"
 if [ "$INSTALLED" -eq 0 ]; then
   echo ""
-  echo "  Es wurden KEINE Config-Dateien gefunden."
-  echo "  Lege dieses Skript in den Ordner mit den"
-  echo "  -config.json und -INSTALL.md Dateien."
+  echo "  No config files were found."
+  echo "  Place this script in the folder that contains"
+  echo "  the -config.json and -INSTALL.md files."
   echo ""
-  echo "  Oder verwalte die Configs manuell:"
+  echo "  Or manage the configs manually:"
   echo "    node auto-install.js"
   echo ""
 else
-  echo "  Erfolgreich installiert: $INSTALLED"
+  echo "  Successfully installed: $INSTALLED"
   echo ""
 fi
-echo "  WICHTIG: Das Modell laeuft auf OpenRouter-Servern."
-echo "  Du brauchst einen kostenlosen Account auf openrouter.ai"
-echo "  und einen API-Key (falls nicht eingegeben)."
+echo "  NOTE: The model runs on OpenRouter servers."
+echo "  You need a free account at openrouter.ai"
+echo "  and an API key (if not entered)."
 echo ""
 
-echo "  Die Schritt-fuer-Schritt Anleitungen stehen"
-echo "  in den *_INSTALL.md Dateien im ZIP-Ordner."
+echo "  Step-by-step guides are in the"
+echo "  *_INSTALL.md files in the ZIP folder."
 echo ""
-echo "  Starte dein Tool neu."
+echo "  Restart your tool."
 echo ""
-echo "  WICHTIG: Enthaelt eine Config noch 'DEIN_API_KEY_HERE'?"
-echo "  Dann Datei im Editor oeffnen und mit echtem Key ersetzen."
-echo "  Kostenlosen Key holen: https://openrouter.ai/keys"
+echo "  NOTE: Does a config still contain 'YOUR_API_KEY_HERE'?"
+echo "  Open the file in an editor and replace it with a real key."
+echo "  Get a free key: https://openrouter.ai/keys"
 echo ""
 echo ""
 echo "  Log: $LOGFILE"
 echo ""
-read -p "Druecke Enter zum Schliessen..."
+read -p "Press Enter to close..."
