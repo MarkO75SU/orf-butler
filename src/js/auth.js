@@ -19,60 +19,31 @@ export async function login(username, password, remember) {
     const trimmedPass = (password || '').trim();
 
     if (!trimmedUser) {
-        return { success: false, error: 'Bitte Benutzername oder Code eingeben.' };
+        return { success: false, error: 'Bitte Benutzername eingeben.' };
     }
 
-    const cleanedUser = trimmedUser.toLowerCase();
-
-    if (cleanedUser === 'generali') {
-        if (!trimmedPass) {
-            return { success: false, error: 'Bitte Passwort eingeben.' };
-        }
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: trimmedUser, password: trimmedPass })
-            });
-
-            if (response.ok) {
-                const expires = remember ? Date.now() + (30 * 24 * 60 * 60 * 1000) : null;
-                localStorage.setItem('orf_auth', JSON.stringify({
-                    user: 'generali',
-                    expires: expires
-                }));
-                return { success: true };
-            }
-
-            const error = await response.json();
-            return { success: false, error: error.error || 'Zugang verweigert' };
-        } catch (e) {
-            return { success: false, error: 'Server nicht erreichbar' };
-        }
+    if (!trimmedPass) {
+        return { success: false, error: 'Bitte Passwort eingeben.' };
     }
 
     try {
-        const response = await fetch('/api/codes?action=redeem', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: trimmedUser.toUpperCase() })
+            body: JSON.stringify({ username: trimmedUser, password: trimmedPass })
         });
 
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-            const expires = remember ? Date.now() + (7 * 24 * 60 * 60 * 1000) : null;
+        if (response.ok) {
+            const expires = remember ? Date.now() + (30 * 24 * 60 * 60 * 1000) : null;
             localStorage.setItem('orf_auth', JSON.stringify({
-                user: data.anonId || 'anon',
-                code: data.code,
-                uses: data.uses,
-                maxUses: data.maxUses,
+                user: trimmedUser,
                 expires: expires
             }));
             return { success: true };
         }
 
-        return { success: false, error: data.error || 'Ungültiger Code' };
+        const error = await response.json();
+        return { success: false, error: error.error || 'Zugang verweigert' };
     } catch (e) {
         return { success: false, error: 'Server nicht erreichbar' };
     }

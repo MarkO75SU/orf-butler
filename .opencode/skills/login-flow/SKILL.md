@@ -19,10 +19,10 @@ zurück zu /
 
 ## Auth Types
 
-- **Admin**: username `generali` + password (localStorage + HttpOnly cookie)
-- **Code-User**: 8-stelliger Code (localStorage + HttpOnly cookie)
-- **Social**: Google/Apple/GitHub via Supabase OAuth (JWT session)
-- Keine E-Mail-Registrierung / kein E-Mail-Login mehr
+- **Admin**: username + password (localStorage `orf_auth` + HttpOnly cookie `orf_session`)
+- **Social**: Google/Apple/GitHub via Supabase OAuth (JWT session + `orf_session` cookie)
+- Kein Code-Login, keine E-Mail-Registrierung / kein E-Mail-Login
+- Keine Paywall: nur freiwillige BMC-Unterstützung
 
 ## Session Storage
 
@@ -31,8 +31,8 @@ zurück zu /
 
 ## Key Files
 
-- `index.html`: Login form (root)
+- `index.html`: Website login (root)
 - `landing.html`: Sales page with blog
-- `app.html`: Main wizard
+- `app.html`: Main wizard (no own login – gated by middleware)
 - `src/js/auth.js`: login(), logout(), isAuthenticated()
-- `middleware.js`: Edge function for `/app` protection
+- `middleware.js`: Edge function protecting `/landing` + `/app`

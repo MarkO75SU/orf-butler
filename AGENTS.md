@@ -4,7 +4,7 @@
 
 ```bash
 npm start          # local dev @ http://localhost:3000
-npm test           # 672 tests, pure Node ESM
+npm test           # 664 tests, pure Node ESM
 ```
 
 No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
@@ -13,7 +13,7 @@ No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
 
 | URL | File | Purpose |
 |-----|------|---------|
-| `/` (root) | `index.html` | **Reines Login** – NUR Anmeldeformular, kein Sales-Content |
+| `/` (root) | `index.html` | **Website-Login** – Social (OAuth) + Admin-Passwort, kein Sales-Content |
 | `/landing` | `landing.html` | Features/Tools/Bundles (komplett gratis) + Unterstützen-Sektion (BMC) + Blog |
 | `/app` | `app.html` | 4-Schritt Wizard (Modelle → Tools → Bundle → ZIP-Download) |
 
@@ -23,8 +23,8 @@ No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
 
 - **Static SPA** (no framework): `index.html` + `landing.html` + `app.html` as entry points
 - JS modules under `src/js/`, loaded via `<script type="module">`
-- **Vercel**: serverless API at `api/login.js` for auth; `vercel.json` rewrites
-- **Auth**: localStorage `orf_auth` token, validated server-side via `POST /api/login`
+- **Vercel**: serverless API (`api/login.js`, `api/logout.js`, `api/supabase-config.js`, `api/confirm-session.js`); `vercel.json` rewrites; `middleware.js` schützt `/landing` + `/app` per `orf_session`-Cookie
+- **Auth**: einziger Login ist der **Website-Login** an `/` – Social (Supabase OAuth) oder Admin (`LOGIN_USER`/`LOGIN_PASS` via `POST /api/login`); danach sind Landing + App frei
 - Credentials: env vars `LOGIN_USER` / `LOGIN_PASS` only, never hardcoded
 
 ## Key Modules
@@ -41,17 +41,17 @@ No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
 | `src/js/i18n.js` | DE/EN translations, `setLanguage()`, `getLang()` |
 | `src/js/docs.js` | Install guides, OS paths, CLI commands |
 | `src/js/auth.js` | `isAuthenticated()` / `login()` / `logout()` / `getUser()` |
-| `src/tests/test-runner.js` | 672 pure Node tests (no DOM) |
+| `src/tests/test-runner.js` | 664 pure Node tests (no DOM) |
 | `data/changelog.json` | Auto-generated model change history (blog content) |
 | `scripts/auto-install.js` | Auto-installer mit Merge-Logik (überschreiben/auskommentieren/mergen) |
 
 ## Strategie: BMC statt Paywall
 
-- **Keine Preise, keine Paywall** – beide Bundles sind "GRATIS"; 5€/20€-Anzeigen wurden komplett entfernt
+- **Keine Preise, keine Paywall, keine Registrierung** – beide Bundles sind "GRATIS"; 5€/20€-Anzeigen wurden komplett entfernt
 - **Buy Me a Coffee** (Platzhalter-URL in `src/js/config.js`): Links in Landing-Unterstützen-Sektion, App-Header und Download-Danke-Popup (alle `a[data-bmc]`)
-- **Admin-UI komplett entfernt** (Badge, Button, Codes-Modal, i18n-Keys) – Codes-Verwaltung nur noch per `npm run codes` (CLI) oder curl gegen `/api/codes`
+- **Codes-System komplett entfernt** – kein Code-Login, keine Codes-API (`api/codes.js`), kein Paywall-Gate
+- **Website-Login** an `/` (Social + Admin-Passwort) ist der einzige Login; `/landing` + `/app` sind danach frei
 - **Tracking**: Umami-Platzhalter in allen 3 HTML-Dateien (auskommentiert bis Website-ID eingetragen); Events `download` (Props: models/tools/bundle/os/lang) und `bmc_click` (Prop: location) via `window.umami?.track`
-- Login-Seite (`index.html`) bleibt unverändert; Supabase-Bypass für `generali` in `app.html` bleibt (nötig fürs Passwort-Login)
 
 ## Model Mapping
 
@@ -83,7 +83,7 @@ Batch/Shell-Varianten (`auto-install-win.bat`, `auto-install-mac.command`, `auto
 ## Testing
 
 ```bash
-npm test                          # 672 tests
+npm test                          # 664 tests
 # Tests run in plain Node.js (no browser). DOM-dependent code is not tested.
 # "App Strategy Tests" prüfen DE/EN-Key-Parität, Fehlen von Admin/Preis-Resten, BMC-Placeholder.
 ```
@@ -104,8 +104,8 @@ npm test                          # 672 tests
 - JSZip is loaded via CDN, not npm — available as global `JSZip`
 - Tailwind CSS via CDN — cosmetic warnings are harmless
 - `models-grid` and `tools-grid` use 2-column layout with max-height 400px + custom scrollbar
-- Kein Admin-UI-Panel mehr – nicht wieder einbauen (Codes nur via CLI/curl)
-- **Codes API** (`api/codes.js`): Actions: `generate`, `redeem`, `check`, `list`, `revoke`, `reset`. Admin auth via Basic header. Storage via `lib/github-store.js`
-- `GH_TOKEN` env var required on Vercel for code persistence via GitHub Content API
+- **Kein Codes-/Paywall-System** mehr – nicht wieder einbauen (keine `api/codes.js`, kein `lib/github-store.js`)
+- **Kein separater App-Login** – Zugang nur über den Website-Login (`middleware.js`), nicht in `app.html` reaktivieren
+- `GH_TOKEN` nicht mehr nötig (nur Codes-Store war GitHub-persistiert)
 - `OPENROUTER_API_KEY` nicht mehr in `.env` – wird nur bei Bedarf als GitHub Secret gesetzt
 - Auto-installer verwendet `readline` für interaktive Merge-Abfragen (nur Node.js-Version)

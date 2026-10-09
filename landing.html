@@ -199,10 +199,7 @@
     </script>
 
     <script type="module">
-        import { getSession } from './src/js/auth-supabase.js';
         import { BMC_URL } from './src/js/config.js';
-
-        const session = await getSession();
 
         // BMC-Platzhalter-URL aus config.js + Klick-Tracking
         document.querySelectorAll('a[data-bmc]').forEach(a => {
@@ -213,17 +210,10 @@
             });
         });
 
-        if (session) {
-            document.querySelectorAll('#nav-cta-btn, #hero-cta-btn, #pricing-basic-btn, #pricing-premium-btn').forEach(el => {
-                el.href = '/app';
-                el.textContent = el.id === 'nav-cta-btn' || el.id === 'hero-cta-btn' ? 'Zur App' : 'Jetzt starten';
-            });
-        } else {
-            document.querySelectorAll('#nav-cta-btn, #hero-cta-btn, #pricing-basic-btn, #pricing-premium-btn').forEach(el => {
-                el.href = '/?require=auth';
-                el.textContent = 'Anmelden';
-            });
-        }
+        document.querySelectorAll('#nav-cta-btn, #hero-cta-btn, #pricing-basic-btn, #pricing-premium-btn').forEach(el => {
+            el.href = '/app';
+            el.textContent = (el.id === 'nav-cta-btn' || el.id === 'hero-cta-btn') ? 'Zur App' : 'Jetzt starten';
+        });
     </script>
 
     <!-- Tracking (Umami): Platzhalter – echte Website-ID unter cloud.umami.is eintragen und freischalten

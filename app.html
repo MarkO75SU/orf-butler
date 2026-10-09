@@ -156,20 +156,7 @@
     <script defer src="https://cloud.umami.is/script.js" data-website-id="DEINE-WEBSITE-ID"></script>
     -->
 
-    <script type="module">
-        import { isAuthenticated, getUser } from './src/js/auth.js';
-        import { getSession } from './src/js/auth-supabase.js';
-
-        if (!isAuthenticated()) {
-            window.location.href = '/';
-        } else if (getUser() !== 'generali') {
-            // Admin bypass: kein Supabase-Check
-            const session = await getSession();
-            if (!session) {
-                window.location.href = '/?require=auth';
-            }
-        }
-    </script>
+    <!-- Zugang wird zentral über den Website-Login (Middleware) geregelt -->
     <script type="module" src="./src/js/app.js"></script>
 </body>
 </html>

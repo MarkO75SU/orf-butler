@@ -3,5 +3,4 @@ node_modules/
 dist/
 .DS_Store
 .vercel
-data/codes.json
 graphify-out/

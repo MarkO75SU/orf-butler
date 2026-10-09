@@ -5,8 +5,7 @@
   "scripts": {
     "test": "node src/tests/test-runner.js",
     "start": "node server.js",
-    "dev": "node server.js",
-    "codes": "node scripts/manage-codes.js"
+    "dev": "node server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.107.0",

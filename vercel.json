@@ -10,7 +10,6 @@
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "redirects": [
-    { "source": "/data/codes.json", "destination": "/404", "permanent": false },
     { "source": "/lib/(.*)", "destination": "/404", "permanent": false },
     { "source": "/src/tests/(.*)", "destination": "/404", "permanent": false }
   ]

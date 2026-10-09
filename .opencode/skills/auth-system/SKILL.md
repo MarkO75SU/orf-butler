@@ -7,22 +7,21 @@ description: Manages the ORF-Butler authentication system with multiple login me
 
 ## Login Methods
 
-1. **Code Login** – Anonymous 8-char code (localStorage token)
-2. **Social Login** – Google, Apple, GitHub via Supabase OAuth
-3. **Admin** – Username "generali" + password (serverless API)
+1. **Social Login** – Google, Apple, GitHub via Supabase OAuth
+2. **Admin** – Username + password (serverless `POST /api/login`, validated against `LOGIN_USER`/`LOGIN_PASS`)
 
-> Email registration/login was removed: the app has no email sign-up or email password login. Only code + social + admin.
+> Code login and email registration/login were both removed: the only login is the website login at `/` (Social + Admin). No paywall, no codes, no self-service accounts.
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Login page with tabs: Code / Social |
-| `src/js/auth.js` | Unified auth layer (code + legacy admin) |
+| `index.html` | Website login page with tabs: Social / Admin |
+| `src/js/auth.js` | Auth layer (admin login, session check, logout) |
 | `src/js/auth-supabase.js` | Supabase client (social login, session) |
 | `api/supabase-config.js` | Returns Supabase URL + anon key from env |
-| `api/login.js` | Admin password login API |
-| `middleware.js` | Vercel Edge Middleware for `/app` protection |
+| `api/login.js` | Admin password login API (sets `orf_session` cookie) |
+| `middleware.js` | Vercel Edge Middleware protecting `/landing` + `/app` |
 
 ## Supabase Auth Flow
 
@@ -38,6 +37,5 @@ description: Manages the ORF-Butler authentication system with multiple login me
 
 ## Session Persistence
 
-- Code users: localStorage `orf_auth` (with expiration)
-- Supabase users: JWT in `localStorage` (managed by supabase-js)
-- Admin: localStorage `orf_auth` + HttpOnly cookie for middleware
+- Admin: localStorage `orf_auth` + `orf_session` HttpOnly cookie (via `/api/login`)
+- Supabase users: JWT in `localStorage` (managed by supabase-js) + `orf_session` cookie (via `/api/confirm-session`)
