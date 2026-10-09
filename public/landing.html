@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORFB - OpenRouter Free Butler</title>
+    <title>ORF-Butler &ndash; OpenRouter Free Butler</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -215,7 +215,7 @@
         // BMC placeholder URL from config.js + click tracking
         document.querySelectorAll('a[data-bmc]').forEach(a => {
             const loc = a.getAttribute('data-bmc');
-            a.href = BMC_URL + '?utm_source=orfb&utm_medium=landing&utm_campaign=support';
+            a.href = BMC_URL + '?utm_source=orf-butler&utm_medium=landing&utm_campaign=support';
             a.addEventListener('click', () => {
                 try { window.umami?.track('bmc_click', { location: loc }); } catch {}
             });

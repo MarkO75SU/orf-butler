@@ -19,11 +19,11 @@ export function generateRSS() {
 <rss version="2.0">
 <channel>
   <title>ORF-Butler | Prompt of the Day</title>
-  <link>https://projekt-orfb.local</link>
+  <link>https://orf-butler.vercel.app</link>
   <description>Daily high-precision prompts for ORF-Butler users</description>
   <item>
     <title>${prompt.title}</title>
-    <link>https://projekt-orfb.local/potd</link>
+    <link>https://orf-butler.vercel.app/potd</link>
     <description>${prompt.prompt}</description>
     <pubDate>${new Date().toUTCString()}</pubDate>
   </item>

@@ -81,8 +81,8 @@ function updateUI() {
 
     document.querySelectorAll('a[data-bmc]').forEach(a => {
         const utm = a.getAttribute('data-bmc') === 'thanks'
-            ? '?utm_source=orfb&utm_medium=app&utm_campaign=download'
-            : '?utm_source=orfb&utm_medium=app';
+            ? '?utm_source=orf-butler&utm_medium=app&utm_campaign=download'
+            : '?utm_source=orf-butler&utm_medium=app';
         a.href = BMC_URL + utm;
     });
 
@@ -415,7 +415,7 @@ async function downloadZIP() {
         const url = URL.createObjectURL(content);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'orfb-configs.zip';
+        a.download = 'orf-butler-configs.zip';
         a.click();
         URL.revokeObjectURL(url);
 
