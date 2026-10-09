@@ -4,7 +4,7 @@
 
 ```bash
 npm start          # local dev @ http://localhost:3000
-npm test           # 463 tests, pure Node ESM
+npm test           # 672 tests, pure Node ESM
 ```
 
 No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
@@ -14,7 +14,7 @@ No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
 | URL | File | Purpose |
 |-----|------|---------|
 | `/` (root) | `index.html` | **Reines Login** – NUR Anmeldeformular, kein Sales-Content |
-| `/landing` | `landing.html` | Sales-Seite mit Features/Tools/Preisen + Blog |
+| `/landing` | `landing.html` | Features/Tools/Bundles (komplett gratis) + Unterstützen-Sektion (BMC) + Blog |
 | `/app` | `app.html` | 4-Schritt Wizard (Modelle → Tools → Bundle → ZIP-Download) |
 
 **Flow:** `orfb.vercel.app` → Login → `/landing` → "Zur App" → `/app` → Logout → zurück zu `/`
@@ -34,15 +34,24 @@ No build step, no bundler. Vercel auto-deploys from GitHub `main` branch.
 | `index.html` | Pure login page (root route) |
 | `landing.html` | Sales page + Blog/Changelog section |
 | `app.html` | Main app: 4-step wizard for model/tool selection |
-| `src/js/app.js` | UI logic: multi-select, bundle, ZIP download, admin codes panel |
+| `src/js/app.js` | UI logic: multi-select, bundle, ZIP download, BMC-Danke-Popup, Download-Tracking |
+| `src/js/config.js` | **Einzigste Fundstelle** für `BMC_URL` (Buy-Me-a-Coffee-Platzhalter) |
 | `src/js/mapping.js` | Auto-generated free-model DB (21 models + tags + descriptions) |
 | `src/js/templates.js` | Config generation per tool, `TOOL_TEMPLATES` registry (12 tools) |
 | `src/js/i18n.js` | DE/EN translations, `setLanguage()`, `getLang()` |
 | `src/js/docs.js` | Install guides, OS paths, CLI commands |
 | `src/js/auth.js` | `isAuthenticated()` / `login()` / `logout()` / `getUser()` |
-| `src/tests/test-runner.js` | 463 pure Node tests (no DOM) |
+| `src/tests/test-runner.js` | 672 pure Node tests (no DOM) |
 | `data/changelog.json` | Auto-generated model change history (blog content) |
 | `scripts/auto-install.js` | Auto-installer mit Merge-Logik (überschreiben/auskommentieren/mergen) |
+
+## Strategie: BMC statt Paywall
+
+- **Keine Preise, keine Paywall** – beide Bundles sind "GRATIS"; 5€/20€-Anzeigen wurden komplett entfernt
+- **Buy Me a Coffee** (Platzhalter-URL in `src/js/config.js`): Links in Landing-Unterstützen-Sektion, App-Header und Download-Danke-Popup (alle `a[data-bmc]`)
+- **Admin-UI komplett entfernt** (Badge, Button, Codes-Modal, i18n-Keys) – Codes-Verwaltung nur noch per `npm run codes` (CLI) oder curl gegen `/api/codes`
+- **Tracking**: Umami-Platzhalter in allen 3 HTML-Dateien (auskommentiert bis Website-ID eingetragen); Events `download` (Props: models/tools/bundle/os/lang) und `bmc_click` (Prop: location) via `window.umami?.track`
+- Login-Seite (`index.html`) bleibt unverändert; Supabase-Bypass für `generali` in `app.html` bleibt (nötig fürs Passwort-Login)
 
 ## Model Mapping
 
@@ -69,11 +78,14 @@ Der Installer in `scripts/auto-install.js` fragt bei existierenden Configs:
 
 Batch/Shell-Varianten (`auto-install-win.bat`, `auto-install-mac.command`, `auto-install-linux.sh`) sichern die alte Config mit `.backup`-Suffix.
 
+**Scope + Projektordner:** Configs sind pro Tool entweder `global` (opencode, continue, zed → Home/APPDATA) oder `project` (übrige 12 → relativ zum Projektordner). Alle 4 Installer suchen in typischen Ordnern (`~`, Desktop, Documents, Projects, dev, code) nach `.git` und lassen den Zielordner per Menü bestätigen (`[1..n]` Kandidaten, `[Enter]` aktueller Ordner, `[f]` eigener Pfad). `auto-install-win.bat` wird durch `.gitattributes` (`eol=crlf`) als CRLF getestet – nicht auf LF umschreiben.
+
 ## Testing
 
 ```bash
-npm test                          # 463 tests
+npm test                          # 672 tests
 # Tests run in plain Node.js (no browser). DOM-dependent code is not tested.
+# "App Strategy Tests" prüfen DE/EN-Key-Parität, Fehlen von Admin/Preis-Resten, BMC-Placeholder.
 ```
 
 ## Deployment
@@ -92,7 +104,7 @@ npm test                          # 463 tests
 - JSZip is loaded via CDN, not npm — available as global `JSZip`
 - Tailwind CSS via CDN — cosmetic warnings are harmless
 - `models-grid` and `tools-grid` use 2-column layout with max-height 400px + custom scrollbar
-- Admin-Button "🔑 Admin" nur im Header sichtbar wenn `getUser() === 'generali'`
+- Kein Admin-UI-Panel mehr – nicht wieder einbauen (Codes nur via CLI/curl)
 - **Codes API** (`api/codes.js`): Actions: `generate`, `redeem`, `check`, `list`, `revoke`, `reset`. Admin auth via Basic header. Storage via `lib/github-store.js`
 - `GH_TOKEN` env var required on Vercel for code persistence via GitHub Content API
 - `OPENROUTER_API_KEY` nicht mehr in `.env` – wird nur bei Bedarf als GitHub Secret gesetzt

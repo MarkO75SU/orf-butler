@@ -38,10 +38,19 @@ export const TRANSLATIONS = {
 
 let currentLang = 'de';
 
+if (typeof localStorage !== 'undefined') {
+    const stored = localStorage.getItem('orf_lang');
+    if (stored === 'de' || stored === 'en') currentLang = stored;
+}
+
 export function setLanguage(lang) {
+    if (lang !== 'de' && lang !== 'en') lang = 'de';
     currentLang = lang;
     if (typeof document !== 'undefined') {
         document.documentElement.lang = lang;
+    }
+    if (typeof localStorage !== 'undefined') {
+        try { localStorage.setItem('orf_lang', lang); } catch { /* ignore */ }
     }
 }
 

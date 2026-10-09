@@ -1,7 +1,7 @@
+import { methodGuard } from '../lib/http.js';
+
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
+    if (methodGuard(req, res, 'POST')) return;
 
     const { email, password } = req.body || {};
     if (!email || !password) {

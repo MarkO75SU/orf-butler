@@ -1,7 +1,7 @@
+import { methodGuard } from '../lib/http.js';
+
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
+    if (methodGuard(req, res, 'POST')) return;
 
     const { userId } = req.body || {};
     if (!userId) {
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
         if (!response.ok) {
             const text = await response.text();
             console.error('Supabase admin API error:', response.status, text);
-            return res.status(500).json({ error: 'Bestätigung fehlgeschlagen', detail: text });
+            return res.status(500).json({ error: 'Bestätigung fehlgeschlagen' });
         }
 
         res.json({ success: true });

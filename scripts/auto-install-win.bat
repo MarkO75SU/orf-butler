@@ -32,7 +32,7 @@ echo.
 
 if not "%APIKEY%"=="" (
   echo Setze API-Key in Configs ein...
-  powershell -Command "$k='%APIKEY:''=''%'; Get-ChildItem '.' -Include '*-config.json','*.yml','*.yaml' -Name | ForEach-Object { $c = Get-Content $_ -Raw; $c = $c -replace 'DEIN_API_KEY_HERE', $k; Set-Content $_ $c }; Write-Host '  [OK] API-Key eingetragen'"
+  powershell -Command "$k='%APIKEY:''=''%'; Get-ChildItem '.\*' -Include '*-config.json','*.yml','*.yaml' -Name | ForEach-Object { $c = Get-Content $_ -Raw; $c = $c -replace 'DEIN_API_KEY_HERE', $k; Set-Content $_ $c }; Write-Host '  [OK] API-Key eingetragen'"
   echo.
 )
 
@@ -44,22 +44,39 @@ echo.
 setlocal enabledelayedexpansion
 set INSTALLED=0
 set installed_tools=
+set PROJECT_ROOT=%cd%
+set NEED_PROJECT=0
 
-call :safe_copy "opencode-config.json" "%USERPROFILE%\.config\opencode\opencode.json" "OpenCode CLI" "opencode"
-call :safe_copy "continue-config.json" "%USERPROFILE%\.continue\config.json" "VS Code (Continue)" "continue"
-call :safe_copy "zed-config.json" "%APPDATA%\Zed\settings.json" "Zed Editor" "zed"
-call :safe_copy "aider-config.json" ".\aider.conf.yml" "Aider CLI" "aider"
-call :safe_copy "antigravity-config.json" "settings.yaml" "Antigravity" "antigravity"
-call :safe_copy "cursor-config.json" ".cursorrules" "Cursor Editor" "cursor"
-call :safe_copy "windsurf-config.json" ".windsurfrules" "Windsurf Editor" "windsurf"
-call :safe_copy "claude-code-config.json" "CLAUDE.md" "Claude Code CLI" "claude_code"
-call :safe_copy "github-copilot-config.json" ".github\copilot-instructions.md" "GitHub Copilot" "github_copilot"
-call :safe_copy "cline-config.json" ".clinerules" "Cline" "cline"
-call :safe_copy "codeium-config.json" ".codeiumrules" "Codeium" "codeium"
-call :safe_copy "roocode-config.json" ".roorules" "RooCode" "roocode"
-call :safe_copy "litellm-config.json" "litellm_config.yaml" "LiteLLM" "litellm"
-call :safe_copy "cody-config.json" ".cody\config.json" "Cody" "cody"
-call :safe_copy "tabby-config.json" "tabby_config.json" "Tabby" "tabby"
+for %%K in (aider antigravity cursor windsurf claude_code github_copilot cline codeium roocode litellm cody tabby) do (
+  set "FK=%%K"
+  set "FK=!FK:_=-!"
+  if exist "!FK!-config.json" (
+    if exist "manifest.txt" (
+      findstr /I /C:"%%K" "manifest.txt" >nul 2>&1
+      if not errorlevel 1 set NEED_PROJECT=1
+    ) else (
+      set NEED_PROJECT=1
+    )
+  )
+)
+
+if "%NEED_PROJECT%"=="1" call :choose_project
+
+call :safe_copy "opencode-config.json" "%USERPROFILE%\.config\opencode\opencode.json" "OpenCode CLI" "opencode" global
+call :safe_copy "continue-config.json" "%USERPROFILE%\.continue\config.json" "VS Code (Continue)" "continue" global
+call :safe_copy "zed-config.json" "%APPDATA%\Zed\settings.json" "Zed Editor" "zed" global
+call :safe_copy "aider-config.json" ".aider.conf.yml" "Aider CLI" "aider" project
+call :safe_copy "antigravity-config.json" "settings.yaml" "Antigravity" "antigravity" project
+call :safe_copy "cursor-config.json" ".cursorrules" "Cursor Editor" "cursor" project
+call :safe_copy "windsurf-config.json" ".windsurfrules" "Windsurf Editor" "windsurf" project
+call :safe_copy "claude-code-config.json" "CLAUDE.md" "Claude Code CLI" "claude_code" project
+call :safe_copy "github-copilot-config.json" ".github\copilot-instructions.md" "GitHub Copilot" "github_copilot" project
+call :safe_copy "cline-config.json" ".clinerules" "Cline" "cline" project
+call :safe_copy "codeium-config.json" ".codeiumrules" "Codeium" "codeium" project
+call :safe_copy "roocode-config.json" ".roorules" "RooCode" "roocode" project
+call :safe_copy "litellm-config.json" "litellm_config.yaml" "LiteLLM" "litellm" project
+call :safe_copy "cody-config.json" ".cody\config.json" "Cody" "cody" project
+call :safe_copy "tabby-config.json" "tabby_config.json" "Tabby" "tabby" project
 
 echo.
 echo ============================================
@@ -101,20 +118,21 @@ goto :EOF
 
 :safe_copy
 set SRC=%~1
-set DEST=%~2
+set "DEST=%~2"
 set LABEL=%~3
 set TOOLKEY=%~4
+if /i "%~5"=="project" set "DEST=%PROJECT_ROOT%\%~2"
 if not exist "%SRC%" exit /b 0
 
 if exist "manifest.txt" (
-  set /p MANIFEST=<manifest.txt
-  echo !MANIFEST! | findstr /C:"%TOOLKEY%" >nul
-  if errorlevel 1 (
-    exit /b 0
+  set MANIFEST_FOUND=
+  for /f "usebackq delims=" %%M in ("manifest.txt") do (
+    if /i "%%M"=="%TOOLKEY%" set MANIFEST_FOUND=1
   )
+  if not defined MANIFEST_FOUND exit /b 0
 )
 
-set DESTDIR=%~dp2
+for %%I in ("%DEST%") do set "DESTDIR=%%~dpI"
 if not exist "!DESTDIR!" mkdir "!DESTDIR!" 2>nul
 if not exist "%DEST%" (
   if /i "!PREVIEW!"=="j" (
@@ -283,4 +301,39 @@ if "!CHOICE!"=="3" (
 
 echo   [WARN] %LABEL%: Ungueltige Eingabe - uebersprungen
 echo   [SKIPPED] %LABEL%: ungueltige Eingabe >> "%LOGFILE%"
+exit /b 0
+
+:choose_project
+set /a NCAND=0
+for %%D in ("%USERPROFILE%\*" "%USERPROFILE%\Desktop\*" "%USERPROFILE%\Documents\*") do (
+  if exist "%%~fD\.git\" (
+    if !NCAND! lss 8 (
+      set /a NCAND+=1
+      set "CAND[!NCAND!]=%%~fD"
+    )
+  )
+)
+echo.
+echo   Projektordner fuer projekt-lokale Configs:
+echo     (.cursorrules, CLAUDE.md, .clinerules, ...)
+echo     [0] Aktueller Ordner: %cd%
+for /l %%N in (1,1,!NCAND!) do (
+  echo     [%%N] !CAND[%%N]!
+)
+echo     Oder kompletten Pfad eingeben.
+set "PCHOICE="
+set /p "PCHOICE=  Wahl (Enter=0): "
+if not defined PCHOICE exit /b 0
+echo(!PCHOICE!| findstr /R /C:"^[0-9][0-9]*$" >nul
+if errorlevel 1 (
+  set "PROJECT_ROOT=%PCHOICE%"
+  exit /b 0
+)
+set "SEL="
+call set "SEL=%%CAND[%PCHOICE%]%%"
+if defined SEL (
+  set "PROJECT_ROOT=!SEL!"
+) else (
+  echo   [WARN] Ungueltige Nummer - aktueller Ordner.
+)
 exit /b 0

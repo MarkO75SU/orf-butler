@@ -42,11 +42,88 @@ echo ""
 INSTALLED=0
 INSTALLED_TOOLS=""
 
+find_project_roots() {
+  local roots="" base gitdir dir
+  for base in "$HOME" "$HOME/Desktop" "$HOME/Documents" "$HOME/Projects" "$HOME/dev" "$HOME/code"; do
+    [ -d "$base" ] || continue
+    while IFS= read -r gitdir; do
+      [ -n "$gitdir" ] || continue
+      dir="$(dirname "$gitdir")"
+      case " $roots " in
+        *" $dir "*) continue ;;
+      esac
+      roots="$roots
+$dir"
+    done < <(find "$base" -maxdepth 3 -type d -name .git 2>/dev/null)
+  done
+  printf '%s\n' "$roots" | sed '/^$/d' | head -n 8
+}
+
+choose_project_root() {
+  local candidates i choice custom cand_line
+  local -a CAND=()
+  echo ""
+  echo "  Projektordner fuer projekt-lokale Configs:"
+  echo "  (Cursor, Windsurf, Claude, Cline ... legen ihre Configs dort ab)"
+  echo ""
+  candidates="$(find_project_roots)"
+  i=1
+  while IFS= read -r cand_line; do
+    [ -n "$cand_line" ] || continue
+    CAND+=("$cand_line")
+    echo "    [$i] $cand_line"
+    i=$((i + 1))
+  done <<< "$candidates"
+  echo "    [Enter] Aktueller Ordner: $PWD"
+  echo "    [f] Eigenen Pfad eingeben"
+  echo ""
+  read -p "  Wahl: " choice
+  case "$choice" in
+    "" )
+      PROJECT_ROOT="$PWD"
+      ;;
+    f|F )
+      read -p "  Pfad: " custom
+      if [ -d "$custom" ]; then
+        PROJECT_ROOT="$custom"
+      else
+        echo "  [WARN] Ordner nicht gefunden - nutze aktuellen Ordner"
+        PROJECT_ROOT="$PWD"
+      fi
+      ;;
+    * )
+      case "$choice" in
+        *[!0-9]*)
+          if [ -d "$choice" ]; then
+            PROJECT_ROOT="$choice"
+          else
+            echo "  [WARN] Ungueltige Eingabe - nutze aktuellen Ordner"
+            PROJECT_ROOT="$PWD"
+          fi
+          ;;
+        *)
+          if [ "$choice" -ge 1 ] && [ "$choice" -le "${#CAND[@]}" ]; then
+            PROJECT_ROOT="${CAND[$((choice - 1))]}"
+          else
+            echo "  [WARN] Ungueltige Nummer - nutze aktuellen Ordner"
+            PROJECT_ROOT="$PWD"
+          fi
+          ;;
+      esac
+      ;;
+  esac
+  echo "  Projektordner: $PROJECT_ROOT"
+}
+
 try_copy() {
   SRC="$1"
   DEST="$2"
   NAME="$3"
   TOOLKEY="$4"
+  SCOPE="$5"
+  if [ "$SCOPE" = "project" ]; then
+    DEST="$PROJECT_ROOT/$DEST"
+  fi
   if [ ! -f "$SRC" ]; then
     return
   fi
@@ -167,21 +244,38 @@ with open('$DEST','w') as f: json.dump(a,f,indent=2)
   echo "  [WARN] $NAME: Ungueltige Eingabe - uebersprungen"
 }
 
-try_copy "opencode-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode CLI" "opencode"
-try_copy "continue-config.json" "$HOME/.continue/config.json" "Continue" "continue"
-try_copy "zed-config.json" "$HOME/.config/zed/settings.json" "Zed Editor" "zed"
-try_copy "aider-config.json" "$PWD/.aider.conf.yml" "Aider CLI" "aider"
-try_copy "antigravity-config.json" "$PWD/settings.yaml" "Antigravity" "antigravity"
-try_copy "cursor-config.json" "$PWD/.cursorrules" "Cursor Editor" "cursor"
-try_copy "windsurf-config.json" "$PWD/.windsurfrules" "Windsurf Editor" "windsurf"
-try_copy "claude-code-config.json" "$PWD/CLAUDE.md" "Claude Code CLI" "claude_code"
-try_copy "github-copilot-config.json" "$PWD/.github/copilot-instructions.md" "GitHub Copilot" "github_copilot"
-try_copy "cline-config.json" "$PWD/.clinerules" "Cline" "cline"
-try_copy "codeium-config.json" "$PWD/.codeiumrules" "Codeium" "codeium"
-try_copy "roocode-config.json" "$PWD/.roorules" "RooCode" "roocode"
-try_copy "litellm-config.json" "$PWD/litellm_config.yaml" "LiteLLM" "litellm"
-try_copy "cody-config.json" "$PWD/.cody/config.json" "Cody" "cody"
-try_copy "tabby-config.json" "$PWD/tabby_config.json" "Tabby" "tabby"
+NEED_PROJECT=0
+for TK in aider antigravity cursor windsurf claude-code github-copilot cline codeium roocode litellm cody tabby; do
+  if [ -f "${TK}-config.json" ]; then
+    MANIFEST_KEY=$(echo "$TK" | tr '-' '_')
+    if [ ! -f "manifest.txt" ] || grep -q "$MANIFEST_KEY" "manifest.txt" 2>/dev/null; then
+      NEED_PROJECT=1
+      break
+    fi
+  fi
+done
+PROJECT_ROOT="$PWD"
+if [ "$NEED_PROJECT" -eq 1 ]; then
+  choose_project_root
+  echo "  Projektordner: $PROJECT_ROOT" >> "$LOGFILE"
+fi
+echo ""
+
+try_copy "opencode-config.json" "$HOME/.config/opencode/opencode.json" "OpenCode CLI" "opencode" "global"
+try_copy "continue-config.json" "$HOME/.continue/config.json" "Continue" "continue" "global"
+try_copy "zed-config.json" "$HOME/.config/zed/settings.json" "Zed Editor" "zed" "global"
+try_copy "aider-config.json" ".aider.conf.yml" "Aider CLI" "aider" "project"
+try_copy "antigravity-config.json" "settings.yaml" "Antigravity" "antigravity" "project"
+try_copy "cursor-config.json" ".cursorrules" "Cursor Editor" "cursor" "project"
+try_copy "windsurf-config.json" ".windsurfrules" "Windsurf Editor" "windsurf" "project"
+try_copy "claude-code-config.json" "CLAUDE.md" "Claude Code CLI" "claude_code" "project"
+try_copy "github-copilot-config.json" ".github/copilot-instructions.md" "GitHub Copilot" "github_copilot" "project"
+try_copy "cline-config.json" ".clinerules" "Cline" "cline" "project"
+try_copy "codeium-config.json" ".codeiumrules" "Codeium" "codeium" "project"
+try_copy "roocode-config.json" ".roorules" "RooCode" "roocode" "project"
+try_copy "litellm-config.json" "litellm_config.yaml" "LiteLLM" "litellm" "project"
+try_copy "cody-config.json" ".cody/config.json" "Cody" "cody" "project"
+try_copy "tabby-config.json" "tabby_config.json" "Tabby" "tabby" "project"
 
 echo ""
 echo "============================================"

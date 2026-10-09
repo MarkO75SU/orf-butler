@@ -1,9 +1,9 @@
+import { methodGuard } from '../lib/http.js';
+
 export default function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-    
-    const { username, password } = req.body;
+    if (methodGuard(req, res, 'POST')) return;
+
+    const { username, password } = req.body || {};
     
     const validUser = process.env.LOGIN_USER;
     const validPass = process.env.LOGIN_PASS;

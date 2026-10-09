@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
 
@@ -14,48 +15,55 @@ const RESET = '\x1b[0m';
 
 const OS_PATHS = {
     win32: {
-        "continue": { path: process.env.USERPROFILE + '\\.continue\\config.json', label: 'VS Code (Continue)' },
-        "opencode": { path: process.env.USERPROFILE + '\\.config\\opencode\\opencode.json', label: 'OpenCode CLI' },
-        "zed": { path: process.env.USERPROFILE + '\\AppData\\Roaming\\Zed\\settings.json', label: 'Zed Editor' },
-        "aider": { path: process.cwd() + '\\.aider.conf.yml', label: 'Aider CLI' },
-        "antigravity": { path: process.cwd() + '\\settings.yaml', label: 'Antigravity' },
-        "amazon_q": { path: null, label: 'Amazon Q (Browser)' },
-        "cursor": { path: process.cwd() + '\\.cursorrules', label: 'Cursor Editor' },
-        "windsurf": { path: process.cwd() + '\\.windsurfrules', label: 'Windsurf Editor' },
-        "claude_code": { path: process.cwd() + '\\CLAUDE.md', label: 'Claude Code CLI' },
-        "github_copilot": { path: process.cwd() + '\\.github\\copilot-instructions.md', label: 'GitHub Copilot' },
-        "cline": { path: process.cwd() + '\\.clinerules', label: 'Cline' },
-        "codeium": { path: process.cwd() + '\\.codeiumrules', label: 'Codeium / Windsurf' },
-        "roocode": { path: process.cwd() + '\\.roorules', label: 'RooCode' }
+        "continue": { scope: 'global', path: process.env.USERPROFILE + '\\.continue\\config.json', label: 'VS Code (Continue)' },
+        "opencode": { scope: 'global', path: process.env.USERPROFILE + '\\.config\\opencode\\opencode.json', label: 'OpenCode CLI' },
+        "zed": { scope: 'global', path: process.env.USERPROFILE + '\\AppData\\Roaming\\Zed\\settings.json', label: 'Zed Editor' },
+        "aider": { scope: 'project', rel: '.aider.conf.yml', label: 'Aider CLI' },
+        "antigravity": { scope: 'project', rel: 'settings.yaml', label: 'Antigravity' },
+        "cursor": { scope: 'project', rel: '.cursorrules', label: 'Cursor Editor' },
+        "windsurf": { scope: 'project', rel: '.windsurfrules', label: 'Windsurf Editor' },
+        "claude_code": { scope: 'project', rel: 'CLAUDE.md', label: 'Claude Code CLI' },
+        "github_copilot": { scope: 'project', rel: '.github/copilot-instructions.md', label: 'GitHub Copilot' },
+        "cline": { scope: 'project', rel: '.clinerules', label: 'Cline' },
+        "codeium": { scope: 'project', rel: '.codeiumrules', label: 'Codeium / Windsurf' },
+        "roocode": { scope: 'project', rel: '.roorules', label: 'RooCode' },
+        "litellm": { scope: 'project', rel: 'litellm_config.yaml', label: 'LiteLLM' },
+        "cody": { scope: 'project', rel: '.cody/config.json', label: 'Cody' },
+        "tabby": { scope: 'project', rel: 'tabby_config.json', label: 'Tabby' }
     },
     darwin: {
-        "continue": { path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
-        "opencode": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode CLI' },
-        "zed": { path: process.env.HOME + '/.config/zed/settings.json', label: 'Zed Editor' },
-        "aider": { path: process.cwd() + '/.aider.conf.yml', label: 'Aider CLI' },
-        "antigravity": { path: process.cwd() + '/settings.yaml', label: 'Antigravity' },
-        "amazon_q": { path: null, label: 'Amazon Q (Browser)' },
-        "cursor": { path: process.cwd() + '/.cursorrules', label: 'Cursor Editor' },
-        "windsurf": { path: process.cwd() + '/.windsurfrules', label: 'Windsurf Editor' },
-        "claude_code": { path: process.cwd() + '/CLAUDE.md', label: 'Claude Code CLI' },
-        "github_copilot": { path: process.cwd() + '/.github/copilot-instructions.md', label: 'GitHub Copilot' },
-        "cline": { path: process.cwd() + '/.clinerules', label: 'Cline' },
-        "codeium": { path: process.cwd() + '/.codeiumrules', label: 'Codeium / Windsurf' },
-        "roocode": { path: process.cwd() + '/.roorules', label: 'RooCode' }
+        "continue": { scope: 'global', path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
+        "opencode": { scope: 'global', path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode CLI' },
+        "zed": { scope: 'global', path: process.env.HOME + '/.config/zed/settings.json', label: 'Zed Editor' },
+        "aider": { scope: 'project', rel: '.aider.conf.yml', label: 'Aider CLI' },
+        "antigravity": { scope: 'project', rel: 'settings.yaml', label: 'Antigravity' },
+        "cursor": { scope: 'project', rel: '.cursorrules', label: 'Cursor Editor' },
+        "windsurf": { scope: 'project', rel: '.windsurfrules', label: 'Windsurf Editor' },
+        "claude_code": { scope: 'project', rel: 'CLAUDE.md', label: 'Claude Code CLI' },
+        "github_copilot": { scope: 'project', rel: '.github/copilot-instructions.md', label: 'GitHub Copilot' },
+        "cline": { scope: 'project', rel: '.clinerules', label: 'Cline' },
+        "codeium": { scope: 'project', rel: '.codeiumrules', label: 'Codeium / Windsurf' },
+        "roocode": { scope: 'project', rel: '.roorules', label: 'RooCode' },
+        "litellm": { scope: 'project', rel: 'litellm_config.yaml', label: 'LiteLLM' },
+        "cody": { scope: 'project', rel: '.cody/config.json', label: 'Cody' },
+        "tabby": { scope: 'project', rel: 'tabby_config.json', label: 'Tabby' }
     },
     linux: {
-        "continue": { path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
-        "opencode": { path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode CLI' },
-        "zed": { path: process.env.HOME + '/.config/zed/settings.json', label: 'Zed Editor' },
-        "aider": { path: process.cwd() + '/.aider.conf.yml', label: 'Aider CLI' },
-        "antigravity": { path: process.cwd() + '/settings.yaml', label: 'Antigravity' },
-        "amazon_q": { path: null, label: 'Amazon Q (Browser)' },
-        "cursor": { path: process.cwd() + '/.cursorrules', label: 'Cursor Editor' },
-        "windsurf": { path: process.cwd() + '/.windsurfrules', label: 'Windsurf Editor' },
-        "claude_code": { path: process.cwd() + '/CLAUDE.md', label: 'Claude Code CLI' },
-        "github_copilot": { path: process.cwd() + '/.github/copilot-instructions.md', label: 'GitHub Copilot' },
-        "cline": { path: process.cwd() + '/.clinerules', label: 'Cline' },
-        "codeium": { path: process.cwd() + '/.codeiumrules', label: 'Codeium / Windsurf' }
+        "continue": { scope: 'global', path: process.env.HOME + '/.continue/config.json', label: 'VS Code (Continue)' },
+        "opencode": { scope: 'global', path: process.env.HOME + '/.config/opencode/opencode.json', label: 'OpenCode CLI' },
+        "zed": { scope: 'global', path: process.env.HOME + '/.config/zed/settings.json', label: 'Zed Editor' },
+        "aider": { scope: 'project', rel: '.aider.conf.yml', label: 'Aider CLI' },
+        "antigravity": { scope: 'project', rel: 'settings.yaml', label: 'Antigravity' },
+        "cursor": { scope: 'project', rel: '.cursorrules', label: 'Cursor Editor' },
+        "windsurf": { scope: 'project', rel: '.windsurfrules', label: 'Windsurf Editor' },
+        "claude_code": { scope: 'project', rel: 'CLAUDE.md', label: 'Claude Code CLI' },
+        "github_copilot": { scope: 'project', rel: '.github/copilot-instructions.md', label: 'GitHub Copilot' },
+        "cline": { scope: 'project', rel: '.clinerules', label: 'Cline' },
+        "codeium": { scope: 'project', rel: '.codeiumrules', label: 'Codeium / Windsurf' },
+        "roocode": { scope: 'project', rel: '.roorules', label: 'RooCode' },
+        "litellm": { scope: 'project', rel: 'litellm_config.yaml', label: 'LiteLLM' },
+        "cody": { scope: 'project', rel: '.cody/config.json', label: 'Cody' },
+        "tabby": { scope: 'project', rel: 'tabby_config.json', label: 'Tabby' }
     }
 };
 
@@ -67,12 +75,60 @@ function detectOS() {
 }
 
 function findConfigFiles(dir) {
-    return fs.readdirSync(dir).filter(f =>
-        f.endsWith('-config.json') || f.endsWith('.md')
-    ).map(f => {
-        const base = f.replace(/-config\.json$/, '').replace(/\.md$/, '');
-        return { file: f, toolId: base.toLowerCase().replace(/ /g, '_') };
+    return fs.readdirSync(dir).filter(f => f.endsWith('-config.json')).map(f => {
+        const base = f.replace(/-config\.json$/, '');
+        return { file: f, toolId: base.toLowerCase().replace(/[-\s]+/g, '_') };
     });
+}
+
+// Sucht Projektordner (Marker: .git) rund um Home/Desktop/Documents
+function findProjectRoots(zipDir, limit = 8) {
+    const roots = [];
+    const seen = new Set();
+    const push = d => {
+        const r = path.resolve(d);
+        if (!seen.has(r)) { seen.add(r); roots.push(r); }
+    };
+    push(zipDir);
+
+    const home = os.homedir();
+    const bases = [home, path.join(home, 'Desktop'), path.join(home, 'Documents'),
+                   path.join(home, 'Projects'), path.join(home, 'dev'), path.join(home, 'code')];
+    for (const b of bases) {
+        if (!fs.existsSync(b)) continue;
+        if (fs.existsSync(path.join(b, '.git'))) push(b);
+        let entries = [];
+        try { entries = fs.readdirSync(b, { withFileTypes: true }); } catch { continue; }
+        for (const e of entries) {
+            if (!e.isDirectory()) continue;
+            const full = path.join(b, e.name);
+            if (fs.existsSync(path.join(full, '.git'))) push(full);
+            if (roots.length >= limit + 1) break;
+        }
+        if (roots.length >= limit + 1) break;
+    }
+    return roots;
+}
+
+async function chooseProjectRoot(zipDir) {
+    const roots = findProjectRoots(zipDir);
+    console.log(`\n  ${BOLD}Projektordner für projekt-lokale Configs${RESET}`);
+    console.log(`  ${CYAN}(.cursorrules, CLAUDE.md, .clinerules, …)${RESET}`);
+    console.log(`    ${CYAN}[Enter]${RESET} Behalte aktuellen Ordner: ${zipDir}`);
+    roots.slice(1).forEach((r, i) => console.log(`    ${CYAN}[${i + 1}]${RESET} ${r}`));
+    console.log(`    ${CYAN}[f]${RESET} Eigenen Pfad eingeben`);
+
+    const answer = await askQuestion(`  → `);
+    if (!answer || answer === '0') return zipDir;
+    if (answer.toLowerCase() === 'f') {
+        const custom = await askQuestion(`  Pfad: `);
+        return custom ? path.resolve(custom.replace(/^"|"$/g, '')) : zipDir;
+    }
+    const idx = parseInt(answer, 10);
+    const pick = roots[idx];
+    if (idx >= 1 && pick) return pick;
+    console.log(`  ${YELLOW}⚠ Ungültige Eingabe – aktueller Ordner${RESET}`);
+    return zipDir;
 }
 
 function askQuestion(query) {
@@ -185,8 +241,8 @@ async function run() {
     console.log(`${BOLD}${CYAN}║   ORF-Butler Auto-Installer (Premium) ║${RESET}`);
     console.log(`${BOLD}${CYAN}╚══════════════════════════════════════╝${RESET}\n`);
 
-    const os = detectOS();
-    console.log(`  Betriebssystem: ${os}\n`);
+    const os_key = detectOS();
+    console.log(`  Betriebssystem: ${os_key}\n`);
 
     const previewAnswer = await askQuestion(`  Config vor dem Speichern prüfen? (j/n, Enter = nein): `);
     const previewEnabled = previewAnswer.toLowerCase() === 'j';
@@ -213,23 +269,34 @@ async function run() {
 
     console.log(`  ${BOLD}Gefundene Konfigurationen:${RESET}`);
     configs.forEach((c, i) => {
-        const info = OS_PATHS[os][c.toolId];
+        const info = OS_PATHS[os_key][c.toolId];
         const label = info ? info.label : c.toolId;
         console.log(`    ${i + 1}. ${label}`);
     });
     console.log();
 
+    const projectKeys = new Set(Object.entries(OS_PATHS[os_key])
+        .filter(([, i]) => i.scope === 'project').map(([k]) => k));
+    const needsProject = configs.some(c =>
+        projectKeys.has(c.toolId) && (!manifestTools || manifestTools.includes(c.toolId)));
+
+    const zipDir = __dirname;
+    const projectRoot = needsProject ? await chooseProjectRoot(zipDir) : zipDir;
+    log(`Projektordner: ${projectRoot}`);
+
     let installed = 0, skipped = 0, warnings = [];
 
     for (const config of configs) {
-        const info = OS_PATHS[os][config.toolId];
-        if (!info || !info.path) {
-            console.log(`  ${YELLOW}⚠ ${config.toolId}: Nur im Browser nutzbar → übersprungen${RESET}`);
+        const info = OS_PATHS[os_key][config.toolId];
+        if (!info) {
+            console.log(`  ${YELLOW}⚠ ${config.toolId}: Unbekanntes Tool → übersprungen${RESET}`);
             skipped++;
             continue;
         }
 
-        const destPath = info.path;
+        const destPath = info.scope === 'project'
+            ? path.join(projectRoot, info.rel)
+            : info.path;
         const srcPath = path.join(__dirname, config.file);
 
         if (!fs.existsSync(srcPath)) {
@@ -331,4 +398,7 @@ async function run() {
     console.log(`\n  ${CYAN}✅ Fertig! Starte dein Tool neu.${RESET}\n`);
 }
 
-run();
+export { OS_PATHS, findConfigFiles, findProjectRoots, chooseProjectRoot, detectOS };
+
+const isDirectRun = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isDirectRun) run();

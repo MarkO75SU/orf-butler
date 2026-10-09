@@ -1,11 +1,9 @@
 import { setLanguage, getLang } from './i18n.js';
 import { TOOL_TEMPLATES, generateConfig } from './templates.js';
 import { generateInstallMD, OS_PATHS } from './docs.js';
-import { isAuthenticated, logout, getUser } from './auth.js';
+import { logout } from './auth.js';
 import { MODEL_MAPPING } from './mapping.js';
-
-const ADMIN_USER = 'generali';
-const isAdmin = () => getUser() === ADMIN_USER;
+import { BMC_URL } from './config.js';
 
 let state = {
     selectedModels: [],
@@ -46,20 +44,15 @@ const translations = {
         downloadBtn: "Als ZIP Herunterladen",
         noModel: "Keine Modelle ausgewählt",
         noTool: "Keine Tools ausgewählt",
-        adminBadge: "ADMIN",
-        bundleFree: "Kostenlos",
-        codesTitle: "🔑 Code-Verwaltung",
-        codesGenerate: "Codes generieren",
-        codesGenerateBtn: "Generieren",
-        codesList: "Codes anzeigen",
-        codesRevoke: "Deaktivieren",
-        codesReset: "Zurücksetzen",
-        codesNone: "Keine Codes vorhanden",
-        codesUsage: "Nutzungen",
-        codesActive: "Aktiv",
-        codesInactive: "Inaktiv",
-        codesRefresh: "Aktualisieren",
-        codesClose: "Schließen"
+        bundleFree: "GRATIS",
+        thanksTitle: "Download gestartet ☕",
+        thanksText: "Hat dir der Konfigurator geholfen? Unterstütze das Projekt mit einer Tasse Kaffee.",
+        thanksBtn: "☕ Kaffee kaufen",
+        thanksClose: "Weiter",
+        modelSearchPlaceholder: "🔍 Suche nach ID, Tag, Rolle oder Beschreibung...",
+        modelError: "Fehler beim Laden der Modelle",
+        newBadge: "NEU",
+        toolTypeLabel: "Typ:"
     },
     en: {
         selectAll: "Select All",
@@ -77,20 +70,15 @@ const translations = {
         downloadBtn: "Download as ZIP",
         noModel: "No models selected",
         noTool: "No tools selected",
-        adminBadge: "ADMIN",
-        bundleFree: "Free",
-        codesTitle: "🔑 Code Management",
-        codesGenerate: "Generate codes",
-        codesGenerateBtn: "Generate",
-        codesList: "View codes",
-        codesRevoke: "Revoke",
-        codesReset: "Reset",
-        codesNone: "No codes available",
-        codesUsage: "Uses",
-        codesActive: "Active",
-        codesInactive: "Inactive",
-        codesRefresh: "Refresh",
-        codesClose: "Close"
+        bundleFree: "FREE",
+        thanksTitle: "Download started ☕",
+        thanksText: "Did the configurator help you? Support the project with a cup of coffee.",
+        thanksBtn: "☕ Buy me a coffee",
+        thanksClose: "Continue",
+        modelSearchPlaceholder: "🔍 Search by ID, tag, role or description...",
+        modelError: "Error loading models",
+        newBadge: "NEW",
+        toolTypeLabel: "Type:"
     }
 };
 
@@ -122,24 +110,40 @@ function updateUI() {
     document.getElementById('summary-tool-label').textContent = texts.summaryTool;
     document.getElementById('summary-bundle-label').textContent = texts.summaryBundle;
     document.getElementById('download-btn').textContent = texts.downloadBtn;
-    const badge = document.getElementById('admin-badge');
-    const adminBtn = document.getElementById('admin-btn');
-    if (badge && adminBtn) {
-        if (isAdmin()) {
-            badge.classList.remove('hidden');
-            badge.textContent = texts.adminBadge;
-            adminBtn.classList.remove('hidden');
-        } else {
-            badge.classList.add('hidden');
-            adminBtn.classList.add('hidden');
-        }
-    }
-    
-    const admin = isAdmin();
-    document.getElementById('bundle-basic-price').textContent = admin ? texts.bundleFree : '5€';
-    document.getElementById('bundle-premium-price').textContent = admin ? texts.bundleFree : '20€';
-    
+
+    document.getElementById('bundle-basic-price').textContent = texts.bundleFree;
+    document.getElementById('bundle-premium-price').textContent = texts.bundleFree;
+
+    setText('model-search', null, texts.modelSearchPlaceholder, 'placeholder');
+    setText('model-error', texts.modelError);
+
+    setText('thanks-title', texts.thanksTitle);
+    setText('thanks-text', texts.thanksText);
+    setText('thanks-bmc', texts.thanksBtn);
+    setText('thanks-close-btn', texts.thanksClose);
+    updateLangButtons();
+
+    document.querySelectorAll('a[data-bmc]').forEach(a => {
+        const utm = a.getAttribute('data-bmc') === 'thanks'
+            ? '?utm_source=orfb&utm_medium=app&utm_campaign=download'
+            : '?utm_source=orfb&utm_medium=app';
+        a.href = BMC_URL + utm;
+    });
+
+    updateSelectedCount();
+    loadTools();
+
     updateSummary();
+}
+
+function setText(id, text, value = undefined, attr = 'textContent') {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (attr === 'placeholder') {
+        el.placeholder = value;
+    } else {
+        el.textContent = text;
+    }
 }
 
 function updateSummary() {
@@ -153,10 +157,9 @@ function updateSummary() {
     
     const toolNames = state.selectedTools.map(id => TOOL_TEMPLATES[id]?.name || id).join(', ');
     
-    const admin = isAdmin();
-    const bundleLabel = state.selectedBundle === 'basic' 
-        ? `Standard Bundle${admin ? '' : ' (5€)'}` 
-        : `Premium Bundle${admin ? '' : ' (20€)'}`;
+    const bundleLabel = state.selectedBundle === 'basic'
+        ? 'Standard Bundle'
+        : 'Premium Bundle';
 
     document.getElementById('summary-models').textContent = state.selectedModels.length 
         ? `(${state.selectedModels.length}) ${modelNames}` 
@@ -177,14 +180,15 @@ function loadModels() {
         if (!a.new && b.new) return 1;
         return idA.localeCompare(idB);
     });
-    
+    const texts = translations[lang] || translations.de;
+
     entries.forEach(([id, data]) => {
         const card = document.createElement('div');
         const role = lang === 'de' ? data.role_de : data.role;
         const desc = lang === 'de' ? data.desc_de : data.desc_en;
         const checkId = `model-${id.replace(/[:/.]/g, '-')}`;
         const isChecked = state.selectedModels.includes(id) ? 'checked' : '';
-        const neueBadge = data.new ? '<span class="text-[9px] bg-sky-600 text-white px-1.5 py-0.5 rounded font-bold ml-1">NEU</span>' : '';
+        const neueBadge = data.new ? `<span class="text-[9px] bg-sky-600 text-white px-1.5 py-0.5 rounded font-bold ml-1">${texts.newBadge}</span>` : '';
         const tags = data.tags || [];
         const tagColors = {
             coding: 'bg-emerald-900/60 text-emerald-400',
@@ -258,14 +262,17 @@ function createModelCard(modelId) {
 function loadTools() {
     const grid = document.getElementById('tools-grid');
     grid.innerHTML = '';
-    
+    const lang = getLang();
+    const texts = translations[lang] || translations.de;
+
     const entries = Object.entries(TOOL_TEMPLATES).sort(([, a], [, b]) => a.name.localeCompare(b.name));
-    
+
     entries.forEach(([id, tool]) => {
         const card = document.createElement('div');
         const checkId = `tool-${id}`;
         const isChecked = state.selectedTools.includes(id) ? 'checked' : '';
-        
+        const desc = lang === 'en' && tool.desc_en ? tool.desc_en : tool.desc;
+
         card.className = `tool-card bg-[#1a1a1e] border ${isChecked ? 'border-sky-600' : 'border-slate-800'} rounded p-4 cursor-pointer hover:border-sky-500 transition`;
         card.setAttribute('data-tool-id', id);
         card.innerHTML = `
@@ -275,9 +282,9 @@ function loadTools() {
                     onclick="event.stopPropagation(); window.toggleTool('${id}')">
                 <label for="${checkId}" class="cursor-pointer flex-1" onclick="event.stopPropagation()">
                     <div class="text-xs font-bold text-white">${tool.name}</div>
-                    <div class="text-[10px] text-slate-500 mt-1">${tool.desc || ''}</div>
+                    <div class="text-[10px] text-slate-500 mt-1">${desc || ''}</div>
                     <div class="flex gap-2 mt-2">
-                        <span class="text-[9px] text-slate-600">Typ: ${tool.type || '?'}</span>
+                        <span class="text-[9px] text-slate-600">${texts.toolTypeLabel} ${tool.type || '?'}</span>
                         <span class="text-[9px] text-slate-600">Status: ${tool.status || '?'}</span>
                     </div>
                 </label>
@@ -435,7 +442,7 @@ async function downloadZIP() {
         const modelTuples = state.selectedModels.map(id => [id, MODEL_MAPPING[id]]);
         const configContent = generateConfig(toolId, modelTuples, state.selectedBundle);
         const path = OS_PATHS[os][toolId];
-        const installMD = generateInstallMD({ id: toolId, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path);
+        const installMD = generateInstallMD({ id: toolId, name: tool.name, config_file: tool.config_file }, os, state.selectedBundle, path, getLang());
         
         const safeName = toolId.replace(/_/g, '-');
         zip.file(safeName + '-config.json', configContent);
@@ -470,8 +477,95 @@ async function downloadZIP() {
                 zip.file('auto-install-linux.sh').unixPermissions = '755';
             }
             
-            zip.file('README-AUTOINSTALL.md',
-`# ORF-Butler Auto-Installer (Premium)
+            zip.file('README-AUTOINSTALL.md', autoInstallReadme(getLang()));
+        } catch (e) {
+            console.warn('Auto-installer not available:', e.message);
+        }
+    }
+    
+    const content = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'orfb-configs.zip';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    trackEvent('download', {
+        models: state.selectedModels.length,
+        tools: state.selectedTools.join(','),
+        bundle: state.selectedBundle,
+        os,
+        lang: getLang()
+    });
+    document.getElementById('thanks-modal')?.classList.remove('hidden');
+    document.getElementById('thanks-close-btn')?.focus();
+
+    } finally {
+        btn.disabled = false;
+        btn.textContent = origText;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+}
+function autoInstallReadme(lang) {
+    if (lang === 'en') {
+        return `# ORF-Butler Auto-Installer (Premium)
+
+Automatically copies all config files to the correct paths.
+
+## Usage
+
+### Windows
+Double-click **auto-install-win.bat**
+
+### Mac
+Double-click **auto-install-mac.command**
+
+### Linux
+Double-click **auto-install-linux.sh**
+
+### Alternative (any system)
+Run \`node auto-install.js\` in the terminal
+
+## Requirements
+
+- Node.js 18+ (https://nodejs.org) – only for the Node version
+- Config files (.json/.yml/.yaml) in the same folder
+- OpenRouter API key: stored ONLY locally in the config, no server upload
+
+## Interactive Menu
+
+If a config already exists, the installer asks:
+
+  [1] **Overwrite** – old config is replaced (backup as .backup)
+  [2] **Comment out** – old config stays as a comment, new one below
+  [3] **Merge** (JSON only) – both structures are merged
+  [s] **Skip** – do nothing, config stays unchanged
+
+## Project Folder
+
+Tool configs that belong to your project (Cursor, Windsurf, Claude Code, Cline,
+Codeium, RooCode, Aider, Antigravity, LiteLLM, Cody, Tabby) are written into a
+project folder. The installer searches common locations for a Git repository
+(marker: .git) and shows a menu:
+
+  [1..n] **Detected project folders** – pick one
+  [Enter] **Current folder** – the folder you started the installer from
+  [f] **Custom path** – type any path
+
+Global configs (OpenCode, Continue, Zed) always go to your home directory.
+
+## What happens?
+
+1. The script detects your operating system (Windows/Mac/Linux)
+2. It finds the correct directories for each tool
+3. For project-local configs it asks which project folder to use
+4. Existing configs are backed up (suffix .backup)
+5. On conflict: you decide via the menu
+6. Done – restart your tool
+`;
+    }
+    return `# ORF-Butler Auto-Installer (Premium)
 
 Kopiert alle Config-Dateien automatisch an die richtigen Pfade.
 
@@ -504,196 +598,43 @@ Existiert eine Config bereits, fragt der Installer:
   [3] **Mergen** (nur JSON) – beide Strukturen werden zusammengeführt
   [s] **Überspringen** – nichts tun, Config bleibt unverändert
 
+## Projektordner
+
+Tool-Configs, die zum Projekt gehören (Cursor, Windsurf, Claude Code, Cline,
+Codeium, RooCode, Aider, Antigravity, LiteLLM, Cody, Tabby), werden in einen
+Projektordner geschrieben. Der Installer sucht in typischen Ordnern nach einem
+Git-Repository (Marker: .git) und zeigt ein Menü:
+
+  [1..n] **Gefundene Projektordner** – einen auswählen
+  [Enter] **Aktueller Ordner** – der Ordner, aus dem der Installer gestartet wurde
+  [f] **Eigener Pfad** – beliebigen Pfad eingeben
+
+Globale Configs (OpenCode, Continue, Zed) landen immer im Home-Verzeichnis.
+
 ## Was passiert?
 
 1. Das Skript erkennt dein Betriebssystem (Windows/Mac/Linux)
 2. Es findet die richtigen Verzeichnisse für jedes Tool
-3. Existierende Configs werden gesichert (Endung .backup)
-4. Bei Konflikt: Du entscheidest via Menü
-5. Fertig – starte dein Tool neu
-`);
-        } catch (e) {
-            console.warn('Auto-installer not available:', e.message);
-        }
-    }
-    
-    const content = await zip.generateAsync({ type: 'blob' });
-    const url = URL.createObjectURL(content);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'orfb-configs.zip';
-    a.click();
-    URL.revokeObjectURL(url);
-
-    } finally {
-        btn.disabled = false;
-        btn.textContent = origText;
-        btn.classList.remove('opacity-50', 'cursor-not-allowed');
-    }
+3. Für projekt-lokale Configs fragt es nach dem Projektordner
+4. Existierende Configs werden gesichert (Endung .backup)
+5. Bei Konflikt: Du entscheidest via Menü
+6. Fertig – starte dein Tool neu
+`;
 }
+function trackEvent(name, props) {
+    try { window.umami?.track(name, props); } catch {}
+}
+function updateLangButtons() {
+    const lang = getLang();
+    document.querySelectorAll('[data-lang]').forEach(btn => {
+        btn.setAttribute('aria-pressed', String(btn.dataset.lang === lang));
+    });
+}
+window.closeThanks = () => {
+    document.getElementById('thanks-modal')?.classList.add('hidden');
+    document.getElementById('download-btn')?.focus();
+};
 window.downloadZIP = downloadZIP;
-
-// ---- Code Management (Admin) ----
-
-let _adminCreds = null;
-
-function getAdminCreds() {
-    if (_adminCreds) return _adminCreds;
-    const user = getUser();
-    const pass = prompt('Admin-Passwort eingeben (das aus der .env-Datei):');
-    if (!pass) return null;
-    _adminCreds = btoa(user + ':' + pass);
-    return _adminCreds;
-}
-
-window.openCodesPanel = async () => {
-    const panel = document.getElementById('codes-modal');
-    if (panel) panel.classList.remove('hidden');
-    _adminCreds = null;
-    if (!getAdminCreds()) return;
-    await refreshCodesList();
-};
-
-window.closeCodesPanel = () => {
-    const panel = document.getElementById('codes-modal');
-    if (panel) panel.classList.add('hidden');
-};
-
-window.generateCodes = async () => {
-    const count = parseInt(document.getElementById('codes-count')?.value) || 5;
-    const maxUses = parseInt(document.getElementById('codes-maxuses')?.value) || 10;
-    const creds = getAdminCreds();
-    if (!creds) return;
-    try {
-        const res = await fetch('/api/codes?action=generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + creds },
-            body: JSON.stringify({ count, maxUses })
-        });
-        const data = await res.json();
-        if (res.ok) {
-            alert(data.generated.length + ' Codes generiert:\n\n' + data.generated.join('\n'));
-            await refreshCodesList();
-        } else {
-            alert('Fehler: ' + (data.error || res.status));
-        }
-    } catch (e) {
-        alert('Fehler: ' + e.message);
-    }
-};
-
-window.revokeCode = async (code) => {
-    if (!confirm('Code ' + code + ' deaktivieren?')) return;
-    const creds = getAdminCreds();
-    if (!creds) return;
-    try {
-        const res = await fetch('/api/codes?action=revoke', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + creds },
-            body: JSON.stringify({ code })
-        });
-        if (res.ok) {
-            await refreshCodesList();
-        } else {
-            const data = await res.json();
-            alert('Fehler: ' + (data.error || res.status));
-        }
-    } catch (e) {
-        alert('Fehler: ' + e.message);
-    }
-};
-
-window.resetCode = async (code) => {
-    if (!confirm('Code ' + code + ' zurücksetzen (0 Nutzungen)?')) return;
-    const creds = getAdminCreds();
-    if (!creds) return;
-    try {
-        const res = await fetch('/api/codes?action=reset', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + creds },
-            body: JSON.stringify({ code })
-        });
-        if (res.ok) {
-            await refreshCodesList();
-        } else {
-            const data = await res.json();
-            alert('Fehler: ' + (data.error || res.status));
-        }
-    } catch (e) {
-        alert('Fehler: ' + e.message);
-    }
-};
-
-function escHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
-}
-
-window.copyCode = (code, btn) => {
-    const info = window.__codesData ? window.__codesData[code] : null;
-    const anon = info ? info.anonId : '';
-    const text = anon ? anon + ' - ' + code : code;
-    navigator.clipboard.writeText(text).then(() => {
-        const orig = btn.textContent;
-        btn.textContent = '✅';
-        setTimeout(() => btn.textContent = orig, 1000);
-    }).catch(() => alert(text));
-};
-
-window.refreshCodesList = async () => {
-    const creds = getAdminCreds();
-    if (!creds) return;
-    try {
-        const res = await fetch('/api/codes?action=list', {
-            headers: { Authorization: 'Basic ' + creds }
-        });
-        const data = await res.json();
-        window.__codesData = data.codes || {};
-        const tbody = document.getElementById('codes-table-body');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        const entries = Object.entries(data.codes || {});
-        if (entries.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-slate-500 text-[10px] text-center py-4">Keine Codes vorhanden</td></tr>';
-            return;
-        }
-        entries.forEach(([code, info]) => {
-            const tr = document.createElement('tr');
-            tr.className = 'border-b border-slate-800 text-[10px]';
-            const active = info.active ? 'text-green-500' : 'text-red-500';
-            const activeText = info.active ? 
-                (getLang() === 'de' ? 'Aktiv' : 'Active') : 
-                (getLang() === 'de' ? 'Inaktiv' : 'Inactive');
-            const anonUser = info.anonId || '-';
-            const safeCode = escHtml(code);
-            tr.innerHTML = `
-                <td class="py-2 px-2 font-mono text-white">
-                    ${safeCode}
-                    <button data-code="${safeCode}" class="copy-btn text-slate-500 hover:text-slate-300 ml-1" title="Kopieren">📋</button>
-                </td>
-                <td class="py-2 px-2">${escHtml(String(info.uses))}/${escHtml(String(info.maxUses))}</td>
-                <td class="py-2 px-2 text-sky-400">${escHtml(anonUser)}</td>
-                <td class="py-2 px-2 ${active}">${activeText}</td>
-                <td class="py-2 px-2 text-slate-500">${new Date(info.createdAt).toLocaleDateString()}</td>
-                <td class="py-2 px-2">
-                    <button data-code="${safeCode}" class="revoke-btn text-red-400 hover:text-red-300 mr-2" ${!info.active ? 'disabled' : ''}>Widerrufen</button>
-                    <button data-code="${safeCode}" class="reset-btn text-yellow-400 hover:text-yellow-300">Reset</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-        tbody.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', () => copyCode(btn.dataset.code, btn));
-        });
-        tbody.querySelectorAll('.revoke-btn').forEach(btn => {
-            btn.addEventListener('click', () => revokeCode(btn.dataset.code));
-        });
-        tbody.querySelectorAll('.reset-btn').forEach(btn => {
-            btn.addEventListener('click', () => resetCode(btn.dataset.code));
-        });
-    } catch (e) {
-        console.error('Failed to load codes:', e);
-    }
-};
 
 // ---- Init ----
 
@@ -713,9 +654,19 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
     
     document.getElementById('download-btn')?.addEventListener('click', downloadZIP);
+
+    document.querySelectorAll('a[data-bmc]').forEach(a => {
+        a.addEventListener('click', () => trackEvent('bmc_click', { location: a.getAttribute('data-bmc') }));
+    });
     
     const langBtns = document.querySelectorAll('[data-lang]');
     langBtns.forEach(btn => {
         btn.addEventListener('click', () => window.setLang(btn.dataset.lang));
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !document.getElementById('thanks-modal')?.classList.contains('hidden')) {
+            window.closeThanks();
+        }
     });
 });

@@ -7,14 +7,16 @@ export const TOOL_TEMPLATES = {
         config_file: "config.json", 
         type: "json_global", 
         status: "stable",
-        desc: "Industriestandard für VS Code Integration." 
+        desc: "Industriestandard für VS Code Integration.",
+        desc_en: "Industry standard for VS Code integration." 
     },
     "opencode": { 
         name: "OpenCode CLI", 
         config_file: "opencode.json", 
         type: "opencode", 
         status: "stable",
-        desc: "Hochperformante Terminal-AI." 
+        desc: "Hochperformante Terminal-AI.",
+        desc_en: "High-performance terminal AI." 
     },
     "antigravity": { 
         name: "Antigravity", 
@@ -22,91 +24,104 @@ export const TOOL_TEMPLATES = {
         type: "yaml_config", 
         status: "partial", 
         todo: "Endpoint-Mapping für Antigravity-Core verifizieren.",
-        desc: "Spezialisierte Agentic-Workflows." 
+        desc: "Spezialisierte Agentic-Workflows.",
+        desc_en: "Specialized agentic workflows." 
     },
     "zed": { 
         name: "Zed Editor", 
         config_file: "settings.json", 
         type: "json_merge", 
         status: "stable",
-        desc: "High-Performance Rust Editor." 
+        desc: "High-Performance Rust Editor.",
+        desc_en: "High-performance Rust editor." 
     },
     "aider": { 
         name: "Aider CLI", 
         config_file: ".aider.conf.yml", 
         type: "yaml_config", 
         status: "stable",
-        desc: "Bestes Terminal-Pair-Programming Tool." 
+        desc: "Bestes Terminal-Pair-Programming Tool.",
+        desc_en: "Best terminal pair-programming tool." 
     },
     "cursor": {
         name: "Cursor Editor",
         config_file: ".cursorrules",
         type: "instruction_paste",
         status: "stable",
-        desc: "AI-native Code Editor mit Deep Context."
+        desc: "AI-native Code Editor mit Deep Context.",
+        desc_en: "AI-native code editor with deep context."
     },
     "windsurf": {
         name: "Windsurf Editor",
         config_file: ".windsurfrules",
         type: "instruction_paste",
         status: "stable",
-        desc: "Agentic IDE mit Flow-Autonomie."
+        desc: "Agentic IDE mit Flow-Autonomie.",
+        desc_en: "Agentic IDE with flow autonomy."
     },
     "claude_code": {
         name: "Claude Code CLI",
         config_file: "CLAUDE.md",
         type: "instruction_paste",
         status: "stable",
-        desc: "Anthropics offizielles Terminal-Tool."
+        desc: "Anthropics offizielles Terminal-Tool.",
+        desc_en: "Anthropic's official terminal tool."
     },
     "github_copilot": {
         name: "GitHub Copilot",
         config_file: ".github/copilot-instructions.md",
         type: "instruction_paste",
         status: "stable",
-        desc: "Microsofts AI-Pair-Programmer."
+        desc: "Microsofts AI-Pair-Programmer.",
+        desc_en: "Microsoft's AI pair programmer."
     },
     "cline": {
         name: "Cline",
         config_file: ".clinerules",
         type: "instruction_paste",
         status: "stable",
-        desc: "Open-Source Agentic Coding Assistant."
+        desc: "Open-Source Agentic Coding Assistant.",
+        desc_en: "Open-source agentic coding assistant."
     },
     "codeium": {
         name: "Codeium / Windsurf",
         config_file: ".codeiumrules",
         type: "instruction_paste",
         status: "stable",
-        desc: "Schnelle Code-Vervollständigung."
+        desc: "Schnelle Code-Vervollständigung.",
+        desc_en: "Fast code completion."
     },
     "roocode": {
         name: "RooCode",
         config_file: ".roorules",
         type: "instruction_paste",
         status: "stable",
-        desc: "VS Code Extension für agentische KI-Entwicklung."
+        desc: "VS Code Extension für agentische KI-Entwicklung.",
+        desc_en: "VS Code extension for agentic AI development."
     },
     "litellm": {
         name: "LiteLLM",
         config_file: "litellm_config.yaml",
         type: "yaml_config",
         status: "stable",
-        desc: "Universeller LLM-Proxy (OpenRouter, OpenAI, etc.)."
+        desc: "Universeller LLM-Proxy (OpenRouter, OpenAI, etc.).",
+        desc_en: "Universal LLM proxy (OpenRouter, OpenAI, etc.)."
     },
     "cody": {
         name: "Cody (Sourcegraph)",
         config_file: ".cody/config.json",
         type: "json_global",
         status: "stable",
-        desc: "AI Coding Assistant mit Codebase-Kontext."
+        desc: "AI Coding Assistant mit Codebase-Kontext.",
+        desc_en: "AI coding assistant with codebase context."
     },
     "tabby": {
         name: "Tabby",
-        config_file: "tabby.json",
+        config_file: "tabby_config.json",
         type: "json_global",
         status: "stable",
-        desc: "Self-hosted AI Coding Assistant."
+        desc: "Self-hosted AI Coding Assistant.",
+        desc_en: "Self-hosted AI coding assistant."
     }
 };
 

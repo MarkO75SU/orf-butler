@@ -5,6 +5,7 @@
 // npm run codes reset <CODE>
 
 import fs from 'fs';
+import { randomInt } from 'crypto';
 import { createInterface } from 'readline';
 
 const CODES_PATH = 'data/codes.json';
@@ -15,7 +16,7 @@ const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function generateCode(length = 8) {
     let code = '';
     for (let i = 0; i < length; i++) {
-        code += chars[Math.floor(Math.random() * chars.length)];
+        code += chars[randomInt(0, chars.length)];
     }
     return code;
 }
@@ -31,7 +32,9 @@ function readStore() {
 }
 
 function writeStore(store) {
-    fs.writeFileSync(CODES_PATH, JSON.stringify(store, null, 2) + '\n');
+    const tmp = CODES_PATH + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(store, null, 2) + '\n');
+    fs.renameSync(tmp, CODES_PATH);
 }
 
 async function cmdGenerate(args) {

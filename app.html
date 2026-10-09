@@ -31,6 +31,7 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #111114; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        button:focus-visible, a:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
     </style>
 </head>
 <body class="bg-[#0a0a0c] text-slate-300 min-h-screen p-4">
@@ -38,13 +39,12 @@
         <header class="mb-8 flex justify-between items-center border-b border-slate-800 pb-4">
             <div>
                 <h1 class="text-xl font-bold text-white uppercase">Openrouter Free Butler</h1>
-                <p class="text-xs text-slate-500 uppercase tracking-wider">AI Config Generator</p>
+                <p class="text-xs text-slate-400 uppercase tracking-wider">AI Config Generator</p>
             </div>
             <div class="flex gap-4 items-center">
-                <span id="admin-badge" class="text-[10px] bg-yellow-600 text-black font-bold px-2 py-1 rounded hidden uppercase tracking-wider">ADMIN</span>
-                <button id="admin-btn" onclick="openCodesPanel()" class="text-xs text-yellow-500 hover:text-yellow-400 hidden">🔑 Admin</button>
-                <button onclick="setLang('de')" class="text-xs text-slate-500 hover:text-white">DE</button>
-                <button onclick="setLang('en')" class="text-xs text-slate-500 hover:text-white">EN</button>
+                <a data-bmc="header" href="https://www.buymeacoffee.com/DEIN-NAME" target="_blank" rel="noopener" class="text-xs text-amber-500 hover:text-amber-400" title="Unterstützen">☕ Unterstützen</a>
+                <button type="button" data-lang="de" onclick="setLang('de')" aria-pressed="false" class="text-xs text-slate-400 hover:text-white">DE</button>
+                <button type="button" data-lang="en" onclick="setLang('en')" aria-pressed="false" class="text-xs text-slate-400 hover:text-white">EN</button>
                 <button onclick="logout()" class="text-xs text-red-500 hover:text-red-400">Logout</button>
             </div>
         </header>
@@ -55,7 +55,7 @@
                 <span class="bg-sky-600 text-white text-xs px-2 py-1 rounded">1</span>
                 <span id="step1-title">Select your Free-LLM Models</span>
             </h2>
-            <p class="text-xs text-slate-500 mb-4" id="step1-desc">Select one or more models from OpenRouter</p>
+            <p class="text-xs text-slate-400 mb-4" id="step1-desc">Select one or more models from OpenRouter</p>
             <div class="mb-4 relative">
                 <input type="text" id="model-search" oninput="filterModels(this.value)" 
                     class="w-full bg-[#1a1a1e] border border-slate-800 p-3 rounded text-xs outline-none focus:border-sky-600 transition text-white pl-10"
@@ -66,12 +66,12 @@
                     <input type="checkbox" id="select-all-models" class="w-4 h-4 accent-sky-600" onchange="toggleAllModels(this.checked)">
                     <span class="text-xs text-slate-400 uppercase tracking-wider" id="select-all-label">Alle Auswählen</span>
                 </label>
-                <span id="selected-count" class="text-[10px] text-slate-600"></span>
+                <span id="selected-count" aria-live="polite" class="text-[10px] text-slate-400"></span>
             </div>
             <div id="models-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 <!-- Models loaded via JS -->
             </div>
-            <p class="text-xs text-yellow-500 mt-2 hidden" id="model-error">Error loading models</p>
+            <p class="text-xs text-yellow-500 mt-2 hidden" id="model-error" role="alert">Error loading models</p>
         </section>
 
         <!-- STEP 2: Tool Selection -->
@@ -80,7 +80,7 @@
                 <span class="bg-sky-600 text-white text-xs px-2 py-1 rounded">2</span>
                 <span id="step2-title">Select your Tools</span>
             </h2>
-            <p class="text-xs text-slate-500 mb-4" id="step2-desc">Select one or more tools for the config</p>
+            <p class="text-xs text-slate-400 mb-4" id="step2-desc">Select one or more tools for the config</p>
             <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Tools loaded via JS -->
             </div>
@@ -92,21 +92,21 @@
                 <span class="bg-sky-600 text-white text-xs px-2 py-1 rounded">3</span>
                 <span id="step3-title">Select your Bundle</span>
             </h2>
-            <p class="text-xs text-slate-500 mb-4" id="step3-desc">Which package do you want?</p>
+            <p class="text-xs text-slate-400 mb-4" id="step3-desc">Which package do you want?</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl">
                 <button onclick="selectBundle('basic')" id="bundle-basic" class="tool-card text-left hover:border-sky-500 transition">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm font-bold text-white uppercase">Standard Bundle</span>
-                        <span class="text-lg font-mono text-sky-500" id="bundle-basic-price">5€</span>
+                        <span class="text-lg font-mono text-emerald-500" id="bundle-basic-price">GRATIS</span>
                     </div>
-                    <p class="text-xs text-slate-500">Basic Config + Installation Guide</p>
+                    <p class="text-xs text-slate-400">Basic Config + Installation Guide</p>
                 </button>
                 <button onclick="selectBundle('premium')" id="bundle-premium" class="tool-card text-left border-2 border-sky-900 hover:border-sky-500 transition">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm font-bold text-white uppercase">Premium Bundle</span>
-                        <span class="text-lg font-mono text-sky-500" id="bundle-premium-price">20€</span>
+                        <span class="text-lg font-mono text-emerald-500" id="bundle-premium-price">GRATIS</span>
                     </div>
-                    <p class="text-xs text-slate-500">Extended Config + Expert Prompts + Support</p>
+                    <p class="text-xs text-slate-400">Extended Config + Auto-Installer</p>
                 </button>
             </div>
         </section>
@@ -117,19 +117,19 @@
                 <span class="bg-sky-600 text-white text-xs px-2 py-1 rounded">4</span>
                 <span id="step4-title">Checkout & Download</span>
             </h2>
-            <p class="text-xs text-slate-500 mb-4" id="step4-desc">Erstelle und lade deine Config herunter</p>
+            <p class="text-xs text-slate-400 mb-4" id="step4-desc">Erstelle und lade deine Config herunter</p>
             
             <div class="bg-[#16161a] border border-slate-800 rounded-lg p-6 max-w-xl">
                 <div class="mb-4">
-                    <p class="text-xs text-slate-500 uppercase mb-1" id="summary-model-label">Ausgewähltes Model:</p>
+                    <p class="text-xs text-slate-400 uppercase mb-1" id="summary-model-label">Ausgewähltes Model:</p>
                     <p class="text-sm text-white font-mono" id="summary-models">-</p>
                 </div>
                 <div class="mb-4">
-                    <p class="text-xs text-slate-500 uppercase mb-1" id="summary-tool-label">Tool:</p>
+                    <p class="text-xs text-slate-400 uppercase mb-1" id="summary-tool-label">Tool:</p>
                     <p class="text-sm text-white font-mono" id="summary-tools">-</p>
                 </div>
                 <div class="mb-6">
-                    <p class="text-xs text-slate-500 uppercase mb-1" id="summary-bundle-label">Bundle:</p>
+                    <p class="text-xs text-slate-400 uppercase mb-1" id="summary-bundle-label">Bundle:</p>
                     <p class="text-sm text-white font-mono" id="summary-bundle">-</p>
                 </div>
                 
@@ -140,49 +140,21 @@
         </section>
     </div>
 
-    <!-- Codes Modal -->
-    <div id="codes-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-        <div class="bg-[#111114] border border-slate-800 rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-sm font-bold text-white uppercase">🔑 Code-Verwaltung</h3>
-                <button onclick="closeCodesPanel()" class="text-slate-500 hover:text-white text-xs">✕ Schließen</button>
-            </div>
-
-            <div class="mb-6 p-4 bg-[#1a1a1e] border border-slate-800 rounded">
-                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Codes generieren</label>
-                <div class="flex gap-2 mt-2 items-center">
-                    <input type="number" id="codes-count" value="5" min="1" max="100" class="w-20 bg-[#0a0a0c] border border-slate-800 p-2 rounded text-xs text-white">
-                    <span class="text-xs text-slate-500">×</span>
-                    <input type="number" id="codes-maxuses" value="10" min="1" max="999" class="w-20 bg-[#0a0a0c] border border-slate-800 p-2 rounded text-xs text-white">
-                    <span class="text-xs text-slate-500">Nutzungen pro Code</span>
-                    <button onclick="generateCodes()" class="bg-sky-600 text-white text-xs font-bold px-4 py-2 rounded hover:bg-sky-500 transition">Generieren</button>
-                </div>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-xs">
-                    <thead>
-                        <tr class="text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-800">
-                            <th class="text-left py-2 px-2">Code</th>
-                            <th class="text-left py-2 px-2">Nutzungen</th>
-                            <th class="text-left py-2 px-2">Nutzer</th>
-                            <th class="text-left py-2 px-2">Status</th>
-                            <th class="text-left py-2 px-2">Erstellt</th>
-                            <th class="text-left py-2 px-2">Aktion</th>
-                        </tr>
-                    </thead>
-                    <tbody id="codes-table-body">
-                        <tr><td colspan="5" class="text-slate-500 text-[10px] text-center py-4">Keine Codes</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="flex justify-end mt-6">
-                <button onclick="refreshCodesList()" class="text-xs text-slate-500 hover:text-slate-300 mr-4">↻ Aktualisieren</button>
-                <button onclick="closeCodesPanel()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded hover:bg-slate-700 transition">Schließen</button>
+    <!-- Thanks / BMC Modal -->
+    <div id="thanks-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+        <div role="dialog" aria-modal="true" aria-labelledby="thanks-title" tabindex="-1" class="bg-[#111114] border border-slate-800 rounded-lg w-full max-w-md p-6 text-center">
+            <h3 id="thanks-title" class="text-sm font-bold text-white uppercase mb-3">Download gestartet ☕</h3>
+            <p id="thanks-text" class="text-xs text-slate-400 mb-6">Hat dir der Konfigurator geholfen? Unterstütze das Projekt mit einer Tasse Kaffee.</p>
+            <div class="flex gap-3 justify-center">
+                <a data-bmc="thanks" id="thanks-bmc" href="https://www.buymeacoffee.com/DEIN-NAME" target="_blank" rel="noopener" class="bg-amber-500 text-black text-xs font-bold px-6 py-3 rounded hover:bg-amber-400 transition uppercase tracking-wider">☕ Kaffee kaufen</a>
+                <button onclick="closeThanks()" id="thanks-close-btn" class="bg-slate-800 text-white text-xs font-bold px-6 py-3 rounded hover:bg-slate-700 transition uppercase tracking-wider">Weiter</button>
             </div>
         </div>
     </div>
+
+    <!-- Tracking (Umami): Platzhalter – echte Website-ID unter cloud.umami.is eintragen und freischalten
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="DEINE-WEBSITE-ID"></script>
+    -->
 
     <script type="module">
         import { isAuthenticated, getUser } from './src/js/auth.js';

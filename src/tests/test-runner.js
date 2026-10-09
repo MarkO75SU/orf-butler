@@ -5,6 +5,8 @@ import { TOOL_TEMPLATES, generateConfig } from '../js/templates.js';
 import { generateInstallMD, CLI_COMMANDS, OS_PATHS } from '../js/docs.js';
 import { isAuthenticated, login, logout, getUser } from '../js/auth.js';
 import { fetchLiveFreeModels, verifyUpdateWindow } from '../js/api.js';
+import { BMC_URL } from '../js/config.js';
+import fs from 'fs';
 
 let passed = 0;
 let failed = 0;
@@ -18,6 +20,11 @@ function assert(condition, message) {
 function runTestGroup(name, fn) {
     console.log(`\n--- ${name} ---`);
     try { fn(); } catch (error) { failed++; console.error(`\n${error.message}`); }
+}
+
+const asyncGroups = [];
+function runAsyncTestGroup(name, fn) {
+    asyncGroups.push({ name, fn });
 }
 
 console.log("=== RUNNING ALL TESTS ===\n");
@@ -80,27 +87,7 @@ runTestGroup("Mapping Tests", () => {
     const ids = Object.keys(MODEL_MAPPING);
     assert(ids.length >= 16, "Mapping: 16+ models in database");
 
-    const required = [
-        "qwen/qwen3-coder:free",
-        "google/gemma-4-26b-a4b-it:free",
-        "google/gemma-4-31b-it:free",
-        "liquid/lfm-2.5-1.2b-instruct:free",
-        "meta-llama/llama-3.2-3b-instruct:free",
-        "meta-llama/llama-3.3-70b-instruct:free",
-        "moonshotai/kimi-k2.6:free",
-        "nousresearch/hermes-3-llama-3.1-405b:free",
-        "nvidia/nemotron-3-nano-30b-a3b:free",
-        "nvidia/nemotron-3-super-120b-a12b:free",
-        "openai/gpt-oss-120b:free",
-        "poolside/laguna-m.1:free",
-        "nvidia/nemotron-nano-9b-v2:free",
-        "z-ai/glm-4.5-air:free",
-        "nvidia/nemotron-nano-12b-v2-vl:free",
-        "poolside/laguna-xs.2:free"
-    ];
-    required.forEach(id => assert(MODEL_MAPPING[id], `Mapping: ${id} exists`));
-
-    // Check all models have bilingual fields + metadata
+    // Tägliches Model-Update tauscht IDs aus – Struktur statt Hardcoded-IDs prüfen
     Object.entries(MODEL_MAPPING).forEach(([id, m]) => {
         assert(m.role, `Mapping: ${id} has role`);
         assert(m.role_de, `Mapping: ${id} has role_de`);
@@ -112,9 +99,10 @@ runTestGroup("Mapping Tests", () => {
         assert(id.endsWith(':free'), `Mapping: ${id} ends with :free`);
     });
 
-    const qwen = MODEL_MAPPING["qwen/qwen3-coder:free"];
-    assert(qwen.languages.includes("javascript"), "Mapping: Qwen3-coder includes JS");
-    assert(qwen.languages.includes("python"), "Mapping: Qwen3-coder includes Python");
+    const withJs = ids.filter(id => MODEL_MAPPING[id].languages.includes('javascript'));
+    const withPy = ids.filter(id => MODEL_MAPPING[id].languages.includes('python'));
+    assert(withJs.length > 0, "Mapping: at least one model includes JS");
+    assert(withPy.length > 0, "Mapping: at least one model includes Python");
 });
 
 // ──────────────────────────────────────────────
@@ -197,12 +185,13 @@ runTestGroup("Templates Tests", () => {
 // 7. Config Generation Tests
 // ──────────────────────────────────────────────
 runTestGroup("Config Generation Tests", () => {
-    const testModels = [["qwen/qwen3-coder:free", MODEL_MAPPING["qwen/qwen3-coder:free"]]];
+    const [testId, testData] = Object.entries(MODEL_MAPPING)[0];
+    const testModels = [[testId, testData]];
 
     // JSON type (continue)
     const jsonConfig = generateConfig("continue", testModels, "basic");
     const parsedJson = JSON.parse(jsonConfig);
-    assert(parsedJson.models[0].model === "qwen/qwen3-coder:free", "generateConfig: JSON model correct");
+    assert(parsedJson.models[0].model === testId, "generateConfig: JSON model correct");
     assert(parsedJson.models[0].provider === "openrouter", "generateConfig: JSON provider correct");
     assert(!parsedJson.models[0].system_prompt, "generateConfig: Basic no system_prompt");
 
@@ -210,10 +199,10 @@ runTestGroup("Config Generation Tests", () => {
     const opencodeConfig = generateConfig("opencode", testModels, "basic");
     const parsedOpencode = JSON.parse(opencodeConfig);
     assert(parsedOpencode.provider.openrouter.options.apiKey === "DEIN_API_KEY_HERE", "generateConfig: OpenCode has apiKey");
-    assert(parsedOpencode.model === "qwen/qwen3-coder:free", "generateConfig: OpenCode model");
+    assert(parsedOpencode.model === testId, "generateConfig: OpenCode model");
 
     // Premium JSON
-    const pm = [{ ...MODEL_MAPPING["qwen/qwen3-coder:free"], premium_prompt: "You are an expert." }];
+    const pm = [{ ...testData, premium_prompt: "You are an expert." }];
     const premConfig = generateConfig("continue", [["test/model", pm[0]]], "premium");
     const parsedPrem = JSON.parse(premConfig);
     assert(parsedPrem.models[0].system_prompt === "You are an expert.", "generateConfig: Premium has system_prompt");
@@ -279,22 +268,41 @@ runTestGroup("InstallMD Tests", () => {
 // 10. OS Paths Tests
 // ──────────────────────────────────────────────
 runTestGroup("OS Paths Tests", () => {
-    const allToolPaths = ["continue", "cursor", "windsurf", "zed", "aider", "copilot",
-                          "opencode", "antigravity", "claude_code", "cline", "codeium"];
+    const allToolPaths = ["continue", "cursor", "windsurf", "zed", "aider", "github_copilot",
+                          "opencode", "antigravity", "claude_code", "cline", "codeium",
+                          "roocode", "litellm", "cody", "tabby"];
+    const platforms = ["win32", "darwin", "linux"];
 
     allToolPaths.forEach(id => {
-        assert(OS_PATHS["win32"][id], `OS_PATHS: win32/${id} exists`);
-        assert(OS_PATHS["darwin"][id], `OS_PATHS: darwin/${id} exists`);
+        platforms.forEach(p => assert(OS_PATHS[p][id], `OS_PATHS: ${p}/${id} exists`));
     });
+
+    Object.keys(TOOL_TEMPLATES).forEach(id => {
+        platforms.forEach(p => assert(OS_PATHS[p][id], `OS_PATHS parity: ${p} covers template ${id}`));
+    });
+
+    assert(!OS_PATHS["win32"]["amazon_q"], "OS_PATHS: amazon_q removed");
+    assert(OS_PATHS["win32"]["github_copilot"].includes("copilot-instructions"), "OS_PATHS: Win github_copilot path");
 
     assert(OS_PATHS["win32"]["opencode"].includes(".config"), "OS_PATHS: Win opencode contains .config");
     assert(OS_PATHS["darwin"]["opencode"].includes("~/.config"), "OS_PATHS: Mac opencode contains ~/.config");
     assert(OS_PATHS["win32"]["continue"].includes(".continue"), "OS_PATHS: Win continue path");
+    assert(OS_PATHS["darwin"]["continue"].includes("~/.continue"), "OS_PATHS: Mac continue path is absolute");
     assert(OS_PATHS["darwin"]["zed"].includes(".config/zed"), "OS_PATHS: Mac zed path");
     assert(OS_PATHS["win32"]["antigravity"].includes("settings.yaml"), "OS_PATHS: Win antigravity path");
     assert(OS_PATHS["darwin"]["cline"].includes(".clinerules"), "OS_PATHS: Mac cline path");
     assert(OS_PATHS["win32"]["cursor"].includes(".cursorrules"), "OS_PATHS: Win cursor path");
     assert(OS_PATHS["darwin"]["windsurf"].includes(".windsurfrules"), "OS_PATHS: Mac windsurf path");
+
+    // Kein Drift: config_file (Zielname) muss zum OS-Pfad-Namen passen
+    const baseName = (s) => String(s).replace(/\s*\(.*?\)\s*$/, '').split(/[\\/]/).pop();
+    Object.keys(TOOL_TEMPLATES).forEach(id => {
+        const expected = baseName(TOOL_TEMPLATES[id].config_file);
+        platforms.forEach(p => {
+            assert(baseName(OS_PATHS[p][id]) === expected,
+                `OS_PATHS/config_file parity: ${p}/${id} -> ${expected}`);
+        });
+    });
 });
 
 // ──────────────────────────────────────────────
@@ -357,6 +365,218 @@ runTestGroup("Integration Tests", () => {
     const ids = Object.keys(MODEL_MAPPING);
     assert(new Set(ids).size === ids.length, "Integration: All model IDs unique");
 });
+
+// ──────────────────────────────────────────────
+// 14. App-Strategie Tests (BMC statt Paywall, kein Admin-Panel)
+// ──────────────────────────────────────────────
+runTestGroup("App Strategy Tests", () => {
+    const appSrc = fs.readFileSync(new URL('../js/app.js', import.meta.url), 'utf-8');
+    const m = appSrc.match(/const translations = \{[\s\S]*?\n\};/);
+    assert(!!m, "App: translations object found in app.js");
+    const translations = new Function(m[0] + '\nreturn translations;')();
+
+    const deKeys = Object.keys(translations.de).sort();
+    const enKeys = Object.keys(translations.en).sort();
+    assert(deKeys.length === enKeys.length, `App i18n: DE/EN key count equal (${deKeys.length})`);
+    assert(JSON.stringify(deKeys) === JSON.stringify(enKeys), "App i18n: DE/EN keys identical");
+
+    ['adminBadge', 'codesTitle', 'codesGenerate', 'codesThUser', 'promptAdminPassword', 'confirmRevoke', 'confirmReset']
+        .forEach(k => {
+            assert(!(k in translations.de) && !(k in translations.en), `App i18n: removed key "${k}" gone`);
+        });
+
+    ['bundleFree', 'thanksTitle', 'thanksText', 'thanksBtn', 'thanksClose'].forEach(k => {
+        assert(!!translations.de[k] && !!translations.en[k], `App i18n: strategy key "${k}" present DE+EN`);
+    });
+
+    assert(!appSrc.includes('isAdmin'), "App: no admin logic in app.js");
+    assert(!appSrc.includes('openCodesPanel'), "App: no codes panel in app.js");
+    assert(!appSrc.includes('5€') && !appSrc.includes('20€'), "App: no price strings in app.js");
+
+    const appHtml = fs.readFileSync(new URL('../../app.html', import.meta.url), 'utf-8');
+    assert(!appHtml.includes('codes-modal'), "App: no codes modal in app.html");
+    assert(!appHtml.includes('admin-badge'), "App: no admin badge in app.html");
+    assert(!appHtml.includes('5€') && !appHtml.includes('20€'), "App: no price strings in app.html");
+    assert(appHtml.includes('thanks-modal'), "App: thanks modal present in app.html");
+    assert(appHtml.includes('data-bmc="header"'), "App: BMC header link present");
+
+    const landing = fs.readFileSync(new URL('../../landing.html', import.meta.url), 'utf-8');
+    assert(!landing.includes('5€') && !landing.includes('20€'), "Landing: no price strings");
+    assert(landing.includes('data-bmc="landing"'), "Landing: BMC support link present");
+    assert(!landing.includes('Registrierung testen'), "Landing: admin test mode removed");
+
+    assert(BMC_URL.includes('buymeacoffee.com'), "BMC: placeholder URL configured");
+    assert(BMC_URL === 'https://www.buymeacoffee.com/DEIN-NAME', "BMC: placeholder not yet replaced");
+});
+
+// ──────────────────────────────────────────────
+// 15. Installer Tests (Projektordner-Suche + Scope-Parität)
+// ──────────────────────────────────────────────
+runTestGroup("Installer Tests", () => {
+    const read = p => fs.readFileSync(new URL(p, import.meta.url), 'utf-8');
+    const node = read('../../scripts/auto-install.js');
+    const bat = read('../../scripts/auto-install-win.bat');
+    const sh = read('../../scripts/auto-install-linux.sh');
+    const mac = read('../../scripts/auto-install-mac.command');
+    const appSrc = read('../js/app.js');
+
+    const installers = { node, bat, sh, mac };
+
+    // Parität: jedes Tool-Template kommt als Toolkey in allen vier Installern vor
+    Object.keys(TOOL_TEMPLATES).forEach(id => {
+        Object.entries(installers).forEach(([name, src]) => {
+            assert(src.includes(`"${id}"`), `Installer ${name}: toolkey ${id} present`);
+        });
+    });
+    Object.entries(installers).forEach(([name, src]) => {
+        assert(!src.includes('amazon_q'), `Installer ${name}: amazon_q removed`);
+    });
+
+    // Node-Installer: Scope-Felder + Projektordner-Funktionen
+    assert(node.includes("scope: 'global'") && node.includes("scope: 'project'"), "Installer node: scope global/project");
+    assert(node.includes('findProjectRoots') && node.includes('chooseProjectRoot'), "Installer node: project folder functions");
+    assert(node.includes('detectOS'), "Installer node: detectOS exported");
+
+    // Batch-Installer
+    assert(bat.includes(':choose_project'), "Installer bat: choose_project subroutine");
+    assert(bat.includes('set PROJECT_ROOT='), "Installer bat: PROJECT_ROOT");
+    assert(bat.includes('NEED_PROJECT'), "Installer bat: NEED_PROJECT detection");
+    assert(bat.includes('if /i "%~5"=="project"'), "Installer bat: scope-aware safe_copy");
+    assert(bat.includes('\r\n'), "Installer bat: CRLF line endings (gitattributes eol=crlf)");
+
+    // Shell-Installer (Linux + Mac)
+    [['linux', sh], ['mac', mac]].forEach(([name, src]) => {
+        assert(src.includes('choose_project_root'), `Installer ${name}: choose_project_root function`);
+        assert(src.includes('find_project_roots'), `Installer ${name}: find_project_roots function`);
+        assert(src.includes('PROJECT_ROOT='), `Installer ${name}: PROJECT_ROOT`);
+        assert(src.includes('NEED_PROJECT'), `Installer ${name}: NEED_PROJECT detection`);
+        assert(src.includes('"$SCOPE" = "project"'), `Installer ${name}: scope-aware try_copy`);
+    });
+
+    // README-AUTOINSTALL (DE/EN) dokumentiert den Projektordner
+    assert(appSrc.includes('Projektordner'), "Installer readme: DE Projektordner section");
+    assert(appSrc.includes('Project Folder'), "Installer readme: EN Project Folder section");
+});
+
+// ──────────────────────────────────────────────
+// HTTP + Store + Codes-API Tests (async)
+// ──────────────────────────────────────────────
+runAsyncTestGroup("HTTP Helper Tests", async () => {
+    const { applyCors, handlePreflight, methodGuard, clientIp } = await import('../../lib/http.js');
+
+    const headers = {};
+    applyCors({ setHeader: (k, v) => { headers[k] = v; } });
+    assert(headers['Access-Control-Allow-Origin'] === '*', "http: applyCors sets wildcard origin");
+
+    let ended = false, statusCode = null;
+    const resOpt = {
+        status: (c) => { statusCode = c; return { end: () => { ended = true; }, json: () => {} }; },
+        end: () => { ended = true; }
+    };
+    assert(handlePreflight({ method: 'OPTIONS' }, resOpt) === true, "http: preflight handles OPTIONS");
+    assert(ended && statusCode === 200, "http: preflight ends 200");
+
+    let jsonBody = null;
+    const res405 = { status: (c) => ({ json: (b) => { statusCode = c; jsonBody = b; } }) };
+    assert(methodGuard({ method: 'GET' }, res405, 'POST') === true, "http: methodGuard blocks wrong method");
+    assert(statusCode === 405 && jsonBody && jsonBody.error, "http: methodGuard returns 405");
+    assert(methodGuard({ method: 'POST' }, res405, 'POST') === false, "http: methodGuard allows correct method");
+
+    assert(clientIp({ headers: { 'x-forwarded-for': '1.2.3.4, 5.6.7.8' } }) === '1.2.3.4', "http: clientIp parses x-forwarded-for");
+    assert(clientIp({ headers: {}, socket: { remoteAddress: '9.9.9.9' } }) === '9.9.9.9', "http: clientIp falls back to socket");
+});
+
+runAsyncTestGroup("GitHub Store Tests", async () => {
+    const prevToken = process.env.GH_TOKEN;
+    const prevFetch = global.fetch;
+    process.env.GH_TOKEN = 'test-token';
+    try {
+        const { readCodes, writeCodes, withCodes, ConflictError } = await import(`../../lib/github-store.js?t=${Date.now()}`);
+
+        global.fetch = async () => ({ status: 404, ok: false });
+        const empty = await readCodes();
+        assert(empty.sha === null && Object.keys(empty.codes.codes).length === 0, "store: 404 -> empty store, no sha");
+
+        global.fetch = async () => ({ status: 500, ok: false });
+        let threw = false;
+        try { await readCodes(); } catch { threw = true; }
+        assert(threw, "store: readCodes fail-closed on GitHub error");
+
+        global.fetch = async () => ({ status: 409, ok: false });
+        let conflict = false;
+        try { await writeCodes({ codes: {}, nextAnonId: 1 }, 'sha1'); }
+        catch (e) { conflict = e instanceof ConflictError; }
+        assert(conflict, "store: writeCodes 409 throws ConflictError");
+
+        let reads = 0;
+        global.fetch = async (url, opts) => {
+            if (opts && opts.method === 'PUT') {
+                if (reads === 1) return { status: 422, ok: false, text: async () => 'conflict' };
+                return { status: 200, ok: true, text: async () => '' };
+            }
+            reads++;
+            return {
+                status: 200, ok: true,
+                json: async () => ({
+                    content: Buffer.from('{"codes":{},"nextAnonId":1}').toString('base64'),
+                    sha: 'sha' + reads
+                })
+            };
+        };
+        const payload = await withCodes((c) => { c.codes.TEST = { v: 1 }; return 'done'; });
+        assert(payload === 'done' && reads === 2, "store: withCodes retries on conflict and succeeds");
+    } finally {
+        if (prevToken === undefined) delete process.env.GH_TOKEN; else process.env.GH_TOKEN = prevToken;
+        global.fetch = prevFetch;
+    }
+});
+
+runAsyncTestGroup("Codes API Guard Tests", async () => {
+    const prevU = process.env.LOGIN_USER, prevP = process.env.LOGIN_PASS;
+    const prevToken = process.env.GH_TOKEN, prevFetch = global.fetch;
+    delete process.env.LOGIN_USER;
+    delete process.env.LOGIN_PASS;
+    process.env.GH_TOKEN = 'test-token';
+    global.fetch = async () => ({ status: 404, ok: false });
+    try {
+        const { default: handler } = await import(`../../api/codes.js?t=${Date.now()}`);
+        const mkRes = () => {
+            const r = { statusCode: null, body: null, headers: {}, _ended: false };
+            r.setHeader = (k, v) => { r.headers[k] = v; };
+            r.status = (c) => { r.statusCode = c; return { json: (b) => { r.body = b; }, end: () => { r._ended = true; } }; };
+            r.json = (b) => { r.body = b; };
+            r.end = () => { r._ended = true; };
+            return r;
+        };
+
+        const r405 = mkRes();
+        await handler({ method: 'DELETE', headers: {}, socket: { remoteAddress: '10.0.0.1' }, query: {}, body: null }, r405);
+        assert(r405.statusCode === 405, "codes: wrong method -> 405");
+
+        const r401 = mkRes();
+        await handler({ method: 'POST', headers: {}, socket: { remoteAddress: '10.0.0.2' }, query: { action: 'generate' }, body: { count: 1 } }, r401);
+        assert(r401.statusCode === 401, "codes: generate without admin creds -> 401 (no bypass)");
+
+        const r401b = mkRes();
+        await handler({ method: 'POST', headers: {}, socket: { remoteAddress: '10.0.0.3' }, query: { action: 'list' }, body: {} }, r401b);
+        assert(r401b.statusCode === 401, "codes: list without admin creds -> 401");
+
+        const rOpt = mkRes();
+        await handler({ method: 'OPTIONS', headers: {}, socket: { remoteAddress: '10.0.0.4' }, query: {} }, rOpt);
+        assert(rOpt._ended && rOpt.headers['Access-Control-Allow-Origin'] === '*', "codes: OPTIONS preflight 200 + CORS");
+    } finally {
+        if (prevU === undefined) delete process.env.LOGIN_USER; else process.env.LOGIN_USER = prevU;
+        if (prevP === undefined) delete process.env.LOGIN_PASS; else process.env.LOGIN_PASS = prevP;
+        if (prevToken === undefined) delete process.env.GH_TOKEN; else process.env.GH_TOKEN = prevToken;
+        global.fetch = prevFetch;
+    }
+});
+
+// Async-Gruppen ausführen (vor der Zusammenfassung)
+for (const { name, fn } of asyncGroups) {
+    console.log(`\n--- ${name} ---`);
+    try { await fn(); } catch (error) { failed++; console.error(`\n${error.message}`); }
+}
 
 // ──────────────────────────────────────────────
 console.log(`\n=== TEST SUMMARY ===`);

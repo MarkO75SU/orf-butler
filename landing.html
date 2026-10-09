@@ -16,6 +16,7 @@
     <style>
         :root { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
         .gradient-text { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        a:focus-visible, button:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
     </style>
 </head>
 <body class="bg-[#0a0a0c] text-slate-300 min-h-screen">
@@ -24,13 +25,13 @@
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
             <div>
                 <h1 class="text-lg font-bold text-white uppercase tracking-wider">ORF Butler</h1>
-                <p class="text-[10px] text-slate-600 uppercase tracking-[0.2em]">OpenRouter Free Deployment</p>
+                <p class="text-[10px] text-slate-400 uppercase tracking-[0.2em]">OpenRouter Free Deployment</p>
             </div>
             <div class="flex items-center gap-4">
-                <a href="#features" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Features</a>
-                <a href="#pricing" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Preise</a>
-                <a href="#tools" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Tools</a>
-                <a href="#blog" class="text-[10px] text-slate-500 hover:text-white uppercase tracking-widest">Blog</a>
+                <a href="#features" class="text-[10px] text-slate-400 hover:text-white uppercase tracking-widest">Features</a>
+                <a href="#support" class="text-[10px] text-slate-400 hover:text-white uppercase tracking-widest">Unterstützen</a>
+                <a href="#tools" class="text-[10px] text-slate-400 hover:text-white uppercase tracking-widest">Tools</a>
+                <a href="#blog" class="text-[10px] text-slate-400 hover:text-white uppercase tracking-widest">Blog</a>
                 <a id="nav-cta-btn" href="/" class="bg-sky-600 text-white text-[10px] font-bold px-6 py-3 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Anmelden</a>
             </div>
         </div>
@@ -41,7 +42,7 @@
             Kostenlose KI-Modelle<br>
             <span class="gradient-text">für deine Entwicklungsumgebung</span>
         </h2>
-        <p class="text-slate-500 text-sm max-w-xl mx-auto mb-10">
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mb-10">
             Wähle aus <strong class="text-white">16+ kostenlosen OpenRouter-Modellen</strong> und exportiere 
             fertige Konfigurationen für VS Code, Zed, Aider, Cursor und mehr – in <strong class="text-white">4 Klicks</strong>.
         </p>
@@ -57,17 +58,17 @@
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-8 text-center">
                 <div class="text-3xl mb-4">🧠</div>
                 <h4 class="text-sm font-bold text-white uppercase mb-2">Free-LLM Auswahl</h4>
-                <p class="text-xs text-slate-500">16+ kuratierte Free-Modelle von Qwen, DeepSeek, Meta, Google, Mistral, Microsoft & mehr. Mit Uptime-Status und Latenz.</p>
+                <p class="text-xs text-slate-400">16+ kuratierte Free-Modelle von Qwen, DeepSeek, Meta, Google, Mistral, Microsoft & mehr. Mit Uptime-Status und Latenz.</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-8 text-center">
                 <div class="text-3xl mb-4">🔧</div>
                 <h4 class="text-sm font-bold text-white uppercase mb-2">Multi-Tool Export</h4>
-                <p class="text-xs text-slate-500">Exportiere Configs für VS Code (Continue), OpenCode, Zed Editor, Aider, Cursor, Windsurf, Claude Code & mehr.</p>
+                <p class="text-xs text-slate-400">Exportiere Configs für VS Code (Continue), OpenCode, Zed Editor, Aider, Cursor, Windsurf, Claude Code & mehr.</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-8 text-center">
                 <div class="text-3xl mb-4">📦</div>
                 <h4 class="text-sm font-bold text-white uppercase mb-2">ZIP Download</h4>
-                <p class="text-xs text-slate-500">Fertige Config + Schritt-für-Schritt Installationsanleitung als ZIP. Inkl. API-Key Platzhalter.</p>
+                <p class="text-xs text-slate-400">Fertige Config + Schritt-für-Schritt Installationsanleitung als ZIP. Inkl. API-Key Platzhalter.</p>
             </div>
         </div>
     </section>
@@ -77,67 +78,71 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
                 <span class="text-xs font-bold text-white">VS Code</span>
-                <p class="text-[10px] text-slate-500">Continue Extension</p>
+                <p class="text-[10px] text-slate-400">Continue Extension</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
                 <span class="text-xs font-bold text-white">OpenCode</span>
-                <p class="text-[10px] text-slate-500">Terminal CLI</p>
+                <p class="text-[10px] text-slate-400">Terminal CLI</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
                 <span class="text-xs font-bold text-white">Zed Editor</span>
-                <p class="text-[10px] text-slate-500">Rust Editor</p>
+                <p class="text-[10px] text-slate-400">Rust Editor</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
                 <span class="text-xs font-bold text-white">Aider</span>
-                <p class="text-[10px] text-slate-500">Pair Programming</p>
+                <p class="text-[10px] text-slate-400">Pair Programming</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
                 <span class="text-xs font-bold text-white">Cursor</span>
-                <p class="text-[10px] text-slate-500">AI Editor</p>
+                <p class="text-[10px] text-slate-400">AI Editor</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
                 <span class="text-xs font-bold text-white">Windsurf</span>
-                <p class="text-[10px] text-slate-500">Agentic IDE</p>
+                <p class="text-[10px] text-slate-400">Agentic IDE</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
                 <span class="text-xs font-bold text-white">Claude Code</span>
-                <p class="text-[10px] text-slate-500">Anthropic CLI</p>
+                <p class="text-[10px] text-slate-400">Anthropic CLI</p>
             </div>
             <div class="bg-[#111114] border border-slate-800 rounded-lg p-4 text-center">
                 <span class="text-xs font-bold text-white">GitHub Copilot</span>
-                <p class="text-[10px] text-slate-500">Instructions</p>
+                <p class="text-[10px] text-slate-400">Instructions</p>
             </div>
         </div>
     </section>
 
-    <section id="pricing" class="max-w-6xl mx-auto px-4 py-16 border-t border-slate-800">
-        <h3 class="text-xl font-bold text-white text-center mb-12 uppercase tracking-wider">Bundles</h3>
+    <section id="support" class="max-w-6xl mx-auto px-4 py-16 border-t border-slate-800">
+        <h3 class="text-xl font-bold text-white text-center mb-12 uppercase tracking-wider">Bundles – komplett gratis</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             <div class="bg-[#111114] border border-slate-700 rounded-lg p-8 text-center">
                 <h4 class="text-sm font-bold text-white uppercase mb-2">Standard Bundle</h4>
-                <p class="text-3xl font-bold text-sky-500 mb-4">5€</p>
-                <p class="text-xs text-slate-500 mb-6">Basic Config + Installationsanleitung</p>
+                <p class="text-3xl font-bold text-emerald-500 mb-4">GRATIS</p>
+                <p class="text-xs text-slate-400 mb-6">Basic Config + Installationsanleitung</p>
                 <a id="pricing-basic-btn" href="/" class="block w-full border border-sky-600 text-sky-500 text-xs font-bold py-3 rounded hover:bg-sky-600 hover:text-white transition uppercase tracking-wider">Auswählen</a>
             </div>
             <div class="bg-[#111114] border-2 border-sky-900 rounded-lg p-8 text-center relative">
                 <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-sky-600 text-white text-[10px] font-bold px-4 py-1 rounded uppercase tracking-wider">Empfohlen</span>
                 <h4 class="text-sm font-bold text-white uppercase mb-2">Premium Bundle</h4>
-                <p class="text-3xl font-bold text-sky-500 mb-4">20€</p>
-                <p class="text-xs text-slate-500 mb-6">Extended Config + Expert Prompts + Support</p>
+                <p class="text-3xl font-bold text-emerald-500 mb-4">GRATIS</p>
+                <p class="text-xs text-slate-400 mb-6">Extended Config + Auto-Installer</p>
                 <a id="pricing-premium-btn" href="/" class="block w-full bg-sky-600 text-white text-xs font-bold py-3 rounded hover:bg-sky-500 transition uppercase tracking-wider">Auswählen</a>
             </div>
+        </div>
+        <div class="max-w-2xl mx-auto mt-8 text-center border border-amber-900/50 bg-amber-950/20 rounded-lg p-6">
+            <p class="text-sm text-slate-300 mb-4">Gefällt dir das Projekt? Unterstütze es mit einer Tasse Kaffee ☕</p>
+            <a data-bmc="landing" href="https://www.buymeacoffee.com/DEIN-NAME" target="_blank" rel="noopener" class="inline-block bg-amber-500 text-black text-xs font-bold px-8 py-3 rounded hover:bg-amber-400 transition uppercase tracking-wider">☕ Kaffee kaufen</a>
         </div>
     </section>
 
     <section id="blog" class="max-w-6xl mx-auto px-4 py-16 border-t border-slate-800">
         <h3 class="text-xl font-bold text-white text-center mb-12 uppercase tracking-wider">Blog / Änderungsprotokoll</h3>
         <div id="changelog-entries" class="max-w-3xl mx-auto space-y-6">
-            <div class="text-center text-xs text-slate-600">Lade Änderungen...</div>
+            <div class="text-center text-xs text-slate-400">Lade Änderungen...</div>
         </div>
     </section>
 
     <footer class="border-t border-slate-800 py-8 text-center">
-        <p class="text-[10px] text-slate-600 uppercase tracking-widest">&copy; 2026 Openrouter Free Butler &mdash; MIT Lizenz</p>
+        <p class="text-[10px] text-slate-400 uppercase tracking-widest">&copy; 2026 Openrouter Free Butler &mdash; MIT Lizenz</p>
     </footer>
 
     <script>
@@ -148,7 +153,7 @@
             const data = await res.json();
             const container = document.getElementById('changelog-entries');
             if (!data.entries || data.entries.length === 0) {
-                container.innerHTML = '<div class="text-center text-xs text-slate-600">Noch keine Änderungen.</div>';
+                container.innerHTML = '<div class="text-center text-xs text-slate-400">Noch keine Änderungen.</div>';
                 return;
             }
             const tagColors = {
@@ -167,17 +172,17 @@
                 video: 'bg-rose-900/60 text-rose-400'
             };
             container.innerHTML = data.entries.slice().reverse().slice(0, 10).map(entry => {
-                const descHtml = entry.description ? `<div class="text-[10px] text-slate-500 mb-3 italic">${entry.description}</div>` : '';
+                const descHtml = entry.description ? `<div class="text-[10px] text-slate-400 mb-3 italic">${entry.description}</div>` : '';
                 const addedHtml = (entry.added || []).map(m => {
-                    const tagHtml = (m.tags || []).map(t => `<span class="text-[7px] font-bold px-1 py-0.5 rounded uppercase tracking-wider ${tagColors[t] || 'bg-slate-800 text-slate-500'}">${t}</span>`).join('');
+                    const tagHtml = (m.tags || []).map(t => `<span class="text-[7px] font-bold px-1 py-0.5 rounded uppercase tracking-wider ${tagColors[t] || 'bg-slate-800 text-slate-400'}">${t}</span>`).join('');
                     return `<div class="flex items-center gap-2 text-xs"><span class="text-green-400 font-bold">+</span><span class="text-slate-300 font-mono">${m.id}</span>${tagHtml ? ' ' + tagHtml : ''}</div>`;
                 }).join('');
                 const removedHtml = (entry.removed || []).map(m => {
                     const id = typeof m === 'string' ? m : m.id;
                     const reason = typeof m === 'string' ? '' : (m.reason_de || m.reason || '');
                     const available = typeof m === 'string' ? '' : (m.available || '');
-                    const tagHtml = (typeof m === 'object' && m.tags || []).map(t => `<span class="text-[7px] font-bold px-1 py-0.5 rounded uppercase tracking-wider ${tagColors[t] || 'bg-slate-800 text-slate-500'}">${t}</span>`).join('');
-                    return `<div class="flex items-center gap-2 text-xs"><span class="text-red-400 font-bold">−</span><span class="text-slate-500 font-mono">${id}</span><span class="text-slate-600">${reason}${available ? ' (' + available + ')' : ''}</span>${tagHtml ? ' ' + tagHtml : ''}</div>`;
+                    const tagHtml = (typeof m === 'object' && m.tags || []).map(t => `<span class="text-[7px] font-bold px-1 py-0.5 rounded uppercase tracking-wider ${tagColors[t] || 'bg-slate-800 text-slate-400'}">${t}</span>`).join('');
+                    return `<div class="flex items-center gap-2 text-xs"><span class="text-red-400 font-bold">−</span><span class="text-slate-400 font-mono">${id}</span><span class="text-slate-400">${reason}${available ? ' (' + available + ')' : ''}</span>${tagHtml ? ' ' + tagHtml : ''}</div>`;
                 }).join('');
                 return `<div class="bg-[#111114] border border-slate-800 rounded-lg p-5">
                     <div class="text-[10px] text-sky-500 font-bold uppercase tracking-wider mb-3">${entry.date}</div>
@@ -187,46 +192,28 @@
                 </div>`;
             }).join('');
         } catch {
-            document.getElementById('changelog-entries').innerHTML = '<div class="text-center text-xs text-slate-600">Änderungsprotokoll nicht verfügbar.</div>';
+            document.getElementById('changelog-entries').innerHTML = '<div class="text-center text-xs text-slate-400">Änderungsprotokoll nicht verfügbar.</div>';
         }
     }
     loadChangelog();
     </script>
 
     <script type="module">
-        import { getUser } from './src/js/auth.js';
         import { getSession } from './src/js/auth-supabase.js';
+        import { BMC_URL } from './src/js/config.js';
 
         const session = await getSession();
-        const isAdmin = getUser() === 'generali';
 
-        if (isAdmin && !session) {
-            // Admin: zwei gleichberechtigte Optionen
-            document.querySelectorAll('#nav-cta-btn, #hero-cta-btn').forEach(el => {
-                el.href = '/app';
-                el.textContent = 'Zur App';
+        // BMC-Platzhalter-URL aus config.js + Klick-Tracking
+        document.querySelectorAll('a[data-bmc]').forEach(a => {
+            const loc = a.getAttribute('data-bmc');
+            a.href = BMC_URL + '?utm_source=orfb&utm_medium=landing&utm_campaign=support';
+            a.addEventListener('click', () => {
+                try { window.umami?.track('bmc_click', { location: loc }); } catch {}
             });
-            document.querySelectorAll('#pricing-basic-btn, #pricing-premium-btn').forEach(el => {
-                el.href = '/app';
-                el.textContent = 'Zur App';
-            });
-            // Zweiten Button für Registrierung einfügen
-            document.querySelectorAll('.flex.justify-center.gap-4').forEach(parent => {
-                const btn = document.createElement('a');
-                btn.href = '/?require=auth';
-                btn.className = 'border border-sky-700 text-sky-500 text-sm font-bold px-10 py-4 rounded hover:bg-sky-600 hover:text-white transition uppercase tracking-wider';
-                btn.textContent = 'Registrierung testen';
-                parent.appendChild(btn);
-            });
-            // Nav: Link für Registrierung
-            document.querySelectorAll('.flex.items-center.gap-4').forEach(parent => {
-                const link = document.createElement('a');
-                link.href = '/?require=auth';
-                link.className = 'text-[10px] text-sky-500 hover:text-sky-300 uppercase tracking-widest';
-                link.textContent = 'Registrierung';
-                parent.appendChild(link);
-            });
-        } else if (session) {
+        });
+
+        if (session) {
             document.querySelectorAll('#nav-cta-btn, #hero-cta-btn, #pricing-basic-btn, #pricing-premium-btn').forEach(el => {
                 el.href = '/app';
                 el.textContent = el.id === 'nav-cta-btn' || el.id === 'hero-cta-btn' ? 'Zur App' : 'Jetzt starten';
@@ -238,5 +225,9 @@
             });
         }
     </script>
+
+    <!-- Tracking (Umami): Platzhalter – echte Website-ID unter cloud.umami.is eintragen und freischalten
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="DEINE-WEBSITE-ID"></script>
+    -->
 </body>
 </html>
