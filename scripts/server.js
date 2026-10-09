@@ -13,6 +13,8 @@ app.use(express.static(PUBLIC_DIR));
 
 app.get('/landing', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'landing.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'app.html')));
+app.get('/imprint', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'imprint.html')));
+app.get('/privacy', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'privacy.html')));
 
 const VALID_USER = process.env.LOGIN_USER;
 const VALID_PASS = process.env.LOGIN_PASS;

@@ -16,6 +16,8 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 | `/` (root) | `public/index.html` | **Website login** – social (OAuth) or admin password |
 | `/landing` | `public/landing.html` | Features/tools/bundles (all free) + support section (BMC) + blog |
 | `/app` | `public/app.html` | 4-step wizard (models → tools → bundle → ZIP download) |
+| `/imprint` | `public/imprint.html` | Impressum (§ 5 DDG, German legal notice) |
+| `/privacy` | `public/privacy.html` | Datenschutzerklärung (GDPR privacy policy) |
 
 **Flow:** `orfb.vercel.app` → login → `/landing` → "Go to app" → `/app` → logout → back to `/`
 
@@ -35,6 +37,8 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 | `public/index.html` | Login page (root route) |
 | `public/landing.html` | Marketing page + blog/changelog section |
 | `public/app.html` | Main app: 4-step wizard for model/tool selection |
+| `public/imprint.html` | Impressum (§ 5 DDG) – operator: Markus Otterbein, Siegburg |
+| `public/privacy.html` | Datenschutzerklärung (GDPR) |
 | `public/js/app.js` | UI logic: multi-select, bundle, ZIP download, BMC thanks popup, download tracking |
 | `public/js/config.js` | **Single source of truth** for `BMC_URL` (Buy-Me-a-Coffee placeholder) |
 | `public/js/mapping.js` | Auto-generated free-model DB (tags + descriptions) |
@@ -53,6 +57,8 @@ No build step, no bundler. Vercel auto-deploys from the GitHub `main` branch.
 - **No codes system** – no code login, no codes API, no paywall gate
 - **Website login** at `/` (social + admin password) is the only login; `/landing` + `/app` are open afterwards
 - **Tracking**: Umami placeholder in all 3 HTML files (commented out until a website ID is set); events `download` (props: models/tools/bundle/os) and `bmc_click` (prop: location) via `window.umami?.track`
+- **Open source (MIT)**: every page header/footer links to `https://github.com/MarkO75SU/orfb`; the site states it is free & open source
+- **Legal pages** (German, required): `/imprint` (`imprint.html`) and `/privacy` (`privacy.html`) – operator data must stay in sync with the actual controller
 
 ## Model Mapping
 

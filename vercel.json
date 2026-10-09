@@ -5,6 +5,8 @@
   "rewrites": [
     { "source": "/landing", "destination": "/landing.html" },
     { "source": "/app", "destination": "/app.html" },
+    { "source": "/imprint", "destination": "/imprint.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "redirects": [
