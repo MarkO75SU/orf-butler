@@ -35,5 +35,4 @@ Use ONLY when reviewing authentication, API endpoints, or file handling in ORF-B
 
 - `api/supabase-config.js` only returns `url` and `key` – never `SUPABASE_DB_PASS`
 - OAuth providers (Google/Apple/GitHub) configured in Supabase dashboard, not in code
-- User email verification handled by Supabase (Double-Opt-In)
-- Password reset via `supabase.auth.resetPasswordForEmail()`
+- Email registration/login removed: `/api/register` and `/api/auto-confirm` deleted (no public account creation via service role)

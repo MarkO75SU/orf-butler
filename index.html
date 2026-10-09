@@ -27,7 +27,6 @@
         <div id="auth-tabs" class="hidden">
             <div class="flex border-b border-slate-800 mb-6">
                 <button id="tab-code" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-sky-600 text-sky-400">Code</button>
-                <button id="tab-email" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400">E-Mail</button>
                 <button id="tab-social" class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-400">Social</button>
             </div>
         </div>
@@ -58,32 +57,6 @@
             </form>
         </div>
 
-        <!-- Tab: Email Login / Register -->
-        <div id="panel-email" class="tab-panel hidden">
-            <div class="flex gap-2 mb-4">
-                <button id="subtab-login" class="subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-sky-800 rounded text-sky-400 bg-sky-900/20">Anmelden</button>
-                <button id="subtab-register" class="subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-slate-800 rounded text-slate-500 hover:text-slate-300">Registrieren</button>
-            </div>
-            <form id="email-form" method="post" class="space-y-6">
-                <div>
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">E-Mail</label>
-                    <input type="email" id="email" required
-                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
-                        placeholder="deine@email.de">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
-                    <input type="password" id="email-password" required minlength="6"
-                        class="w-full bg-[#1a1a1e] border border-slate-800 p-4 rounded text-xs outline-none focus:border-sky-600 transition text-white"
-                        placeholder="Mind. 6 Zeichen">
-                </div>
-                <button type="submit" id="email-submit-btn" class="w-full bg-sky-600 text-white text-xs font-bold py-4 rounded hover:bg-sky-500 transition uppercase tracking-[0.2em]">Anmelden</button>
-                <p id="email-mode-hint" class="text-[10px] text-slate-600 text-center">
-                    Noch kein Konto? <a href="#" id="switch-to-register" class="text-sky-500 hover:text-sky-400">Registrieren</a>
-                </p>
-            </form>
-        </div>
-
         <!-- Tab: Social Login -->
         <div id="panel-social" class="tab-panel hidden">
             <div class="space-y-3">
@@ -108,7 +81,7 @@
 
     <script>
         // Tab switching
-        const tabs = ['code', 'email', 'social'];
+        const tabs = ['code', 'social'];
         function switchTab(name) {
             tabs.forEach(t => {
                 document.getElementById('tab-' + t).className = t === name
@@ -118,34 +91,6 @@
             });
         }
         tabs.forEach(t => document.getElementById('tab-' + t).addEventListener('click', () => switchTab(t)));
-
-        // Email sub-tabs
-        let emailMode = 'login';
-        document.getElementById('subtab-login').addEventListener('click', () => setEmailMode('login'));
-        document.getElementById('subtab-register').addEventListener('click', () => setEmailMode('register'));
-        document.getElementById('switch-to-register').addEventListener('click', e => { e.preventDefault(); setEmailMode('register'); });
-
-        function setEmailMode(mode) {
-            emailMode = mode;
-            const loginBtn = document.getElementById('subtab-login');
-            const regBtn = document.getElementById('subtab-register');
-            const submitBtn = document.getElementById('email-submit-btn');
-            const hint = document.getElementById('email-mode-hint');
-            const pwLabel = document.querySelector('[for="email-password"]');
-            if (mode === 'login') {
-                loginBtn.className = 'subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-sky-800 rounded text-sky-400 bg-sky-900/20';
-                regBtn.className = 'subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-slate-800 rounded text-slate-500 hover:text-slate-300';
-                submitBtn.textContent = 'Anmelden';
-                hint.innerHTML = 'Noch kein Konto? <a href="#" id="switch-to-register" class="text-sky-500 hover:text-sky-400">Registrieren</a>';
-                document.getElementById('switch-to-register').addEventListener('click', e => { e.preventDefault(); setEmailMode('register'); });
-            } else {
-                regBtn.className = 'subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-sky-800 rounded text-sky-400 bg-sky-900/20';
-                loginBtn.className = 'subtab-btn flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border border-slate-800 rounded text-slate-500 hover:text-slate-300';
-                submitBtn.textContent = 'Konto erstellen';
-                hint.innerHTML = 'Bereits registriert? <a href="#" id="switch-to-login" class="text-sky-500 hover:text-sky-400">Anmelden</a>';
-                document.getElementById('switch-to-login').addEventListener('click', e => { e.preventDefault(); setEmailMode('login'); });
-            }
-        }
     </script>
 
     <script>
@@ -165,18 +110,18 @@
 
     <script type="module">
         import { isAuthenticated, login } from './src/js/auth.js';
-        import { initSupabase, register, loginEmail, socialLogin as supabaseSocial, getSession } from './src/js/auth-supabase.js';
+        import { socialLogin as supabaseSocial, getSession } from './src/js/auth-supabase.js';
 
         const msgEl = document.getElementById('global-msg');
 
-        // OAuth/Email-Redirect: Session erkennen und Cookie setzen
+        // OAuth-Redirect: Session erkennen und Cookie setzen
         const session = await getSession();
         if (session) {
             await fetch('/api/confirm-session', { method: 'POST' });
             const p = new URLSearchParams(window.location.search);
             window.location.href = p.get('require') === 'auth' ? '/app' : '/landing';
         } else {
-            // Bei require=auth: Volles Auth-UI zeigen (Code/E-Mail/Social)
+            // Bei require=auth: Auth-UI zeigen (Code/Social)
         const params = new URLSearchParams(window.location.search);
         if (params.get('require') === 'auth') {
             document.getElementById('auth-tabs').classList.remove('hidden');
@@ -197,8 +142,7 @@
             `;
             // Event-Listener für neuen Login-Form neu binden
             document.getElementById('login-form').addEventListener('submit', handleLogin);
-            switchTab('email');
-            setEmailMode('register');
+            switchTab('code');
         }
         }
 
@@ -224,52 +168,6 @@
             }
         }
         document.getElementById('login-form').addEventListener('submit', handleLogin);
-
-        // Email Login / Register
-        document.getElementById('email-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('email-password').value;
-            if (!email || !password) { showMsg('Bitte E-Mail und Passwort eingeben.', 'error'); return; }
-
-            if (emailMode === 'register') {
-                const result = await register(email, password);
-                if (result.success) {
-                    if (result.autoLogin) {
-                        showMsg('Registrierung erfolgreich! Weiterleitung...', 'success');
-                        setTimeout(() => { window.location.href = '/landing'; }, 500);
-                    } else {
-                        showMsg('Registrierung erfolgreich! Prüfe dein E-Mail-Postfach (Double-Opt-In).', 'success');
-                        document.getElementById('email-form').reset();
-                        // Test-Bypass: Direkt anmelden (falls Supabase kein Confirm benötigt)
-                        const bypass = document.createElement('p');
-                        bypass.className = 'text-[10px] text-center mt-2';
-                        bypass.innerHTML = '<a href="#" id="bypass-confirm" class="text-sky-500 hover:text-sky-400 underline">E-Mail bereits bestätigt? Hier direkt anmelden</a>';
-                        document.getElementById('email-form').after(bypass);
-                        document.getElementById('bypass-confirm').addEventListener('click', async (e) => {
-                            e.preventDefault();
-                            const r = await loginEmail(email, password);
-                            if (r.success) {
-                                showMsg('Anmeldung erfolgreich! Weiterleitung...', 'success');
-                                setTimeout(() => { window.location.href = '/landing'; }, 500);
-                            } else {
-                                showMsg(r.error, 'error');
-                            }
-                        });
-                    }
-                } else {
-                    showMsg(result.error, 'error');
-                }
-            } else {
-                const result = await loginEmail(email, password);
-                if (result.success) {
-                    showMsg('Login erfolgreich! Weiterleitung...', 'success');
-                    setTimeout(() => { window.location.href = '/landing'; }, 500);
-                } else {
-                    showMsg(result.error, 'error');
-                }
-            }
-        });
 
         // Social Login
         window.socialLogin = async (provider) => {

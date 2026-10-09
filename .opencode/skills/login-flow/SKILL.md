@@ -21,6 +21,8 @@ zurück zu /
 
 - **Admin**: username `generali` + password (localStorage + HttpOnly cookie)
 - **Code-User**: 8-stelliger Code (localStorage + HttpOnly cookie)
+- **Social**: Google/Apple/GitHub via Supabase OAuth (JWT session)
+- Keine E-Mail-Registrierung / kein E-Mail-Login mehr
 
 ## Session Storage
 
